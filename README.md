@@ -1,29 +1,41 @@
 # LIVE Support Assistant
 
-LIVE Support Assistant is an in-progress, from-scratch public rebuild of the ByteDance pilot concept. It uses only publicly available TikTok LIVE Help Center content and contains no proprietary data.
+A working keyword-matching support assistant built with React, Vite, and TypeScript. Uses only publicly available TikTok LIVE Help Center content. A portfolio demo — not a production system.
 
-## Current status
+## Quick Start
 
-This is a **shipped public demo** — a from-scratch rebuild of the pilot concept. It is a working keyword-matching support assistant (React + Vite + TypeScript) built with safe, public material only. It is a demo and a portfolio piece, not a production system, and it is not a reproduction of any private system.
-
-## What it does
-
-- Match a customer message to the relevant public TikTok LIVE Help Center content.
-- Suggest a reply and flag whether escalation is required.
-- Use only publicly available TikTok LIVE Help Center content, no proprietary data.
-
-## Run it
+### Run from source
 
 ```bash
 npm install
 npm run dev
 ```
 
-Build for production:
+Opens at **http://localhost:5173**.
+
+### Build for production
 
 ```bash
 npm run build
 ```
+
+Output in `dist/` — deploy to any static hosting (GitHub Pages, Netlify, Vercel, etc.).
+
+## What it does
+
+1. Paste a customer message into the input field
+2. Click "Find Answer"
+3. The assistant matches against 5 TikTok LIVE policy entries using keyword matching
+4. Displays the matched policy, a suggested reply, and escalation status
+5. Copy the reply to clipboard with one click
+
+## Tech stack
+
+- React 19
+- TypeScript 6
+- Vite 8
+- Tailwind CSS v4
+- Zero backend — everything runs client-side
 
 ## Source boundary
 
@@ -31,6 +43,6 @@ Only publicly available TikTok LIVE Help Center content belongs in this project.
 
 ## Repository status
 
-This repository is a shipped public demo. It is not a claim of client deployment, production enterprise usage, or a reproduction of any private system.
+This is a shipped public demo. It is not a claim of client deployment, production enterprise usage, or a reproduction of any private system.
 
-Part of a larger body of work — see [Hatem Shalaby's profile](https://github.com/HatemShelby) for the full story.
+Part of a larger body of work — see [Hatem Shalaby's profile](https://github.com/HatemIsmailShalaby1979) for the full story.
