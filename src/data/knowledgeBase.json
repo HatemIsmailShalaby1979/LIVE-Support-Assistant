@@ -1,0 +1,52 @@
+[
+  {
+    "id": "1",
+    "title": "Gifting & Virtual Currency Policy",
+    "category": "Payments",
+    "triggerKeywords": ["gift", "virtual currency", "coins", "diamonds", "purchase", "refund", "payment"],
+    "summary": "Viewers buy Coins with real money and use them to send virtual Gifts during a LIVE stream. Coins have no cash value themselves and cannot be exchanged back for money, transferred, or used as currency outside the platform. Once a creator receives Gifts, they convert into Diamonds, which can later be withdrawn as real money after the platform's fee, once a minimum balance is met. Only users 18 or older (19 in South Korea) may purchase, send, or receive Gifts. Coins cannot be refunded once purchased, and all remaining Coins are forfeited if an account is terminated.",
+    "suggestedReply": "Thanks for reaching out about Gifts and Coins. Coins are purchased with real money and used only to send Gifts on the platform — they can't be refunded or converted back to cash once bought. When you receive Gifts as a creator, they convert to Diamonds, which you can withdraw as real currency after our platform fee, once you reach the minimum payout balance. Sending, receiving, and purchasing Gifts is limited to users 18 and older. Let me know if you'd like help checking your current Diamond balance or payout status.",
+    "escalationRequired": false,
+    "escalationReason": ""
+  },
+  {
+    "id": "2",
+    "title": "Community Guidelines Violation Appeal",
+    "category": "Safety",
+    "triggerKeywords": ["ban", "strike", "violation", "guidelines", "appeal", "suspended", "removed"],
+    "summary": "[PASTE PUBLIC POLICY SUMMARY HERE]",
+    "suggestedReply": "I understand you'd like to appeal a Community Guidelines strike. You can submit an appeal directly from the notification about the violation — go to your inbox, open System Notifications, select the violation under Account Updates, and tap Appeal. If that appeal is denied, you can escalate through Settings & Privacy > Report a Problem > Chat With Us. Reviews typically take about 4–7 business days. I'm flagging this for manual safety review on our side as well given the nature of the request.",
+    "escalationRequired": true,
+    "escalationReason": "Appeals against Community Guidelines strikes require manual review by the safety/trust team and cannot be auto-resolved."
+  },
+  {
+    "id": "3",
+    "title": "Account Security / Login Issue",
+    "category": "Account",
+    "triggerKeywords": ["login", "password", "hacked", "security", "two-factor", "2fa", "locked out", "cannot access"],
+    "summary": "For login problems, password resets, or suspected account compromise, users are directed to use the in-app account recovery flow (Settings & Privacy > Manage Account > Password, or the 'Forgot password' link on the login screen) before contacting support directly. If an account is believed to be hacked, the recommended first step is an immediate password reset and enabling two-factor authentication, followed by reporting the compromise via Settings & Privacy > Report a Problem > Chat With Us if access cannot be restored.",
+    "suggestedReply": "Sorry to hear you're having trouble accessing your account. First, please try resetting your password using the 'Forgot password' option on the login screen. If you believe your account was accessed without your permission, reset your password immediately and turn on two-factor authentication under Settings & Privacy > Security. If you still can't get back in, go to Settings & Privacy > Report a Problem > Chat With Us and our team can help verify your identity and restore access.",
+    "escalationRequired": false,
+    "escalationReason": ""
+  },
+  {
+    "id": "4",
+    "title": "Host Eligibility Requirements",
+    "category": "Creator Program",
+    "triggerKeywords": ["host", "eligibility", "requirements", "age", "country", "apply", "join program"],
+    "summary": "To unlock LIVE hosting, an account generally needs at least 1,000 followers (this threshold can vary by region), and the user must be at least 18 years old (19 in South Korea). The account must also be in good standing, with no active Community Guidelines violations. Meeting the follower and age requirements does not guarantee access in every region, since availability can differ by market. Receiving or sending Gifts during a stream carries the same 18+ age requirement.",
+    "suggestedReply": "To host a LIVE stream, your account generally needs at least 1,000 followers and you need to be 18 or older (19 in South Korea), with no active Community Guidelines violations on your account. The exact follower threshold can vary slightly by region. If you meet these requirements and still don't see the LIVE option, it's usually an app update or regional rollout issue — try updating the app first, and let me know if the option still isn't showing.",
+    "escalationRequired": false,
+    "escalationReason": ""
+  },
+  {
+    "id": "5",
+    "title": "Livestream Penalty Appeal Process",
+    "category": "Enforcement",
+    "triggerKeywords": ["penalty", "appeal", "livestream", "restricted", "shadow ban", "reduced reach", "punishment"],
+    "summary": "LIVE-specific penalties range from temporary suspensions (access restored automatically once the period ends) to permanent LIVE access removal for serious or repeated violations, as well as feature-specific restrictions (e.g., losing the ability to receive Gifts or co-host) without a full suspension. Temporary and permanent LIVE restrictions can both be appealed via the in-app appeal flow (inbox > System Notifications > Account Updates > Appeal). If the automated appeal is denied, users can escalate to a live support chat via Report a Problem.",
+    "suggestedReply": "I can see this relates to a LIVE-specific penalty. Depending on the type — temporary suspension, permanent restriction, or a feature-specific limit like losing Gift access — access may restore automatically once a suspension period ends, or it can be appealed. To appeal, go to your inbox > System Notifications > Account Updates, open the relevant notification, and tap Appeal. I'm escalating this to our review team since penalty appeals need a manual look at the original violation before we can confirm next steps.",
+    "escalationRequired": true,
+    "escalationReason": "Penalty appeals require manual investigation of the original violation and cannot be auto-resolved."
+  }
+]
