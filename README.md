@@ -1,3 +1,6 @@
+![License](https://img.shields.io/github/license/HatemIsmailShalaby1979/live-support-assistant)
+![Release](https://img.shields.io/github/v/release/HatemIsmailShalaby1979/live-support-assistant)
+
 # LIVE Support Assistant
 
 > **A small, explainable support experience for TikTok LIVE help content.**
