@@ -1,44 +1,44 @@
 # LIVE Support Assistant
 
-A keyword-matching support bot for TikTok LIVE. Built in an afternoon, shipped as a portfolio piece.
+> **A small, explainable support experience for TikTok LIVE help content.**
 
-## What it does
+LIVE Support Assistant is a browser-based support prototype. It matches a viewer question against five public TikTok LIVE Help Center articles and returns the relevant policy with a ready-to-send response.
 
-Paste a viewer's question. Click "Find Answer." Get the matching help center policy and a ready-to-send reply.
+It deliberately uses simple, inspectable matching—no hidden AI, no backend, and no proprietary data.
 
-That's it. No AI, no magic — just keyword matching against 5 public TikTok LIVE help articles. Runs entirely in the browser.
+## Status
 
-## Run it
+- Portfolio prototype
+- Runs entirely in the browser
+- Public help content only
+- Not a production support system
+- No ticket IDs, internal SOPs, or private customer data
 
-```bash
-npm install
-npm run dev
-```
+## Run locally
 
-Opens at `http://localhost:5173`.
+    npm install
+    npm run dev
 
-## Build for production
+Build with npm run build. The output is written to dist/ for static hosting.
 
-```bash
-npm run build
-```
+## Why it belongs in the portfolio
 
-Output lands in `dist/` — drop it on GitHub Pages, Netlify, Vercel, whatever.
+This project demonstrates an important engineering judgment: start with the smallest useful system, keep behavior explainable, and add complexity only when the measured problem justifies it.
 
-## Why this exists
-
-Someone asked if I could build a support assistant. I said "sure" and built this to show how I'd approach it: simple, local, zero backend, explainable matching. Not a production system. A conversation starter.
+That principle continues into Helix Codex, where recommendations, evidence, approvals, and limitations remain visible to operators.
 
 ## Stack
 
-- React 19 + TypeScript 6
-- Vite 8
-- Tailwind CSS v4
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
 - Zero backend
 
-## Boundary
+## Related work
 
-Only public TikTok LIVE Help Center content goes in here. No internal SOPs, no ticket IDs, no proprietary anything.
+- [Helix Prime](https://github.com/HatemIsmailShalaby1979/Helix-Prime)
+- [Portfolio](https://github.com/HatemIsmailShalaby1979/HatemIsmailShalaby1979)
 
 ## License
 
