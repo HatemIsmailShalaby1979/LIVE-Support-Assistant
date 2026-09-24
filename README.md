@@ -1,14 +1,29 @@
+![License](https://img.shields.io/github/license/HatemIsmailShalaby1979/live-support-assistant)
+![Release](https://img.shields.io/github/v/release/HatemIsmailShalaby1979/live-support-assistant)
+
 # LIVE Support Assistant
 
 **Status: shipped public demo. Snapshot 2026-08-27.**
 
-Verified on 2026-08-27: the app runs from source with `npm run dev`, builds with `npm run build`, and matches five publicly available TikTok LIVE policy entries using keyword matching. Not verified: no client deployment, no production usage, and no revenue.
+Verified on 2026-08-27: the app runs from source with `npm run dev`, builds with
+`npm run build`, and matches five publicly available TikTok LIVE policy entries
+using keyword matching. Not verified: no client deployment, no production usage,
+and no revenue.
 
-LIVE Support Assistant is a component of **Helix Codex**. It is deliberately modest: a small, explainable support prototype, not a platform.
+LIVE Support Assistant is a component of **Helix Codex**. It is deliberately
+modest: a small, explainable support prototype, not a platform. It exists to
+demonstrate one engineering judgement. Start with the smallest useful system,
+keep the behaviour inspectable, and add complexity only when a measured problem
+justifies it.
 
-## Quick start
+## Download and run
+
+- [Download current source ZIP](https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant/archive/refs/heads/main.zip)
+- [View releases](https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant/releases)
 
 ### Run from source
+
+Install Node.js 20 or newer from [nodejs.org](https://nodejs.org/), then:
 
 ```bash
 npm install
@@ -17,13 +32,23 @@ npm run dev
 
 Opens at **http://localhost:5173**.
 
-### Build for production
+### Build a static download
 
 ```bash
 npm run build
 ```
 
-Output lands in `dist/` and can be deployed to any static host (GitHub Pages, Netlify, Vercel, and similar).
+Output lands in `dist/`. Serve it with either:
+
+```bash
+npx serve dist
+```
+
+```bash
+python -m http.server 8080 --directory dist
+```
+
+Open **http://localhost:8080**.
 
 ## What it does
 
@@ -33,9 +58,11 @@ Output lands in `dist/` and can be deployed to any static host (GitHub Pages, Ne
 4. It displays the matched policy, a suggested reply, and escalation status
 5. Copy the reply to clipboard with one click
 
-A message needs at least two keyword matches before an answer is returned. Below that threshold the assistant reports that it cannot find a confident match and asks for human review.
+A message needs at least two keyword matches before an answer is returned. Below
+that threshold the assistant reports that it cannot find a confident match and
+asks for human review.
 
-## Tech stack
+## Stack
 
 - React 19
 - TypeScript 6
@@ -45,13 +72,21 @@ A message needs at least two keyword matches before an answer is returned. Below
 
 ## Source boundary
 
-Only publicly available TikTok LIVE Help Center content belongs in this project. Do not add internal SOP codes, ticket-system references, team names, proprietary terminology, or proprietary data.
+Only publicly available TikTok LIVE Help Center content belongs in this project.
+Do not add internal SOP codes, ticket-system references, team names, proprietary
+terminology, or proprietary data.
 
 ## Honest boundary
 
-The assistant matches five policy entries and nothing more. It does not use a language model, it does not handle account-specific cases, and it is not connected to any ticketing system. Its answers can go stale because the policy text is copied by hand from public help-centre pages. It is a demonstration of a matching approach, not a support product.
+The assistant matches five policy entries and nothing more. It does not use a
+language model, it does not handle account-specific cases, and it is not connected
+to any ticketing system. Its answers can go stale because the policy text is
+copied by hand from public help-centre pages. It is a demonstration of a matching
+approach, not a support product.
 
-This is not a production deployment claim. There is no external audit, no certified data isolation, and no signed security review. No revenue has been realised.
+This is not a production deployment claim. There is no external audit, no
+certified data isolation, and no signed security review. No revenue has been
+realised.
 
 ## The founder's story
 
@@ -59,19 +94,19 @@ I spent twenty-eight years in contact-centre operations and workforce management
 Forecasting, scheduling, adherence, service levels, churn. The same problems
 appeared in every company I worked in, and none of the tools solved them properly.
 
-In April 2026 I left that career and started building full time — alone, and
-teaching myself to write software as I went. The first four tools were published
-six weeks later, in May and June 2026. Each one took a single operational problem
-and solved it properly. They were not impressive. They were correct.
+In April 2026 I left that career and started building full time, alone, teaching
+myself to write software as I went. The first four tools were published six weeks
+later, in May and June 2026. Each one took a single operational problem and solved
+it properly. They were not impressive. They were correct.
 
 Those four tools converged into one idea: **Helix Codex**, an accountable AI
 operating organization. Not an autonomous agent. An organization with a
 constitution, named roles with bounded authority, evidence trails, and a human at
 every consequential boundary. Helix Prime is its operations core.
 
-LIVE Support Assistant is a component of Helix Codex. It is maintained by one person, with no team and
-no funding. It has not been externally audited and it has not made revenue. Where
-it is unfinished, this document says so.
+LIVE Support Assistant is a component of Helix Codex. It is maintained by one
+person, with no team and no funding. It has not been externally audited and it has
+not made revenue. Where it is unfinished, this document says so.
 
 ## Related work
 
