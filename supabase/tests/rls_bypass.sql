@@ -21,6 +21,52 @@
 
 \set ON_ERROR_STOP off
 
+-- ---------------------------------------------------------------- fixtures ---
+--
+-- The seven principals below are addressed by name, not by literal UUID.
+--
+-- Locally the auth shim lets us choose those UUIDs, and the defaults here are the
+-- ones the seed inserts. A hosted project cannot: public.users.id references
+-- auth.users(id), that table belongs to GoTrue, and postgres has no CREATE on
+-- the auth schema, so the only supported way to get a row in there is the Auth
+-- Admin API — which assigns its own UUID. Hard-coded identifiers therefore mean
+-- the suite cannot run against the platform it ships to, which is the one place
+-- it most needs to run.
+--
+-- Override from the command line:
+--   psql -v alpha_ops=<uuid> -v alpha_editor=<uuid> ... -f <this file>
+-- tooling/db/verify-hosted.sh does exactly that, after provisioning the users.
+
+\if :{?alpha_ops}
+\else
+\set alpha_ops 'a0000000-0000-0000-0000-000000000001'
+\endif
+\if :{?alpha_editor}
+\else
+\set alpha_editor 'a0000000-0000-0000-0000-000000000002'
+\endif
+\if :{?alpha_lead}
+\else
+\set alpha_lead 'a0000000-0000-0000-0000-000000000003'
+\endif
+\if :{?alpha_agent}
+\else
+\set alpha_agent 'a0000000-0000-0000-0000-000000000004'
+\endif
+\if :{?alpha_auditor}
+\else
+\set alpha_auditor 'a0000000-0000-0000-0000-000000000005'
+\endif
+\if :{?beta_ops}
+\else
+\set beta_ops 'b0000000-0000-0000-0000-000000000001'
+\endif
+\if :{?beta_agent}
+\else
+\set beta_agent 'b0000000-0000-0000-0000-000000000002'
+\endif
+
+
 drop table if exists bypass_results;
 
 create table bypass_results (
@@ -89,12 +135,12 @@ begin
       v_observed := 'rows:' || v_rows;
     exception
       when insufficient_privilege then v_observed := 'denied:privilege';
-      when others then v_observed := 'error:' || sqlstate;
+      when others then v_observed := 'error:' || sqlstate || ' ' || sqlerrm;
     end;
 
     execute 'reset role';
   exception
-    when others then v_observed := 'probe_failure:' || sqlstate;
+    when others then v_observed := 'probe_failure:' || sqlstate || ' ' || sqlerrm;
   end;
 
   insert into bypass_results (section, role_name, object_name, operation, expected, observed, ok)
@@ -102,7 +148,7 @@ begin
     p_section, coalesce(p_role::text, 'anonymous'), p_object, p_operation, p_expect, v_observed,
     case
       when p_expect = 'allowed' then v_observed like 'rows:%' and v_observed <> 'rows:0'
-      when p_denial is not null then v_observed = p_denial
+      when p_denial is not null then v_observed like p_denial || '%'
       else v_observed = 'rows:0' or v_observed like 'denied:%' or v_observed like 'error:%'
     end
   );
@@ -137,14 +183,14 @@ begin
         v_observed := 'denied:privilege';
       when others then
         v_count := null;
-        v_observed := 'error:' || sqlstate;
+        v_observed := 'error:' || sqlstate || ' ' || sqlerrm;
     end;
 
     execute 'reset role';
   exception
     when others then
       v_count := null;
-      v_observed := 'probe_failure:' || sqlstate;
+      v_observed := 'probe_failure:' || sqlstate || ' ' || sqlerrm;
   end;
 
   insert into bypass_results (section, role_name, object_name, operation, expected, observed, ok)
@@ -178,14 +224,14 @@ begin
     exception
       when others then
         v_count := null;
-        v_observed := 'error:' || sqlstate;
+        v_observed := 'error:' || sqlstate || ' ' || sqlerrm;
     end;
 
     execute 'reset role';
   exception
     when others then
       v_count := null;
-      v_observed := 'probe_failure:' || sqlstate;
+      v_observed := 'probe_failure:' || sqlstate || ' ' || sqlerrm;
   end;
 
   insert into bypass_results (section, role_name, object_name, operation, expected, observed, ok)
@@ -231,23 +277,23 @@ select b_probe('no tenant claim', null, null, null,
 -- scopes the body. Each one is probed with another tenant's id.
 
 select b_read('function argument abuse', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'app.enrolled_devices',
   $q$ select 1 from app.enrolled_devices('11111111-1111-1111-1111-111111111111') $q$,
   0);
 
 select b_probe('function argument abuse', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'app.publish_policy_bundle', 'publish into another tenant',
   $q$ select app.publish_policy_bundle('11111111-1111-1111-1111-111111111111', 'm', 's',
         'Xenova/all-MiniLM-L6-v2', '751bff37', 'q8', '\x00'::bytea,
-        'b0000000-0000-0000-0000-000000000001') $q$,
+        '$q$ || :'beta_ops' || $q$') $q$,
   'blocked');
 
 -- next_bundle_version leaks nothing even when aimed at another tenant: the body
 -- reads policy_bundles through RLS, so it sees no foreign rows and returns 1.
 select b_read('function argument abuse', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'app.next_bundle_version',
   $q$ select app.next_bundle_version('11111111-1111-1111-1111-111111111111') = 1 $q$,
   1);
@@ -268,34 +314,34 @@ end $$;
 
 -- Positive control: Alpha's own ops manager sees the marker.
 select b_read('dashboard view leakage', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'ops_escalation_dashboard',
   $q$ select 1 from app.ops_escalation_dashboard where model_id = 'leak-marker-model' $q$,
   1);
 
 -- The attack: Beta must not see it.
 select b_read('dashboard view leakage', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'ops_escalation_dashboard',
   $q$ select 1 from app.ops_escalation_dashboard where model_id = 'leak-marker-model' $q$,
   0);
 
 select b_read('dashboard view leakage', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'ops_gate_funnel',
   $q$ select 1 from app.ops_gate_funnel
         where tenant_id = '11111111-1111-1111-1111-111111111111' $q$,
   0);
 
 select b_read('dashboard view leakage', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'ops_threshold_changes',
   $q$ select 1 from app.ops_threshold_changes
         where tenant_id = '11111111-1111-1111-1111-111111111111' $q$,
   0);
 
 select b_probe('ingest write boundary', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'telemetry_events', 'direct telemetry insert',
   $q$ insert into telemetry_events (
        id, tenant_id, user_pseudonym, event_type, bundle_version, occurred_at, payload
@@ -306,14 +352,14 @@ select b_probe('ingest write boundary', 'agent',
   'blocked', 'denied:privilege');
 
 select b_probe('ingest write boundary', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'telemetry_ingest_dedup', 'pre-claim event id',
   $q$ insert into telemetry_ingest_dedup (id, tenant_id)
      values (gen_random_uuid(), '11111111-1111-1111-1111-111111111111') $q$,
   'blocked', 'denied:privilege');
 
 select b_probe('ingest write boundary', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'escalations', 'direct escalation insert',
   $q$ insert into escalations (tenant_id, query_event_id, query_occurred_at, evidence)
      values (
@@ -323,47 +369,47 @@ select b_probe('ingest write boundary', 'agent',
   'blocked', 'denied:privilege');
 
 select b_probe('ingest write boundary', 'team_lead',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000003',
+  '11111111-1111-1111-1111-111111111111', :'alpha_lead',
   'escalations', 'rewrite immutable evidence',
   $q$ update escalations set evidence = '{"forged":true}'::jsonb
       where id = 'ab000000-0000-0000-0000-000000000001' $q$,
   'blocked', 'denied:privilege');
 
 select b_probe('ingest write boundary', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'escalations', 'rewrite immutable provenance',
   $q$ update escalations set query_event_id = gen_random_uuid()
       where id = 'ab000000-0000-0000-0000-000000000001' $q$,
   'blocked', 'denied:privilege');
 
 select b_probe('ingest write boundary', 'team_lead',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000003',
+  '11111111-1111-1111-1111-111111111111', :'alpha_lead',
   'escalations', 'assign foreign-tenant user',
-  $q$ update escalations set assigned_to = 'b0000000-0000-0000-0000-000000000002'
+  $q$ update escalations set assigned_to = '$q$ || :'beta_agent' || $q$'
       where id = 'ab000000-0000-0000-0000-000000000001' $q$,
   'blocked', 'error:23503');
 
 select b_probe('ingest write boundary', 'team_lead',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000003',
+  '11111111-1111-1111-1111-111111111111', :'alpha_lead',
   'escalations', 'link foreign-tenant SOP version',
   $q$ update escalations set linked_sop_version = 'e0000000-0000-0000-0000-000000000002'
       where id = 'ab000000-0000-0000-0000-000000000001' $q$,
   'blocked', 'error:23503');
 
 select b_probe('ingest write boundary', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'tenant_threshold_changes', 'forge threshold audit row',
   $q$ insert into tenant_threshold_changes (
        tenant_id, previous_threshold, new_threshold,
        previous_min_margin, new_min_margin, changed_by
      ) values (
        '11111111-1111-1111-1111-111111111111', 0, 0.1, 0.15, 0.01,
-       'a0000000-0000-0000-0000-000000000004'
+       '$q$ || :'alpha_agent' || $q$'
      ) $q$,
   'blocked', 'denied:privilege');
 
 select b_probe('ingest write boundary', 'auditor',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000005',
+  '11111111-1111-1111-1111-111111111111', :'alpha_auditor',
   'app.ingest_escalation', 'auditor calls ingest function',
   $q$ select app.ingest_escalation(gen_random_uuid(),
         'aa000000-0000-0000-0000-000000000001', '2026-09-20 10:00:00+00',
@@ -384,38 +430,38 @@ end $$;
 
 -- Positive control: Alpha's ops manager revokes its own key version.
 select b_probe('key rotation surfaces', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'app.revoke_tenant_key', 'revoke own wrapping key version 1',
   $q$ select app.revoke_tenant_key('11111111-1111-1111-1111-111111111111', 'wrapping', 1) $q$,
   'allowed');
 
 -- The attacks, each of which must be refused.
 select b_probe('key rotation surfaces', 'sop_editor',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000002',
+  '11111111-1111-1111-1111-111111111111', :'alpha_editor',
   'app.revoke_tenant_key', 'editor revokes a key',
   $q$ select app.revoke_tenant_key('11111111-1111-1111-1111-111111111111', 'wrapping', 1) $q$,
   'blocked');
 
 select b_probe('key rotation surfaces', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'app.revoke_tenant_key', 'revoke another tenant''s key',
   $q$ select app.revoke_tenant_key('11111111-1111-1111-1111-111111111111', 'wrapping', 1) $q$,
   'blocked');
 
 select b_probe('key rotation surfaces', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'app.revoke_tenant_key', 'revoke with an unknown kind',
   $q$ select app.revoke_tenant_key('11111111-1111-1111-1111-111111111111', 'master', 1) $q$,
   'blocked');
 
 select b_probe('key rotation surfaces', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'app.revoke_tenant_key', 'revoke a version that does not exist',
   $q$ select app.revoke_tenant_key('11111111-1111-1111-1111-111111111111', 'wrapping', 99) $q$,
   'blocked');
 
 select b_probe('key rotation surfaces', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'tenant_key_versions', 'agent records a key version',
   $q$ insert into tenant_key_versions (tenant_id, kind, version, public_key)
        values ('11111111-1111-1111-1111-111111111111', 'signing', 1, 'forged') $q$,
@@ -423,7 +469,7 @@ select b_probe('key rotation surfaces', 'agent',
 
 -- And the revocation actually happened, once.
 select b_read('key rotation surfaces', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'tenant_key_versions',
   $q$ select 1 from tenant_key_versions
         where tenant_id = '11111111-1111-1111-1111-111111111111'
@@ -436,7 +482,7 @@ select b_read('key rotation surfaces', 'ops_manager',
 -- Creating one must be impossible for the API role.
 
 select b_probe('schema object planting', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'schema app', 'create function in app schema',
   $q$ create function app.bypass_probe() returns void language sql as $$ select 1 $$ $q$,
   'blocked');
@@ -485,7 +531,7 @@ where n.nspname = 'public'
 
 -- Direct UPDATE bypass attempt on the ledger, even by an ops manager.
 select b_probe('privilege escalation', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'tenant_key_versions', 'un-revoke a key version directly',
   $q$ update tenant_key_versions set revoked_at = null
        where tenant_id = '11111111-1111-1111-1111-111111111111' $q$,

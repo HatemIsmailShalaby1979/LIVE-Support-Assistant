@@ -20,7 +20,14 @@ this first in any new session; update it at the end of every completed step.
 | `packages/sync` | `@sop/sync` — encrypted bundle protocol: canonical JSON, crypto, install pipeline, server publish |
 | `tooling/eval` | Parity harness, golden set, retrieval evaluation |
 | `tooling/sync` | `verify-sync.mjs` — the 31-check sync verification |
-| `tooling/db` | `verify-phase2.sh` — brings up PostgreSQL, applies everything, runs the RBAC matrix |
+| `tooling/db` | `verify-phase7.sh` — brings up PostgreSQL, applies everything, runs all three SQL suites. `verify-phase2.sh` and `verify-phase5.sh` are subsets of it, kept for focused reruns |
+| `tooling/run-verification.mjs` | **The gate.** Runs all six JS harnesses and requires both exit 0 and each suite's own verdict line |
+| `tooling/audit-gate.mjs` | Dependency gate: fails on new or escalated advisories vs `tooling/audit-baseline.json` |
+| `tooling/db/verify-hosted.sh` | Runs all three SQL suites against a real Supabase project over the session pooler, and removes the probe functions afterwards |
+| `tooling/db/provision-hosted-fixtures.mjs` | Creates the seven fixture principals through the Auth Admin API, because a hosted project will not let us choose their UUIDs |
+| `.github/workflows/ci.yml` | Four required jobs: workspace, database, desktop, audit |
+| `supabase/config.toml` | CLI project config. Note `app` is listed in the exposed schemas, without which every RPC is unreachable |
+| `.env.example` | Environment contract. Two variables are read by code; the rest are reserved and labelled |
 | `docs` | System design documents |
 | `supabase` | `migrations/`, `seed/`, `tests/` — the Command Center schema and its RBAC matrix. Edge functions are Phase 3/5. |
 
@@ -585,3 +592,171 @@ or telemetry transport, automatic flush scheduler, tenant query-text policy,
 device-key persistence, Command Center UI, packaged desktop installer, native
 mobile build, or packaged offline model. The 0.18 margin is a conservative
 prototype starting point, not a tenant-calibrated constant.
+
+## Production-readiness audit and slice 1 — 2026-09-25
+
+**Audit verdict: NO-GO.** Not a near-miss. Every phase above is a *component*
+completion and each says so honestly in its own record; what never existed was
+the word **integrated**. Four independent reviews (architecture, security,
+operations, product) reached the same verdict, and one fact settles it: a grep
+for `fetch(`, `supabase`, `createClient`, `Authorization`, `Bearer`,
+`EventSource` and `WebSocket` across `apps/web/src` returns **no matches**. The
+shipped client cannot reach a server, cannot know a tenant exists, and writes
+query text and escalation evidence to `localStorage`. `packages/sync` and the
+whole hardened schema are unreachable from the product. The phase table's
+"complete" values must never be read as "the product works".
+
+**Estimated remaining work: 43–67 person-days, ~9–13 weeks** for one engineer
+familiar with the codebase, Supabase chosen, no compliance certification in
+scope. Earliest honest pilot with real customer data: **8–10 weeks**. The full
+blocker list and the roadmap live in the audit report, not here.
+
+**Executed (slice 1).** CI plus the gate it runs, plus an environment contract.
+
+1. **`tooling/run-verification.mjs` — the gate.** Runs all six JS harnesses in
+   one command, sequentially, and requires **two independent signals per
+   suite**: exit 0 *and* the suite's own verdict line. That second condition is
+   the repo's own pattern from `verify-phase2.sh`, and it catches the one case a
+   `&&` chain waves through — a suite that exits 0 while reporting failures. A
+   preflight refuses to run before `pnpm build` and says so, instead of emitting
+   a module resolution error. `semantic-eval` and `reranker-sanity` are
+   deliberately excluded: they measure rather than assert, they are the
+   experiments already recorded as rejected, and a number that moves is not a
+   regression.
+2. **`tooling/audit-gate.mjs` + `tooling/audit-baseline.json`.** The workspace
+   carries **36 production advisories (1 critical, 25 high, 9 moderate, 1 low),
+   every one reachable only through `apps/mobile` → `expo`**. Clearing them
+   belongs with the packaging work; what was needed now was a gate that stops
+   the number from getting worse. It fails on any **new** advisory or any
+   **severity escalation** by rank, and never on a resolved one, so the
+   baseline needs no edit as the count drops. Keyed on `github_advisory_id`,
+   never on affected paths — pnpm reports those OS-dependently
+   (`apps__mobile>expo` on Linux, backslashes on Windows) and a per-platform
+   baseline teaches people to ignore gates. Delete the baseline when the count
+   reaches zero and the gate becomes strict with no code change.
+3. **`.github/workflows/ci.yml`** — four required jobs: `workspace`
+   (lint, typecheck, build, the gate, model cache keyed on the pinned revision
+   sha), `database` (`verify-phase7.sh`: 99 + 17 + 40 probes), `desktop` (Rust
+   link with Tauri's documented Linux system libraries, which are a real
+   prerequisite, not ceremony), `audit`. No deploy job and no release artifact:
+   there is no transport to deploy, so that stage would be decoration.
+4. **`.env.example`** — the honest version. Two variables are read by code
+   today (`EXPO_PUBLIC_ENGINE_ORIGIN`, `SOP_SKIP_COMPILE`). The Supabase
+   variables the transport slice will need are listed under an explicit
+   "NOT read by any code yet" heading, because a variable that is set but unread
+   is a false signal that a feature is configured.
+
+**Verified on this host, 2026-09-25.**
+
+1. `pnpm run verify` — **6 of 6 suites pass**: parity 25/0, sync 31/0,
+   persistence 19/0, rotation 13/0, gate 10/0, queue 30/0.
+2. `pnpm run verify:db` — **exit 0**: `RBAC MATRIX OK`, `PHASE5 OK`,
+   `RLS BYPASS SUITE OK` (7 sections, 40/40, zero failures).
+3. `pnpm run verify:all` — exit 0. The single local command that runs both
+   halves.
+4. `pnpm run audit` — exit 0, 36 advisories, 0 new, 0 escalated.
+
+**Both gates were made to fail on purpose.** A gate that has never failed is not
+evidence.
+
+- The audit gate was run against a deliberately broken baseline: one advisory
+  deleted and one severity downgraded. It reported `NEW GHSA-27p8-2357-5qqv
+  @xmldom/xmldom high` and `ESCALATED GHSA-2v35-w6hq-6mfw low -> high`, exited
+  1, and passed again once the baseline was restored.
+- The verification gate was run with one suite's expected verdict corrupted. It
+  reported `FAIL — exited 0 but never printed "..."` and exited 1, confirming
+  the verdict check fires on its own rather than only on a crash.
+- The runner's preflight was exercised from a directory with no build output and
+  exited 2 with the instruction to run `pnpm build`.
+
+**A trap found while proving it.** Adding a `test` task to `turbo.json` with
+`dependsOn: ["build"]` made `pnpm test` hang for three minutes: a bare `build`
+includes the package's *own* build, so `@sop/desktop`'s Rust link ran on every
+test invocation. The root script now filters that package
+(`--filter=!@sop/desktop`) and `pnpm test` completes in 34 ms from cache. If the
+filter is ever dropped, the task silently stops being cheap.
+
+**Honest gaps in this slice.**
+
+- **There are no unit tests.** `pnpm test` runs the workspace build and zero
+  test tasks, because no package defines one. It is a seam, not coverage.
+- **`tooling/` is not linted.** `pnpm lint` covers `apps/web` only, so the new
+  runner and gate are unlinted. Pre-existing, not introduced here.
+- **The CI workflow has never executed.** It is unproven YAML on a machine with
+  no GitHub remote. Every command it runs was proven individually on this host,
+  but the first real run is the first real run.
+- **The model weights are fetched from Hugging Face at CI time.** The revision
+  is pinned to a commit sha and the cache key encodes it, so a changed pin
+  cannot silently reuse stale weights — but a first CI run still depends on
+  Hugging Face being reachable.
+- **36 known advisories remain**, all in the unbuilt mobile tree. The gate stops
+  regression; it does not clear them.
+
+**Hosted half of slice 1, executed against project `lxlokqtowvaesxjishqz`.**
+
+All 13 migrations applied. The CLI's dry run parsed every file as a
+14-digit version, and `migration list` now reports `local == remote` for all 13
+with a second dry run answering `upToDate: true`. Schema equivalence with the
+container was then proved without a password, by dumping both and comparing
+object lists: **every** table, function, view, policy, index and constraint
+matches. The three `ops_*` views were checked individually rather than trusted
+from the diff, all carrying `security_invoker='true'`.
+
+**Three defects stood between that and a working hosted run**, none of them
+visible in a container:
+
+1. **The auth shim would have broken the platform.** `0001` used a bare
+   `create or replace function auth.jwt()`. Hosted, that function belongs to
+   GoTrue, and replacing it breaks PostgREST, realtime, and every policy calling
+   `auth.uid()` across the whole project. The first push failed with
+   `permission denied for schema auth (SQLSTATE 42501)` because `postgres` has
+   no CREATE on the `auth` schema — and `create table if not exists auth.users`
+   still demands the privilege, so the existence check has to happen *before* the
+   statement, not alongside it. The shim now installs nothing where the platform
+   already provides it, and the CLI rolled the failed migration back cleanly.
+2. **Every RPC would have 404'd.** `config.toml` exposed only `public` and
+   `graphql_public`, so the entire `app` function surface was unreachable.
+3. **The suites could not address a single user.** `public.users.id` references
+   `auth.users(id)`; hosted, that table can only be written through the Auth
+   Admin API, which assigns its own UUID. `set role supabase_auth_admin` is
+   denied and a chosen-UUID insert is refused, both proven rather than assumed.
+   So 129 hard-coded UUIDs became injectable psql variables, and the 7 that sit
+   inside plpgsql bodies became email lookups, because a dollar-quoted body is
+   the one place psql expands nothing.
+
+**Verified on the hosted project, twice in a row, 156 probes and 0 failures:**
+RBAC 99/0, Phase 5 17/0, RLS bypass 40/0. `tenant isolation` 12/12 and
+`privilege audit` 34/34 — the two hardest guarantees — hold unchanged against
+GoTrue's real auth. A `db push` creates the seven principals; the suites then
+assert claims directly, so nothing ever authenticates as them.
+
+**Three things the platform taught us, none of which a container could:**
+
+- Supabase installs its own `public.rls_auto_enable()` event trigger that enables
+  RLS on new `public` tables, so ours are protected twice over.
+- The suites are **not** self-contained: run without the seed applied
+  immediately before, five probes fail on leftover state. The gate is green
+  because both harnesses seed first, and `verify-hosted.sh` re-seeds before
+  *each* suite. A green verdict with fewer probes is the failure mode to watch
+  for, and it happened here during the refactor — a suite reporting OK on 79 of
+  99 probes because whole sections had silently produced no rows.
+- The probe helpers are a live exposure if left behind. `rbac_probe` runs
+  `execute p_sql` on a caller-supplied string and sets the role itself, and
+  Supabase grants EXECUTE on new `public` functions to `anon` — so a leftover
+  helper means anyone with the anon key can run SQL as `authenticated`.
+  `verify-hosted.sh` drops all ten helpers and three result tables afterwards,
+  and warns loudly with a detection query if that ever fails.
+
+**Two bugs were mine, and both are now permanent tests of the harness itself.**
+`verify-hosted.sh` filtered output with a case-sensitive grep, hiding every probe
+row and the uppercase `FAILED` verdict, so it reported "no verdict line" while
+the suite had reported 12 failures; it now prints everything on failure. And
+recording only `sqlstate` made four FK failures indistinguishable, so the
+helpers now record `sqlerrm` too, which named the constraint and exposed a
+default UUID leaking past an override.
+
+**Still unverified.** No auth client and no transport, so none of this is
+reachable from the product yet; the hosted database holds fixture data and
+throwaway auth principals; the `app` schema is exposed but nothing calls it.
+The CI workflow still has never executed.
+

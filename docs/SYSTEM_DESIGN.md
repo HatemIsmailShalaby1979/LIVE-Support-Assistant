@@ -686,12 +686,12 @@ container; nothing in this section is a description of intended behaviour.
 
 | Path | Contents |
 |---|---|
-| `supabase/migrations/0001_local_auth_shim.sql` | `auth.jwt()` / `auth.uid()` / `auth.users`, so Supabase policy text runs verbatim on plain PostgreSQL |
-| `supabase/migrations/0002_tenancy_rbac.sql` | tenants, users, device registrations, `app_role`, claim helpers |
-| `supabase/migrations/0003_sop_lifecycle.sql` | sops, sop_versions, policy_bundles, device_bundle_acks, monotonic version trigger |
-| `supabase/migrations/0004_telemetry.sql` | partitioned telemetry, escalations |
-| `supabase/migrations/0005_rls_policies.sql` | row-level security for all nine tables |
-| `supabase/migrations/0006_grants.sql` | table privileges — the append-only guarantee |
+| `supabase/migrations/20260925000100_local_auth_shim.sql` | `auth.jwt()` / `auth.uid()` / `auth.users`, so Supabase policy text runs verbatim on plain PostgreSQL |
+| `supabase/migrations/20260925000200_tenancy_rbac.sql` | tenants, users, device registrations, `app_role`, claim helpers |
+| `supabase/migrations/20260925000300_sop_lifecycle.sql` | sops, sop_versions, policy_bundles, device_bundle_acks, monotonic version trigger |
+| `supabase/migrations/20260925000400_telemetry.sql` | partitioned telemetry, escalations |
+| `supabase/migrations/20260925000500_rls_policies.sql` | row-level security for all nine tables |
+| `supabase/migrations/20260925000600_grants.sql` | table privileges — the append-only guarantee |
 | `supabase/tests/rbac_matrix.sql` | 59 probes across 7 sections |
 | `tooling/db/verify-phase2.sh` | drops the database, reapplies everything, runs the matrix |
 
@@ -939,7 +939,7 @@ and against a client already serving a bundle.
 
 ### Database half
 
-Migration `0008_bundle_publish.sql` adds `app.next_bundle_version`,
+Migration `20260925000800_bundle_publish.sql` adds `app.next_bundle_version`,
 `app.enrolled_devices` and `app.publish_policy_bundle`. The version helper is not
 atomic on its own and does not need to be: the trigger from `0003` rejects any
 version that is not exactly max + 1, so concurrent publishers produce one success
@@ -1013,7 +1013,7 @@ only and never presents them as delivered.
 
 ### Migration 0009 — threshold change is audited
 
-Migration `0009_threshold_audit.sql` adds `tenant_threshold_changes` and the
+Migration `20260925000900_threshold_audit.sql` adds `tenant_threshold_changes` and the
 `app.audit_threshold_change()` trigger on `tenants`. The gate parameters decide how
 much the system answers versus hands to a human; a silent `min_margin` change is
 indistinguishable from a sudden quality collapse, so every change is recorded with
@@ -1089,7 +1089,7 @@ manager uses to decide whether to recalibrate the gate.
 
 ### The server half — idempotent, integrity-checked, audited
 
-Migration `0010_escalation_ingest.sql`:
+Migration `20260925001000_escalation_ingest.sql`:
 
 - `app.ingest_escalation(p_escalation_id, p_query_event_id, p_query_occurred_at, p_evidence)` —
   SECURITY DEFINER, so a frontline agent can file an escalation without being
@@ -1211,7 +1211,7 @@ Phase 3's gap: removing a device stopped future wrapping but did not re-key the
 tenant, so a removed device read every bundle it held, forever.
 `rotateTenantKeys` (`packages/sync/src/rotation.ts`) closes it: a fresh tenant
 wrapping keypair, a fresh content key, wrapping only for the devices that keep
-access. Migration `0011_tenant_key_versions.sql` adds the audit ledger — public
+access. Migration `20260925001100_tenant_key_versions.sql` adds the audit ledger — public
 material only, revocation only through `app.revoke_tenant_key` (ops-manager
 only), the table append-only by privilege.
 
@@ -1239,7 +1239,7 @@ Beta's ops manager read Alpha's escalations through
 `app.ops_gate_funnel`, and Alpha's threshold changes through
 `app.ops_threshold_changes`.
 
-Migration `0012_security_invoker_views.sql` recreates all three with
+Migration `20260925001200_security_invoker_views.sql` recreates all three with
 `security_invoker = true` (the option cannot be changed by CREATE OR REPLACE,
 so each view is dropped and recreated identically). The bypass suite now
 observes zero foreign rows.
@@ -1265,7 +1265,7 @@ dedup transaction. `app.ingest_escalation` was `SECURITY DEFINER` but did not
 check the caller's role, so an auditor could insert through a function whose table
 policy correctly excluded auditors.
 
-Migration `0013_ingest_write_boundary.sql` makes the intended boundaries
+Migration `20260925001300_ingest_write_boundary.sql` makes the intended boundaries
 mechanical:
 
 1. direct `INSERT` on telemetry, the dedup ledger, escalations, and threshold

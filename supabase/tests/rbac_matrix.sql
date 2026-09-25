@@ -19,6 +19,52 @@
 
 \set ON_ERROR_STOP off
 
+-- ---------------------------------------------------------------- fixtures ---
+--
+-- The seven principals below are addressed by name, not by literal UUID.
+--
+-- Locally the auth shim lets us choose those UUIDs, and the defaults here are the
+-- ones the seed inserts. A hosted project cannot: public.users.id references
+-- auth.users(id), that table belongs to GoTrue, and postgres has no CREATE on
+-- the auth schema, so the only supported way to get a row in there is the Auth
+-- Admin API — which assigns its own UUID. Hard-coded identifiers therefore mean
+-- the suite cannot run against the platform it ships to, which is the one place
+-- it most needs to run.
+--
+-- Override from the command line:
+--   psql -v alpha_ops=<uuid> -v alpha_editor=<uuid> ... -f <this file>
+-- tooling/db/verify-hosted.sh does exactly that, after provisioning the users.
+
+\if :{?alpha_ops}
+\else
+\set alpha_ops 'a0000000-0000-0000-0000-000000000001'
+\endif
+\if :{?alpha_editor}
+\else
+\set alpha_editor 'a0000000-0000-0000-0000-000000000002'
+\endif
+\if :{?alpha_lead}
+\else
+\set alpha_lead 'a0000000-0000-0000-0000-000000000003'
+\endif
+\if :{?alpha_agent}
+\else
+\set alpha_agent 'a0000000-0000-0000-0000-000000000004'
+\endif
+\if :{?alpha_auditor}
+\else
+\set alpha_auditor 'a0000000-0000-0000-0000-000000000005'
+\endif
+\if :{?beta_ops}
+\else
+\set beta_ops 'b0000000-0000-0000-0000-000000000001'
+\endif
+\if :{?beta_agent}
+\else
+\set beta_agent 'b0000000-0000-0000-0000-000000000002'
+\endif
+
+
 drop table if exists rbac_results;
 
 create table rbac_results (
@@ -78,12 +124,12 @@ begin
       v_observed := 'rows:' || v_rows;
     exception
       when insufficient_privilege then v_observed := 'denied:privilege';
-      when others then v_observed := 'error:' || sqlstate;
+      when others then v_observed := 'error:' || sqlstate || ' ' || sqlerrm;
     end;
 
     execute 'reset role';
   exception
-    when others then v_observed := 'probe_failure:' || sqlstate;
+    when others then v_observed := 'probe_failure:' || sqlstate || ' ' || sqlerrm;
   end;
 
   insert into rbac_results (section, role_name, object_name, operation, expected, observed, ok)
@@ -126,14 +172,14 @@ begin
         v_observed := 'denied:privilege';
       when others then
         v_count := null;
-        v_observed := 'error:' || sqlstate;
+        v_observed := 'error:' || sqlstate || ' ' || sqlerrm;
     end;
 
     execute 'reset role';
   exception
     when others then
       v_count := null;
-      v_observed := 'probe_failure:' || sqlstate;
+      v_observed := 'probe_failure:' || sqlstate || ' ' || sqlerrm;
   end;
 
   insert into rbac_results (section, role_name, object_name, operation, expected, observed, ok)
@@ -151,59 +197,59 @@ $$;
 \o /dev/null
 
 select rbac_probe_read('tenant isolation', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'sops', $q$ select 1 from sops where tenant_id = '11111111-1111-1111-1111-111111111111' $q$, 0);
 
 select rbac_probe_read('tenant isolation', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'sop_versions', $q$ select 1 from sop_versions where tenant_id = '11111111-1111-1111-1111-111111111111' $q$, 0);
 
 select rbac_probe_read('tenant isolation', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'policy_bundles', $q$ select 1 from policy_bundles where tenant_id = '11111111-1111-1111-1111-111111111111' $q$, 0);
 
 select rbac_probe_read('tenant isolation', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'telemetry_events', $q$ select 1 from telemetry_events where tenant_id = '11111111-1111-1111-1111-111111111111' $q$, 0);
 
 select rbac_probe_read('tenant isolation', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'escalations', $q$ select 1 from escalations where tenant_id = '11111111-1111-1111-1111-111111111111' $q$, 0);
 
 select rbac_probe_read('tenant isolation', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'users', $q$ select 1 from users where tenant_id = '11111111-1111-1111-1111-111111111111' $q$, 0);
 
 select rbac_probe_read('tenant isolation', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'device_registrations', $q$ select 1 from device_registrations where tenant_id = '11111111-1111-1111-1111-111111111111' $q$, 0);
 
 select rbac_probe_read('tenant isolation', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'tenants', $q$ select 1 from tenants where id = '11111111-1111-1111-1111-111111111111' $q$, 0);
 
 -- Cross-tenant writes.
 select rbac_probe('tenant isolation', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'sops', 'update other tenant',
   $q$ update sops set title = 'hijacked' where tenant_id = '11111111-1111-1111-1111-111111111111' $q$,
   'blocked');
 
 select rbac_probe('tenant isolation', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'sops', 'insert into other tenant',
   $q$ insert into sops (tenant_id, title) values ('11111111-1111-1111-1111-111111111111', 'injected') $q$,
   'blocked');
 
 select rbac_probe('tenant isolation', 'agent',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000002',
+  '22222222-2222-2222-2222-222222222222', :'beta_agent',
   'telemetry_events', 'insert for other tenant',
   $q$ insert into telemetry_events (id, tenant_id, user_pseudonym, event_type, occurred_at, payload)
      values (gen_random_uuid(), '11111111-1111-1111-1111-111111111111', 'p', 'query', now(), '{}'::jsonb) $q$,
   'blocked');
 
 select rbac_probe('tenant isolation', 'ops_manager',
-  '22222222-2222-2222-2222-222222222222', 'b0000000-0000-0000-0000-000000000001',
+  '22222222-2222-2222-2222-222222222222', :'beta_ops',
   'escalations', 'update other tenant',
   $q$ update escalations set status = 'resolved' where tenant_id = '11111111-1111-1111-1111-111111111111' $q$,
   'blocked');
@@ -211,63 +257,63 @@ select rbac_probe('tenant isolation', 'ops_manager',
 -- ============================== SOP content roles ==========================
 
 select rbac_probe('sop content roles', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'sops', 'insert',
   $q$ insert into sops (tenant_id, title) values ('11111111-1111-1111-1111-111111111111', 'Ops authored') $q$,
   'allowed');
 
 select rbac_probe('sop content roles', 'sop_editor',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000002',
+  '11111111-1111-1111-1111-111111111111', :'alpha_editor',
   'sops', 'insert',
   $q$ insert into sops (tenant_id, title) values ('11111111-1111-1111-1111-111111111111', 'Editor authored') $q$,
   'allowed');
 
 select rbac_probe('sop content roles', 'team_lead',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000003',
+  '11111111-1111-1111-1111-111111111111', :'alpha_lead',
   'sops', 'insert',
   $q$ insert into sops (tenant_id, title) values ('11111111-1111-1111-1111-111111111111', 'Lead authored') $q$,
   'blocked');
 
 select rbac_probe('sop content roles', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'sops', 'insert',
   $q$ insert into sops (tenant_id, title) values ('11111111-1111-1111-1111-111111111111', 'Agent authored') $q$,
   'blocked');
 
 select rbac_probe('sop content roles', 'auditor',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000005',
+  '11111111-1111-1111-1111-111111111111', :'alpha_auditor',
   'sops', 'insert',
   $q$ insert into sops (tenant_id, title) values ('11111111-1111-1111-1111-111111111111', 'Auditor authored') $q$,
   'blocked');
 
 select rbac_probe('sop content roles', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'sops', 'update',
   $q$ update sops set title = 'agent edited' where id = 'c0000000-0000-0000-0000-000000000001' $q$,
   'blocked');
 
 select rbac_probe('sop content roles', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'sops', 'delete',
   $q$ delete from sops where id = 'c0000000-0000-0000-0000-000000000001' $q$,
   'blocked');
 
 select rbac_probe('sop content roles', 'sop_editor',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000002',
+  '11111111-1111-1111-1111-111111111111', :'alpha_editor',
   'sop_versions', 'insert',
   $q$ insert into sop_versions (sop_id, tenant_id, version, body_ciphertext, body_hash, created_by)
      values ('c0000000-0000-0000-0000-000000000001', '11111111-1111-1111-1111-111111111111', 2,
-             '\x00'::bytea, 'hash-alpha-2', 'a0000000-0000-0000-0000-000000000002') $q$,
+             '\x00'::bytea, 'hash-alpha-2', '$q$ || :'alpha_editor' || $q$') $q$,
   'allowed');
 
 select rbac_probe('sop content roles', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'sop_versions', 'update published version',
   $q$ update sop_versions set body_hash = 'tampered' where id = 'e0000000-0000-0000-0000-000000000001' $q$,
   'blocked');
 
 select rbac_probe('sop content roles', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'sop_versions', 'delete version',
   $q$ delete from sop_versions where id = 'e0000000-0000-0000-0000-000000000001' $q$,
   'blocked');
@@ -275,38 +321,38 @@ select rbac_probe('sop content roles', 'agent',
 -- ============================== bundle publishing ==========================
 
 select rbac_probe('bundle publishing', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'policy_bundles', 'publish version 2',
   $q$ insert into policy_bundles (tenant_id, bundle_version, manifest_hash, signature,
        model_id, model_revision, quantization, payload_ciphertext, published_by)
      values ('11111111-1111-1111-1111-111111111111', 2, 'm2', 's2',
              'Xenova/all-MiniLM-L6-v2', '751bff37', 'q8', '\x00'::bytea,
-             'a0000000-0000-0000-0000-000000000001') $q$,
+             '$q$ || :'alpha_ops' || $q$') $q$,
   'allowed');
 
 select rbac_probe('bundle publishing', 'sop_editor',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000002',
+  '11111111-1111-1111-1111-111111111111', :'alpha_editor',
   'policy_bundles', 'publish',
   $q$ insert into policy_bundles (tenant_id, bundle_version, manifest_hash, signature,
        model_id, model_revision, quantization, payload_ciphertext, published_by)
      values ('11111111-1111-1111-1111-111111111111', 3, 'm3', 's3',
              'Xenova/all-MiniLM-L6-v2', '751bff37', 'q8', '\x00'::bytea,
-             'a0000000-0000-0000-0000-000000000002') $q$,
+             '$q$ || :'alpha_editor' || $q$') $q$,
   'blocked');
 
 -- The monotonic guard: version 9 when the tenant's maximum is 2.
 select rbac_probe('bundle publishing', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'policy_bundles', 'publish non-monotonic version 9',
   $q$ insert into policy_bundles (tenant_id, bundle_version, manifest_hash, signature,
        model_id, model_revision, quantization, payload_ciphertext, published_by)
      values ('11111111-1111-1111-1111-111111111111', 9, 'm9', 's9',
              'Xenova/all-MiniLM-L6-v2', '751bff37', 'q8', '\x00'::bytea,
-             'a0000000-0000-0000-0000-000000000001') $q$,
+             '$q$ || :'alpha_ops' || $q$') $q$,
   'blocked');
 
 select rbac_probe('bundle publishing', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'policy_bundles', 'rewrite published bundle',
   $q$ update policy_bundles set manifest_hash = 'rewritten' where id = 'f0000000-0000-0000-0000-000000000001' $q$,
   'blocked');
@@ -318,13 +364,17 @@ select rbac_probe('bundle publishing', 'ops_manager',
 do $$
 declare
   v_tenant  uuid := '11111111-1111-1111-1111-111111111111';
-  v_ops     uuid := 'a0000000-0000-0000-0000-000000000001';
-  v_editor  uuid := 'a0000000-0000-0000-0000-000000000002';
+  v_ops     uuid;
+  v_editor  uuid;
   v_version bigint;
   v_observed text;
   v_own_devices bigint;
   v_foreign_devices bigint;
 begin
+  -- Resolved by email: a dollar-quoted body, so psql expands nothing inside it,
+  -- and a hosted project cannot choose these UUIDs. See the preamble.
+  select id into v_ops from auth.users where email = 'ops@alpha.example';
+  select id into v_editor from auth.users where email = 'editor@alpha.example';
   perform rbac_claims('ops_manager', v_tenant, v_ops);
   execute 'set local role authenticated';
 
@@ -369,7 +419,7 @@ begin
       '\x00'::bytea, v_editor);
     v_observed := 'allowed';
   exception
-    when others then v_observed := 'error:' || sqlstate;
+    when others then v_observed := 'error:' || sqlstate || ' ' || sqlerrm;
   end;
 
   execute 'reset role';
@@ -385,7 +435,7 @@ exception when others then
 
   insert into rbac_results (section, role_name, object_name, operation, expected, observed, ok)
   values ('bundle publish path', 'ops_manager', 'policy_bundles',
-          'probe', 'ok', 'failure:' || sqlstate, false);
+          'probe', 'ok', 'failure:' || sqlstate || ' ' || sqlerrm, false);
 end $$;
 
 -- ============================== threshold audit ============================
@@ -396,13 +446,15 @@ end $$;
 do $$
 declare
   v_tenant   uuid := '11111111-1111-1111-1111-111111111111';
-  v_ops      uuid := 'a0000000-0000-0000-0000-000000000001';
-  v_agent    uuid := 'a0000000-0000-0000-0000-000000000004';
+  v_ops      uuid;
+  v_agent    uuid;
   v_before   bigint;
   v_after    bigint;
   v_previous numeric;
   v_observed text;
 begin
+  select id into v_ops from auth.users where email = 'ops@alpha.example';
+  select id into v_agent from auth.users where email = 'agent@alpha.example';
   select count(*) into v_before from tenant_threshold_changes where tenant_id = v_tenant;
 
   perform rbac_claims('ops_manager', v_tenant, v_ops);
@@ -434,7 +486,7 @@ begin
     get diagnostics v_observed = row_count;
     v_observed := 'rows:' || v_observed;
   exception
-    when others then v_observed := 'error:' || sqlstate;
+    when others then v_observed := 'error:' || sqlstate || ' ' || sqlerrm;
   end;
   execute 'reset role';
 
@@ -450,18 +502,18 @@ exception when others then
 
   insert into rbac_results (section, role_name, object_name, operation, expected, observed, ok)
   values ('threshold audit', 'ops_manager', 'tenants', 'probe', 'ok',
-          'failure:' || sqlstate, false);
+          'failure:' || sqlstate || ' ' || sqlerrm, false);
 end $$;
 
 select rbac_probe('threshold audit', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'tenant_threshold_changes', 'direct audit insert',
   $q$ insert into tenant_threshold_changes (
        tenant_id, previous_threshold, new_threshold,
        previous_min_margin, new_min_margin, changed_by
      ) values (
        '11111111-1111-1111-1111-111111111111', 0, 0.1, 0.15, 0.01,
-       'a0000000-0000-0000-0000-000000000004'
+       '$q$ || :'alpha_agent' || $q$'
      ) $q$,
   'blocked');
 
@@ -477,7 +529,7 @@ where table_schema = 'public'
 -- ============================ telemetry append-only ========================
 
 select rbac_probe('telemetry append-only', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'telemetry_events', 'direct insert',
   $q$ insert into telemetry_events (id, tenant_id, device_id, user_pseudonym, event_type, occurred_at, payload)
      values (gen_random_uuid(), '11111111-1111-1111-1111-111111111111',
@@ -485,57 +537,57 @@ select rbac_probe('telemetry append-only', 'agent',
   'blocked');
 
 select rbac_probe('telemetry append-only', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'telemetry_ingest_dedup', 'direct dedup claim',
   $q$ insert into telemetry_ingest_dedup (id, tenant_id)
      values (gen_random_uuid(), '11111111-1111-1111-1111-111111111111') $q$,
   'blocked');
 
 select rbac_probe('telemetry append-only', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'telemetry_events', 'update',
   $q$ update telemetry_events set payload = '{"result":"forged"}'::jsonb
       where id = 'aa000000-0000-0000-0000-000000000002' $q$,
   'blocked');
 
 select rbac_probe('telemetry append-only', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'telemetry_events', 'update',
   $q$ update telemetry_events set payload = '{"result":"forged"}'::jsonb
       where id = 'aa000000-0000-0000-0000-000000000002' $q$,
   'blocked');
 
 select rbac_probe('telemetry append-only', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'telemetry_events', 'delete',
   $q$ delete from telemetry_events where id = 'aa000000-0000-0000-0000-000000000002' $q$,
   'blocked');
 
 select rbac_probe('telemetry append-only', 'auditor',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000005',
+  '11111111-1111-1111-1111-111111111111', :'alpha_auditor',
   'telemetry_events', 'delete',
   $q$ delete from telemetry_events where id = 'aa000000-0000-0000-0000-000000000002' $q$,
   'blocked');
 
 -- Read scope: telemetry carries query text, so a frontline agent cannot browse it.
 select rbac_probe_read('telemetry append-only', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'telemetry_events', $q$ select 1 from telemetry_events $q$, 0);
 
 select rbac_probe_read('telemetry append-only', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'telemetry_events', $q$ select 1 from telemetry_events $q$, 2);
 
 select rbac_probe_read('telemetry append-only', 'auditor',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000005',
+  '11111111-1111-1111-1111-111111111111', :'alpha_auditor',
   'telemetry_events', $q$ select 1 from telemetry_events $q$, 2);
 
 select rbac_probe_read('telemetry append-only', 'team_lead',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000003',
+  '11111111-1111-1111-1111-111111111111', :'alpha_lead',
   'telemetry_events', $q$ select 1 from telemetry_events $q$, 2);
 
 select rbac_probe('telemetry idempotency', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'app.ingest_telemetry_event', 'foreign tenant device rejected',
   $q$ select app.ingest_telemetry_event(gen_random_uuid(),
         'd0000000-0000-0000-0000-000000000002', 'pseudo-alpha-1', 'query', 1,
@@ -550,13 +602,14 @@ select rbac_probe('telemetry idempotency', 'agent',
 do $$
 declare
   v_tenant uuid := '11111111-1111-1111-1111-111111111111';
-  v_user   uuid := 'a0000000-0000-0000-0000-000000000004';
+  v_user   uuid;
   v_id     uuid := gen_random_uuid();
   v_first  boolean;
   v_replay boolean;
   v_drift  boolean;
   v_rows   integer;
 begin
+  select id into v_user from auth.users where email = 'agent@alpha.example';
   perform rbac_claims('agent', v_tenant, v_user);
   execute 'set local role authenticated';
 
@@ -599,13 +652,13 @@ exception when others then
 
   insert into rbac_results (section, role_name, object_name, operation, expected, observed, ok)
   values ('telemetry idempotency', 'agent', 'telemetry_events',
-          'probe', 'ok', 'failure:' || sqlstate, false);
+          'probe', 'ok', 'failure:' || sqlstate || ' ' || sqlerrm, false);
 end $$;
 
 -- ================================ escalations ==============================
 
 select rbac_probe('escalations', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'escalations', 'direct insert against a real query event',
   $q$ insert into escalations (tenant_id, query_event_id, query_occurred_at)
      values ('11111111-1111-1111-1111-111111111111',
@@ -615,7 +668,7 @@ select rbac_probe('escalations', 'agent',
 -- Referential integrity: an escalation cannot point at an event that never
 -- existed. This is what the write-time trigger buys.
 select rbac_probe('escalations', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'escalations', 'insert against a nonexistent query event',
   $q$ insert into escalations (tenant_id, query_event_id, query_occurred_at)
      values ('11111111-1111-1111-1111-111111111111',
@@ -625,7 +678,7 @@ select rbac_probe('escalations', 'agent',
 -- And it cannot point at another tenant's event, which the trigger checks and a
 -- foreign key would not have.
 select rbac_probe('escalations', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'escalations', 'insert against another tenant''s query event',
   $q$ insert into escalations (tenant_id, query_event_id, query_occurred_at)
      values ('11111111-1111-1111-1111-111111111111',
@@ -633,61 +686,61 @@ select rbac_probe('escalations', 'agent',
   'blocked');
 
 select rbac_probe('escalations', 'team_lead',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000003',
+  '11111111-1111-1111-1111-111111111111', :'alpha_lead',
   'escalations', 'update',
   $q$ update escalations set status = 'resolved', resolution = 'answered by lead'
       where id = 'ab000000-0000-0000-0000-000000000001' $q$,
   'allowed');
 
 select rbac_probe('escalations', 'team_lead',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000003',
+  '11111111-1111-1111-1111-111111111111', :'alpha_lead',
   'escalations', 'assign same-tenant user',
-  $q$ update escalations set assigned_to = 'a0000000-0000-0000-0000-000000000004'
+  $q$ update escalations set assigned_to = '$q$ || :'alpha_agent' || $q$'
       where id = 'ab000000-0000-0000-0000-000000000001' $q$,
   'allowed');
 
 select rbac_probe('escalations', 'team_lead',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000003',
+  '11111111-1111-1111-1111-111111111111', :'alpha_lead',
   'escalations', 'assign foreign-tenant user',
-  $q$ update escalations set assigned_to = 'b0000000-0000-0000-0000-000000000002'
+  $q$ update escalations set assigned_to = '$q$ || :'beta_agent' || $q$'
       where id = 'ab000000-0000-0000-0000-000000000001' $q$,
   'blocked');
 
 select rbac_probe('escalations', 'team_lead',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000003',
+  '11111111-1111-1111-1111-111111111111', :'alpha_lead',
   'escalations', 'link foreign-tenant SOP version',
   $q$ update escalations set linked_sop_version = 'e0000000-0000-0000-0000-000000000002'
       where id = 'ab000000-0000-0000-0000-000000000001' $q$,
   'blocked');
 
 select rbac_probe('escalations', 'team_lead',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000003',
+  '11111111-1111-1111-1111-111111111111', :'alpha_lead',
   'escalations', 'rewrite evidence',
   $q$ update escalations set evidence = '{"forged":true}'::jsonb
       where id = 'ab000000-0000-0000-0000-000000000001' $q$,
   'blocked');
 
 select rbac_probe('escalations', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'escalations', 'rewrite provenance',
   $q$ update escalations set query_event_id = gen_random_uuid()
       where id = 'ab000000-0000-0000-0000-000000000001' $q$,
   'blocked');
 
 select rbac_probe('escalations', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'escalations', 'update',
   $q$ update escalations set status = 'resolved' where id = 'ab000000-0000-0000-0000-000000000001' $q$,
   'blocked');
 
 select rbac_probe('escalations', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'escalations', 'delete',
   $q$ delete from escalations where id = 'ab000000-0000-0000-0000-000000000001' $q$,
   'blocked');
 
 select rbac_probe('escalations', 'auditor',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000005',
+  '11111111-1111-1111-1111-111111111111', :'alpha_auditor',
   'escalations', 'insert',
   $q$ insert into escalations (tenant_id, query_event_id, query_occurred_at)
      values ('11111111-1111-1111-1111-111111111111',
@@ -695,7 +748,7 @@ select rbac_probe('escalations', 'auditor',
   'blocked');
 
 select rbac_probe('escalations', 'auditor',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000005',
+  '11111111-1111-1111-1111-111111111111', :'alpha_auditor',
   'app.ingest_escalation', 'auditor calls escalation ingest',
   $q$ select app.ingest_escalation(gen_random_uuid(),
         'aa000000-0000-0000-0000-000000000001', '2026-09-20 10:00:00+00',
@@ -705,18 +758,18 @@ select rbac_probe('escalations', 'auditor',
 -- ============================== device enrolment ===========================
 
 select rbac_probe('device enrolment', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'device_registrations', 'enrol own device',
   $q$ insert into device_registrations (tenant_id, user_id, platform, public_key)
-     values ('11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+     values ('11111111-1111-1111-1111-111111111111', '$q$ || :'alpha_agent' || $q$',
              'mobile', 'agent-mobile-key') $q$,
   'allowed');
 
 select rbac_probe('device enrolment', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'device_registrations', 'enrol device for a colleague',
   $q$ insert into device_registrations (tenant_id, user_id, platform, public_key)
-     values ('11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000003',
+     values ('11111111-1111-1111-1111-111111111111', '$q$ || :'alpha_lead' || $q$',
              'desktop', 'impostor-key') $q$,
   'blocked');
 

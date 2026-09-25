@@ -17,6 +17,52 @@
 
 \set ON_ERROR_STOP off
 
+-- ---------------------------------------------------------------- fixtures ---
+--
+-- The seven principals below are addressed by name, not by literal UUID.
+--
+-- Locally the auth shim lets us choose those UUIDs, and the defaults here are the
+-- ones the seed inserts. A hosted project cannot: public.users.id references
+-- auth.users(id), that table belongs to GoTrue, and postgres has no CREATE on
+-- the auth schema, so the only supported way to get a row in there is the Auth
+-- Admin API — which assigns its own UUID. Hard-coded identifiers therefore mean
+-- the suite cannot run against the platform it ships to, which is the one place
+-- it most needs to run.
+--
+-- Override from the command line:
+--   psql -v alpha_ops=<uuid> -v alpha_editor=<uuid> ... -f <this file>
+-- tooling/db/verify-hosted.sh does exactly that, after provisioning the users.
+
+\if :{?alpha_ops}
+\else
+\set alpha_ops 'a0000000-0000-0000-0000-000000000001'
+\endif
+\if :{?alpha_editor}
+\else
+\set alpha_editor 'a0000000-0000-0000-0000-000000000002'
+\endif
+\if :{?alpha_lead}
+\else
+\set alpha_lead 'a0000000-0000-0000-0000-000000000003'
+\endif
+\if :{?alpha_agent}
+\else
+\set alpha_agent 'a0000000-0000-0000-0000-000000000004'
+\endif
+\if :{?alpha_auditor}
+\else
+\set alpha_auditor 'a0000000-0000-0000-0000-000000000005'
+\endif
+\if :{?beta_ops}
+\else
+\set beta_ops 'b0000000-0000-0000-0000-000000000001'
+\endif
+\if :{?beta_agent}
+\else
+\set beta_agent 'b0000000-0000-0000-0000-000000000002'
+\endif
+
+
 drop table if exists phase5_results;
 
 create table phase5_results (
@@ -76,12 +122,12 @@ begin
       v_observed := 'rows:' || v_rows;
     exception
       when insufficient_privilege then v_observed := 'denied:privilege';
-      when others then v_observed := 'error:' || sqlstate;
+      when others then v_observed := 'error:' || sqlstate || ' ' || sqlerrm;
     end;
 
     execute 'reset role';
   exception
-    when others then v_observed := 'probe_failure:' || sqlstate;
+    when others then v_observed := 'probe_failure:' || sqlstate || ' ' || sqlerrm;
   end;
 
   insert into phase5_results (section, role_name, object_name, operation, expected, observed, ok)
@@ -89,7 +135,7 @@ begin
     p_section, p_role::text, p_object, p_operation, p_expect, v_observed,
     case
       when p_expect = 'allowed' then v_observed like 'rows:%' and v_observed <> 'rows:0'
-      when p_denial is not null then v_observed = p_denial
+      when p_denial is not null then v_observed like p_denial || '%'
       else v_observed = 'rows:0' or v_observed like 'denied:%' or v_observed like 'error:%'
     end
   );
@@ -124,14 +170,14 @@ begin
         v_observed := 'denied:privilege';
       when others then
         v_count := null;
-        v_observed := 'error:' || sqlstate;
+        v_observed := 'error:' || sqlstate || ' ' || sqlerrm;
     end;
 
     execute 'reset role';
   exception
     when others then
       v_count := null;
-      v_observed := 'probe_failure:' || sqlstate;
+      v_observed := 'probe_failure:' || sqlstate || ' ' || sqlerrm;
   end;
 
   insert into phase5_results (section, role_name, object_name, operation, expected, observed, ok)
@@ -150,7 +196,7 @@ $$;
 do $$
 declare
   v_tenant uuid := '11111111-1111-1111-1111-111111111111';
-  v_agent  uuid := 'a0000000-0000-0000-0000-000000000004';
+  v_agent  uuid;
   v_event  uuid := gen_random_uuid();
   v_esc    uuid := gen_random_uuid();
   v_first  boolean;
@@ -161,6 +207,11 @@ declare
   v_cand   integer;
   v_ev     jsonb := '{"queryText":"where is my refund","reason":"insufficient_margin","thresholdAccept":0,"minMargin":0.18,"bundleVersion":1,"modelId":"Xenova/all-MiniLM-L6-v2","modelRevision":"751bff37182d3f1213fa05d7196b954e230abad9","candidates":[{"sopId":"c0000000-0000-0000-0000-000000000001","score":0.41,"passage":"refund within 14 days"},{"sopId":"c0000000-0000-0000-0000-000000000002","score":0.26,"passage":"exchange only"}]}'::jsonb;
 begin
+  -- Resolved by email, not by a psql variable: this block is a dollar-quoted
+  -- body, where psql expands nothing. A hosted project creates these
+  -- principals through the Auth Admin API and cannot choose their UUIDs, so
+  -- the email is the only identifier that exists in both environments.
+  select id into v_agent from auth.users where email = 'agent@alpha.example';
   -- 1. the query event (payload carries the outcome the funnel reads)
   perform p5_claims('agent', v_tenant, v_agent);
   execute 'set local role authenticated';
@@ -220,11 +271,11 @@ exception when others then
   end;
 
   insert into phase5_results (section, role_name, object_name, operation, expected, observed, ok)
-  values ('escalation ingest', 'agent', 'escalations', 'probe', 'ok', 'failure:' || sqlstate, false);
+  values ('escalation ingest', 'agent', 'escalations', 'probe', 'ok', 'failure:' || sqlstate || ' ' || sqlerrm, false);
 end $$;
 
 select p5_probe('ingest contract', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'app.ingest_telemetry_event', 'answered event without decision evidence',
   $q$ select app.ingest_telemetry_event(gen_random_uuid(),
         'd0000000-0000-0000-0000-000000000001', 'pseudo-alpha-1', 'query', 1,
@@ -233,7 +284,7 @@ select p5_probe('ingest contract', 'agent',
   'blocked', 'error:22023');
 
 select p5_probe('ingest contract', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'app.ingest_escalation', 'escalation without evidence contract',
   $q$ select app.ingest_escalation(gen_random_uuid(),
         'aa000000-0000-0000-0000-000000000001', '2026-09-20 10:00:00+00',
@@ -241,7 +292,7 @@ select p5_probe('ingest contract', 'agent',
   'blocked', 'error:22023');
 
 select p5_probe('ingest contract', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'app.ingest_escalation', 'evidence disagrees with source gate settings',
   $q$ select app.ingest_escalation(gen_random_uuid(),
         'aa000000-0000-0000-0000-000000000002', '2026-09-20 10:05:00+00',
@@ -249,7 +300,7 @@ select p5_probe('ingest contract', 'agent',
   'blocked', 'error:22023');
 
 select p5_probe('ingest contract', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'app.ingest_escalation', 'fractional bundle version rejected',
   $q$ select app.ingest_escalation(gen_random_uuid(),
         'aa000000-0000-0000-0000-000000000002', '2026-09-20 10:05:00+00',
@@ -261,21 +312,21 @@ select p5_probe('ingest contract', 'agent',
 -- guarantee regressed.
 
 select p5_probe('escalation integrity', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'escalations', 'ingest against a nonexistent event',
   $q$ select app.ingest_escalation(gen_random_uuid(), '00000000-0000-0000-0000-0000000000ff',
         '2026-09-20 10:00:00+00', '{"queryText":"q","reason":"no_candidates","thresholdAccept":0,"minMargin":0.18,"bundleVersion":1,"modelId":"m","modelRevision":"r","candidates":[]}'::jsonb) $q$,
   'blocked');
 
 select p5_probe('escalation integrity', 'agent',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000004',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
   'escalations', 'ingest against another tenant''s event',
   $q$ select app.ingest_escalation(gen_random_uuid(), 'bb000000-0000-0000-0000-000000000001',
         '2026-09-20 11:00:00+00', '{"queryText":"q","reason":"no_candidates","thresholdAccept":0,"minMargin":0.18,"bundleVersion":1,"modelId":"m","modelRevision":"r","candidates":[]}'::jsonb) $q$,
   'blocked');
 
 select p5_probe('escalation integrity', 'agent',
-  null, 'a0000000-0000-0000-0000-000000000004',
+  null, :'alpha_agent',
   'escalations', 'ingest with no tenant claim',
   $q$ select app.ingest_escalation(gen_random_uuid(), 'aa000000-0000-0000-0000-000000000001',
         '2026-09-20 10:00:00+00', '{"queryText":"q","reason":"no_candidates","thresholdAccept":0,"minMargin":0.18,"bundleVersion":1,"modelId":"m","modelRevision":"r","candidates":[]}'::jsonb) $q$,
@@ -287,8 +338,9 @@ select p5_probe('escalation integrity', 'agent',
 do $$
 declare
   v_tenant uuid := '11111111-1111-1111-1111-111111111111';
-  v_ops    uuid := 'a0000000-0000-0000-0000-000000000001';
+  v_ops    uuid;
 begin
+  select id into v_ops from auth.users where email = 'ops@alpha.example';
   perform p5_claims('ops_manager', v_tenant, v_ops);
   execute 'set local role authenticated';
   update tenants set min_margin = 0.180 where id = v_tenant;
@@ -304,17 +356,17 @@ exception when others then
 
   insert into phase5_results (section, role_name, object_name, operation, expected, observed, ok)
   values ('ops dashboard', 'ops_manager', 'tenants', 'threshold change applied', 'ok',
-          'failure:' || sqlstate, false);
+          'failure:' || sqlstate || ' ' || sqlerrm, false);
 end $$;
 
 select p5_read('ops dashboard', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'ops_escalation_dashboard',
   $q$ select 1 from app.ops_escalation_dashboard where reason = 'insufficient_margin' $q$,
   1);
 
 select p5_read('ops dashboard', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'ops_gate_funnel',
   $q$ select 1 from app.ops_gate_funnel
         where tenant_id = '11111111-1111-1111-1111-111111111111'
@@ -323,7 +375,7 @@ select p5_read('ops dashboard', 'ops_manager',
   1);
 
 select p5_read('ops dashboard', 'ops_manager',
-  '11111111-1111-1111-1111-111111111111', 'a0000000-0000-0000-0000-000000000001',
+  '11111111-1111-1111-1111-111111111111', :'alpha_ops',
   'ops_threshold_changes',
   $q$ select 1 from app.ops_threshold_changes
         where tenant_id = '11111111-1111-1111-1111-111111111111'

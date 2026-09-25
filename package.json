@@ -10,8 +10,15 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
+    "build:node": "turbo run build --filter=!@sop/desktop",
     "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test --filter=!@sop/desktop",
+    "verify": "node tooling/run-verification.mjs",
+    "verify:db": "bash tooling/db/verify-phase7.sh",
+    "verify:all": "pnpm run verify && pnpm run verify:db",
+    "audit": "node tooling/audit-gate.mjs",
+    "audit:update": "node tooling/audit-gate.mjs --update"
   },
   "devDependencies": {
     "turbo": "2.11.4"

@@ -1,0 +1,167 @@
+name: CI
+
+# This workflow exists because until now nothing ran on a commit. Every claim in
+# AGENTS.md about "N checks, 0 failures" was a recollection from a manual run.
+# These jobs turn those claims into facts that fail a build.
+#
+# What is deliberately NOT here yet: a deploy job, a release artifact, and a
+# hosted database. There is no authenticated transport to deploy, so a deploy
+# stage would be decoration. It attaches when the bundle transport slice lands.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
+  PNPM_VERSION: '11.20.0'
+
+jobs:
+  workspace:
+    name: Lint, typecheck, build, JS harnesses
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      # Excludes the Tauri shell, which needs a Rust toolchain and Linux system
+      # libraries; it has its own job below.
+      - name: Build
+        run: pnpm run build:node
+
+      # The two model-dependent harnesses fetch the pinned MiniLM weights from
+      # Hugging Face on first run. The revision is pinned to a commit sha in
+      # packages/embedder/src/model.ts, so the cache key is stable; a changed
+      # pin produces a different key and a fresh download rather than a stale
+      # model silently scoring the gate.
+      - name: Restore pinned model cache
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: embedder-${{ runner.os }}-minilm-q8-751bff37
+
+      - name: Verification gate
+        run: pnpm run verify
+
+      # Proves the build output is a real, servable bundle rather than a
+      # side effect of typechecking. Uploaded but not deployed anywhere.
+      - name: Upload web dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: apps/web/dist
+          retention-days: 7
+
+  database:
+    name: Migrations, RBAC, telemetry, RLS bypass
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      # GitHub-hosted runners already have Docker, which is all verify-phase7.sh
+      # needs. It creates its own throwaway PostgreSQL 17 container, drops and
+      # recreates the database, applies every migration, then runs all three SQL
+      # suites: 99 RBAC probes, 17 telemetry probes, 40 attack probes.
+      - name: Database verification
+        run: bash tooling/db/verify-phase7.sh
+
+  desktop:
+    name: Desktop shell links
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: apps/desktop/src-tauri
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # Tauri's frontendDist points at apps/web/dist and there is no
+      # beforeBuildCommand, so the web bundle has to exist before cargo runs.
+      - name: Build web bundle
+        run: pnpm run build:node
+
+      # Tauri's documented Linux prerequisites. wry links against webkit2gtk, so
+      # without these the build fails on a missing pkg-config rather than on
+      # anything in this repository.
+      - name: Install Tauri system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends --yes \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            libxdo-dev \
+            libssl-dev \
+            build-essential \
+            curl \
+            file
+
+      # cargo build rather than `tauri build --no-bundle`: this gate is about
+      # the shell compiling and linking, and it does not need a bundle step that
+      # is still unproven.
+      - name: Cargo build
+        working-directory: apps/desktop/src-tauri
+        run: cargo build
+
+  audit:
+    name: Dependency advisories
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # No `pnpm install`: pnpm audit reads the lockfile, and skipping the
+      # install keeps this gate fast and independent of the workspace build.
+      #
+      # Fails on new or escalated advisories against tooling/audit-baseline.json.
+      # The 36 advisories currently in the baseline are all reachable through
+      # apps/mobile -> expo, which is unbuilt; the gate exists so the count can
+      # only go down from here.
+      - name: Dependency gate
+        run: pnpm run audit
