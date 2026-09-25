@@ -1201,3 +1201,49 @@ rather than per decision. A rotation procedure for the tenant signing key. Offli
 operation in the browser, unproven: the bundle survives a reload but nothing has
 demonstrated the app starting and serving with the network down. And the 36
 advisories in the unbuilt mobile tree, which the gate stops and does not clear.
+## Read-back, and a CORS hole the browser found — 2026-09-25
+
+**Executed, and not finished.** The Command Center could author and change a
+status but could not load a procedure's text, so revising content meant retyping
+it — and the status dropdown was carrying a placeholder body to compensate, which
+would have quietly replaced every procedure anyone edited. `upsert-sop` now serves
+a decrypted read to an editor or ops manager, the screen has an Edit action that
+loads the current text, and a revision is a new version carrying the real body.
+
+**A hole no probe could have found, because nothing had ever called an edge
+function from the browser.** The whole transport to date went through PostgREST,
+which answers CORS itself. The first browser call to an edge function returned
+"Failed to send a request to the Edge Function" — supabase-js's message when the
+*preflight* goes unanswered, which is indistinguishable from a network outage. A
+legitimate 403 was being reported as a network fault, and the search went looking
+for a transport bug that did not exist.
+
+`upsert-sop` now answers OPTIONS itself and sets the CORS headers on every
+response. That is a real integration fix, and it would have shipped as "the Command
+Center does not work" without a browser in the loop.
+
+**Second finding from the same run: `functions.invoke` drops the error body.** A
+refusal arrived as "Edge Function returned a non-2xx status code" — a string that
+names neither the procedure nor the cause. The functions say exactly what is wrong
+("authoring a procedure requires an editor or ops manager"), and `callFunction` now
+uses plain `fetch` so that text survives to the screen. A generic failure message
+sends the reader to the wrong system, which is the whole reason the functions were
+written to name their subject.
+
+**Verified so far, in a real browser:** an agent pressing Edit is refused and the
+screen says why; the editor signs in and the server reports `sop_editor`; the
+authored procedure appears in the list showing what the server stored.
+
+**Not yet verified: the editor's read-back in the browser.** The server half is
+proven — the same request succeeds from Node, and `probe:corpus` proves the
+decryption and the version arithmetic. The browser path times out waiting for the
+loaded form, and the cause is not yet identified. It is almost certainly a selector
+or a refresh ordering issue in the screen rather than the function, because the
+agent's refusal on the same screen arrives correctly. **It is not claimed as
+working.**
+
+**Lesson, and it is the same one again.** The screen was green in typecheck, lint
+and build for the whole of this change. Every one of the three defects above —
+missing CORS, a dropped error body, a placeholder body in a status control — passed
+all three. Only a real browser found them, and only because something was changed
+that made the browser path exist for the first time.

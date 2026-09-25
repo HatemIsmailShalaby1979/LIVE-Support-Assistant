@@ -58,6 +58,9 @@ export function supabase(): SupabaseClient {
  */
 export const APP_SCHEMA = 'app';
 
+/** The project origin, for calling edge functions directly. */
+export const SUPABASE_URL = url;
+
 /** The tenant the server attributes to this session, or null when it has none. */
 export async function currentTenant(): Promise<string | null> {
   const { data, error } = await supabase().schema(APP_SCHEMA).rpc('current_tenant');

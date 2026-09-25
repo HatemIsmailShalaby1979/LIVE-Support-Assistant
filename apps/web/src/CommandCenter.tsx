@@ -25,6 +25,7 @@ import {
   PROCEDURE_STATUSES,
   listProcedures,
   publishBundle,
+  readProcedure,
   saveProcedure,
   type ProcedureDraft,
   type ProcedureStatus,
@@ -47,6 +48,7 @@ export function CommandCenter({ onPublished }: { onPublished: () => void }) {
   const [procedures, setProcedures] = useState<ProcedureSummary[]>([]);
   const [status, setStatus] = useState<Status>('loading');
   const [draft, setDraft] = useState<ProcedureDraft>(EMPTY_DRAFT);
+  const [editing, setEditing] = useState<{ sopId: string; version: number; status: ProcedureStatus } | null>(null);
   const [keywords, setKeywords] = useState('');
   const [busy, setBusy] = useState<'save' | 'publish' | null>(null);
   const [notice, setNotice] = useState('');
@@ -93,10 +95,15 @@ export function CommandCenter({ onPublished }: { onPublished: () => void }) {
     try {
       const result = await saveProcedure(
         { ...draft, triggerKeywords: keywords.split(',').map((k) => k.trim()).filter((k) => k !== '') },
-        { status, changeNote: status === 'published' ? 'Promoted to published.' : 'Saved.' },
+        {
+          ...(editing === null ? {} : { sopId: editing.sopId }),
+          status,
+          changeNote: editing === null ? 'Authored.' : `Revised version ${editing.version}.`,
+        },
       );
       setDraft(EMPTY_DRAFT);
       setKeywords('');
+      setEditing(null);
       setNotice(
         status === 'published'
           ? `Saved as published — version ${result.version}. Devices need the next publish to receive it.`
@@ -187,7 +194,32 @@ export function CommandCenter({ onPublished }: { onPublished: () => void }) {
                   </td>
                   <td className="p-3 text-gray-600">{procedure.version}</td>
                   <td className="p-3">
-                    <select
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        data-testid={`cc-edit-${procedure.id}`}
+                        disabled={busy !== null}
+                        onClick={() => {
+                          setBusy('save');
+                          setFailure('');
+                          setNotice('');
+                          void readProcedure(procedure.id)
+                            .then((loaded) => {
+                              setEditing({ sopId: loaded.sopId, version: loaded.version, status: loaded.status });
+                              setDraft(loaded.draft);
+                              setKeywords(loaded.draft.triggerKeywords.join(', '));
+                              setNotice(`Loaded "${loaded.title}" — version ${loaded.version}.`);
+                            })
+                            .catch((error: unknown) =>
+                              setFailure(error instanceof Error ? error.message : String(error)),
+                            )
+                            .finally(() => setBusy(null));
+                        }}
+                        className="text-xs border border-gray-300 rounded px-2 py-1 bg-white disabled:opacity-50"
+                      >
+                        Edit
+                      </button>
+                      <select
                       aria-label={`status for ${procedure.title}`}
                       value={procedure.status}
                       disabled={busy !== null}
@@ -196,23 +228,23 @@ export function CommandCenter({ onPublished }: { onPublished: () => void }) {
                         setBusy('save');
                         setFailure('');
                         setNotice('');
-                        void saveProcedure(
-                          {
-                            title: procedure.title,
-                            category: 'general',
-                            // The stored body cannot be read back, so a status change
-                            // cannot carry content with it. That is a real limit and it
-                            // is stated here rather than hidden behind a working button.
-                            summary: '(status change only — the stored body is encrypted and cannot be read back)',
-                            suggestedReply: '',
-                            escalationRequired: false,
-                            escalationReason: '',
-                            triggerKeywords: [],
-                          },
-                          { sopId: procedure.id, status: next, changeNote: `Status set to ${next}.` },
-                        )
+                        // The content is loaded first, because changing a status is
+                        // also a new version and a version has to carry the body
+                        // forward. The earlier version of this control sent a
+                        // placeholder instead, which would have quietly replaced
+                        // every procedure anyone edited.
+                        void readProcedure(procedure.id)
+                          .then((loaded) =>
+                            saveProcedure(loaded.draft, {
+                              sopId: loaded.sopId,
+                              status: next,
+                              changeNote: `Status set to ${next}.`,
+                            }),
+                          )
                           .then((result) => {
-                            setNotice(`${procedure.title} is now ${result.status} — version ${result.version}.`);
+                            setNotice(
+                              `${procedure.title} is now ${result.status} — version ${result.version}.`,
+                            );
                             return refresh();
                           })
                           .catch((error: unknown) =>
@@ -228,6 +260,7 @@ export function CommandCenter({ onPublished }: { onPublished: () => void }) {
                         </option>
                       ))}
                     </select>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -237,7 +270,24 @@ export function CommandCenter({ onPublished }: { onPublished: () => void }) {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 space-y-3">
-        <h3 className="text-sm font-semibold text-gray-900">Author a procedure</h3>
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="text-sm font-semibold text-gray-900">
+            {editing === null ? 'Author a procedure' : 'Revise a procedure'}
+          </h3>
+          {editing !== null && (
+            <span data-testid="cc-editing" className="text-xs text-gray-600">
+              Editing version {editing.version} — saving writes version {editing.version + 1}
+              <button
+                type="button"
+                data-testid="cc-cancel-edit"
+                onClick={() => { setEditing(null); setDraft(EMPTY_DRAFT); setKeywords(''); }}
+                className="ml-2 underline"
+              >
+                Cancel
+              </button>
+            </span>
+          )}
+        </div>
 
         <Field label="Title" required>
           <input
@@ -309,11 +359,11 @@ export function CommandCenter({ onPublished }: { onPublished: () => void }) {
           <button
             data-testid="cc-save-draft"
             type="button"
-            onClick={() => void save('draft')}
+            onClick={() => void save(editing === null ? 'draft' : editing.status)}
             disabled={!canSubmit || busy !== null}
             className="border border-gray-300 text-gray-800 text-sm font-medium rounded px-3 py-2 disabled:opacity-50"
           >
-            {busy === 'save' ? 'Saving…' : 'Save as draft'}
+            {busy === 'save' ? 'Saving…' : editing === null ? 'Save as draft' : 'Save revision'}
           </button>
           <button
             data-testid="cc-save-published"

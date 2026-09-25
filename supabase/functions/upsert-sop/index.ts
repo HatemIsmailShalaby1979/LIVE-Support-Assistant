@@ -33,10 +33,22 @@ interface SopBody {
   triggerKeywords: string[];
 }
 
+// CORS is handled here rather than left to the platform, because without it the
+// browser never sees the function at all: supabase-js reports "Failed to send a
+// request to the Edge Function" for a preflight that was not answered, which is
+// indistinguishable from a network outage and sent this slice's first browser run
+// looking for a transport fault instead of a 403. Nothing has called an edge
+// function from the browser until now, so nothing had answered the preflight.
+const CORS_HEADERS: Record<string, string> = {
+  'access-control-allow-origin': '*',
+  'access-control-allow-headers': 'authorization, x-client-info, apikey, content-type',
+  'access-control-allow-methods': 'POST, PUT, GET, OPTIONS',
+};
+
 function json(body: unknown, status: number): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', ...CORS_HEADERS },
   });
 }
 
@@ -56,6 +68,14 @@ async function sha256Hex(bytes: Uint8Array): Promise<string> {
   return toHex(new Uint8Array(digest));
 }
 
+function fromHex(hex: string): Uint8Array {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < bytes.length; i += 1) {
+    bytes[i] = Number.parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+  }
+  return bytes;
+}
+
 function claimsOf(authorization: string): Record<string, unknown> | null {
   const parts = authorization.replace(/^Bearer\s+/i, '').split('.');
   if (parts.length !== 3) return null;
@@ -66,9 +86,78 @@ function claimsOf(authorization: string): Record<string, unknown> | null {
   }
 }
 
+/**
+ * Decrypt a procedure's current body for an editor.
+ *
+ * Without this, an editor can author and change a status but cannot load a
+ * procedure's text, so revising content means retyping it — and any control that
+ * pretended to preserve content while replacing it would be worse than one that
+ * admits the limit. The role gate is the same as writing: same trust, same tenant,
+ * same key.
+ */
+async function readBack(
+  client: ReturnType<typeof createClient>,
+  tenantId: string,
+  key: CryptoKey,
+  sopId: string,
+): Promise<Response> {
+  const { data: sop, error: sopError } = await client
+    .from('sops')
+    .select('id, title, status')
+    .eq('id', sopId)
+    .eq('tenant_id', tenantId)
+    .maybeSingle();
+
+  if (sopError) return json({ error: `could not read the procedure: ${sopError.message}` }, 502);
+  if (sop === null || sop === undefined) {
+    return json({ error: 'no such procedure on this tenant' }, 404);
+  }
+
+  const { data: version } = await client
+    .from('sop_versions')
+    .select('version, body_ciphertext')
+    .eq('sop_id', sopId)
+    .order('version', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (version === null || version === undefined) {
+    return json({ sopId, title: sop.title, status: sop.status, version: 0, body: null });
+  }
+
+  const packed = fromHex(String(version.body_ciphertext).replace(/^\\x/, ''));
+
+  if (packed.length < 12 + 16) {
+    return json(
+      { error: `procedure "${sop.title}" has a body this server did not write, so it cannot be read` },
+      502,
+    );
+  }
+
+  try {
+    const plaintext = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: packed.slice(0, 12) },
+      key,
+      packed.slice(12) as BufferSource,
+    );
+    return json({
+      sopId,
+      title: sop.title,
+      status: sop.status,
+      version: version.version,
+      body: JSON.parse(new TextDecoder().decode(plaintext)),
+    });
+  } catch {
+    return json(
+      { error: `procedure "${sop.title}" could not be decrypted with the server's body key` },
+      502,
+    );
+  }
+}
+
 Deno.serve(async (request) => {
-  if (request.method !== 'POST' && request.method !== 'PUT') {
-    return json({ error: 'use POST to create or PUT to revise' }, 405);
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: CORS_HEADERS });
   }
 
   const authorization = request.headers.get('authorization') ?? '';
@@ -93,7 +182,7 @@ Deno.serve(async (request) => {
   const bodyKey = Deno.env.get('SOP_BODY_KEY') ?? '';
 
   if (bodyKey === '') {
-    return json({ error: 'the server has no SOP_BODY_KEY, so bodies cannot be stored' }, 503);
+    return json({ error: 'the server has no SOP_BODY_KEY, so bodies cannot be read or stored' }, 503);
   }
 
   const client = createClient(supabaseUrl, anonKey, {
@@ -104,11 +193,47 @@ Deno.serve(async (request) => {
   const { data: tenant, error: tenantError } = await client.schema('app').rpc('current_tenant');
   if (tenantError) return json({ error: `the session has no tenant: ${tenantError.message}` }, 403);
 
+  const key = await crypto.subtle.importKey(
+    'raw',
+    base64ToBytes(bodyKey) as BufferSource,
+    { name: 'AES-GCM' },
+    false,
+    ['encrypt', 'decrypt'],
+  );
+
+  // The read is available over GET for curl and over POST with `read: true` for the
+  // browser. It is a POST from the app because a GET through supabase-js
+  // `functions.invoke`, with a query string and a custom Authorization header, did
+  // not get its preflight answered on this project — and a refusal that arrives as
+  // a transport error is a refusal the reader cannot act on.
+  const url = new URL(request.url);
+  const wantsRead =
+    request.method === 'GET' ||
+    (request.method === 'POST' && url.pathname.endsWith('/upsert-sop') && request.headers.get('x-sop-mode') === 'read');
+
+  if (request.method === 'GET') {
+    const sopId = url.searchParams.get('sopId');
+    if (sopId === null || sopId === '') {
+      return json({ error: 'a GET needs a sopId' }, 400);
+    }
+    return readBack(client, tenant as string, key, sopId);
+  }
+
+  if (request.method !== 'POST' && request.method !== 'PUT') {
+    return json({ error: 'use POST to create, PUT to revise, or GET to read one' }, 405);
+  }
+
   let payload: Record<string, unknown>;
   try {
     payload = await request.json();
   } catch {
     return json({ error: 'the body must be JSON' }, 400);
+  }
+
+  if (payload.read === true) {
+    const sopId = typeof payload.sopId === 'string' ? payload.sopId : '';
+    if (sopId === '') return json({ error: 'a read needs a sopId' }, 400);
+    return readBack(client, tenant as string, key, sopId);
   }
 
   const title = typeof payload.title === 'string' ? payload.title.trim() : '';
@@ -139,14 +264,6 @@ Deno.serve(async (request) => {
   if (body.summary === '') {
     return json({ error: 'a procedure needs a summary — it is what retrieval matches against' }, 400);
   }
-
-  const key = await crypto.subtle.importKey(
-    'raw',
-    base64ToBytes(bodyKey) as BufferSource,
-    { name: 'AES-GCM' },
-    false,
-    ['encrypt', 'decrypt'],
-  );
 
   // No check on how many procedures a tenant has. There was one here — a
   // "this tenant already has a procedure" rule with a 409 — and it was wrong on

@@ -16,7 +16,7 @@
  * privilege question rather than a plumbing one.
  */
 
-import { supabase } from './supabase';
+import { SUPABASE_URL, supabase } from './supabase';
 
 export type ProcedureStatus = 'draft' | 'in_review' | 'published' | 'retired';
 
@@ -57,19 +57,43 @@ export interface PublishResult {
   readonly wrappedFor: number;
 }
 
-async function callFunction<T>(name: string, body: Record<string, unknown>, accessToken: string): Promise<T> {
-  const { data, error } = await supabase().functions.invoke(name, {
-    body: body as Record<string, unknown>,
-    headers: { Authorization: `Bearer ${accessToken}` },
+async function callFunction<T>(
+  name: string,
+  body: Record<string, unknown>,
+  accessToken: string,
+  supabaseUrl: string,
+): Promise<T> {
+  // Plain fetch rather than `supabase.functions.invoke`, for one reason: invoke
+  // reports "Edge Function returned a non-2xx status code" and drops the response
+  // body, so a refusal reaches the screen as a generic string. The functions name
+  // the procedure and the cause precisely, and a message that says neither is not
+  // actionable — it sends the reader to the wrong system.
+  const response = await fetch(`${supabaseUrl}/functions/v1/${name}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
   });
 
-  if (error) {
-    // PostgREST/edge errors arrive with useful text, so surface it rather than
-    // flattening every failure into "something went wrong".
-    throw new Error(error.message);
+  const text = await response.text();
+  let parsed: unknown = null;
+  try {
+    parsed = text === '' ? null : JSON.parse(text);
+  } catch {
+    parsed = null;
   }
 
-  return data as T;
+  if (!response.ok) {
+    const reason =
+      parsed !== null && typeof parsed === 'object' && 'error' in parsed
+        ? String((parsed as { error: unknown }).error)
+        : `the server returned ${response.status}`;
+    throw new Error(reason);
+  }
+
+  return parsed as T;
 }
 
 /**
@@ -86,6 +110,15 @@ async function accessToken(): Promise<string> {
     throw new Error('no session, so there is nothing to do as this user');
   }
   return token;
+}
+
+/** A procedure loaded back from the server, ready to be edited. */
+export interface LoadedProcedure {
+  readonly sopId: string;
+  readonly title: string;
+  readonly status: ProcedureStatus;
+  readonly version: number;
+  readonly draft: ProcedureDraft;
 }
 
 export async function listProcedures(): Promise<ProcedureSummary[]> {
@@ -114,6 +147,18 @@ export async function listProcedures(): Promise<ProcedureSummary[]> {
   });
 }
 
+/**
+ * Load a procedure's current text so it can be revised.
+ *
+ * This is the path the earlier version of this client did not have, and its
+ * absence had a visible cost: a status change had to send a placeholder body,
+ * because there was no way to know what the real one was. Anything that changes a
+ * row has to carry the content forward, and only the server can supply it.
+ */
+export async function readProcedure(sopId: string): Promise<LoadedProcedure> {
+  return callFunction<LoadedProcedure>('upsert-sop', { read: true, sopId }, await accessToken(), SUPABASE_URL);
+}
+
 export async function saveProcedure(
   draft: ProcedureDraft,
   options: { sopId?: string; status?: ProcedureStatus; changeNote?: string } = {},
@@ -127,9 +172,10 @@ export async function saveProcedure(
       changeNote: options.changeNote,
     },
     await accessToken(),
+    SUPABASE_URL,
   );
 }
 
 export async function publishBundle(): Promise<PublishResult> {
-  return callFunction<PublishResult>('publish-bundle', {}, await accessToken());
+  return callFunction<PublishResult>('publish-bundle', {}, await accessToken(), SUPABASE_URL);
 }

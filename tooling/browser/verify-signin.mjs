@@ -233,7 +233,7 @@ async function provisionEditor() {
   if (body?.access_token === undefined) {
     throw new Error(`could not sign the editor in: ${JSON.stringify(body).slice(0, 200)}`);
   }
-  return { token: body.access_token };
+  return { token: body.access_token, password };
 }
 
 // ------------------------------------------------------------------- the browser --
@@ -643,6 +643,143 @@ try {
     'and the list shows what the server stored, not what the browser typed',
     rows.includes('Refund window, set from the Command Center'),
     rows,
+  );
+
+  // The browser is signed in as a frontline agent, and an agent must not be able to
+  // read decrypted procedure text any more than it can author one. The screen has to
+  // say so visibly rather than failing silently.
+  await evaluate(`
+    [...document.querySelectorAll('button')]
+      .find((b) => b.textContent.trim() === 'Edit')
+      ?.click()
+  `);
+
+  const editRefused = await waitFor(
+    `document.querySelector('[data-testid="cc-error"]')`,
+    'the refusal to appear',
+    30_000,
+  );
+  const refusalText = await evaluate(
+    `document.querySelector('[data-testid="cc-error"]')?.textContent ?? ''`,
+  );
+  check(
+    'an agent pressing Edit is refused, and the screen says why',
+    editRefused && /editor|ops manager/i.test(refusalText),
+    refusalText.trim().slice(0, 80),
+  );
+
+  // Now sign in as an editor, which is the person this screen is for.
+  await evaluate(`
+    [...document.querySelectorAll('button')]
+      .find((b) => b.textContent.trim() === 'Sign out')
+      ?.click()
+  `);
+  await waitFor(`document.querySelector('input[name="email"]')`, 'the form to return');
+
+  const editorSession = await provisionEditor();
+
+  await evaluate(`
+    (() => {
+      const set = (selector, value) => {
+        const input = document.querySelector(selector);
+        const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+        setter.call(input, value);
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      };
+      set('input[name="email"]', ${JSON.stringify('signin-editor@alpha.example')});
+      set('input[name="password"]', ${JSON.stringify(editorSession.password)});
+      document.querySelector('form').requestSubmit();
+      return true;
+    })()
+  `);
+  await waitFor(
+    `document.querySelector('[data-testid="session-bar"]')`,
+    'the editor session',
+    30_000,
+  );
+
+  const editorRole = await evaluate(
+    `document.querySelector('[data-testid="session-role"]')?.textContent ?? ''`,
+  );
+  check('the editor is signed in, and the server says so', editorRole.trim() === 'sop_editor', editorRole.trim());
+
+  await evaluate(`[...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Command Center')?.click()`);
+  await waitFor(`document.querySelector('[data-testid="command-center"]')`, 'the Command Center');
+
+  // ------------------------------------------------ revising a procedure --
+
+  // Read-back is the gap the status dropdown used to paper over: a version has to
+  // carry the body forward, and only the server can supply it. So the screen loads
+  // the current text, an editor changes it, and the new version has to contain the
+  // change rather than a placeholder.
+  const editMarker = `REVISED-IN-THE-BROWSER-${Math.random().toString(36).slice(2, 8)}`;
+
+  await evaluate(`
+    [...document.querySelectorAll('button')]
+      .find((b) => b.textContent.trim() === 'Edit' && b.dataset.testid === 'cc-edit-${authoredBody.sopId}')
+      ?.click()
+  `);
+
+  const loaded = await waitFor(
+    `document.querySelector('[data-testid="cc-editing"]')`,
+    'the procedure to load for editing',
+    30_000,
+  );
+  check('a procedure can be loaded back for editing', loaded);
+
+  const loadedSummary = await evaluate(
+    `document.querySelector('[data-testid="cc-summary"]')?.value ?? ''`,
+  );
+  check(
+    'and the form holds the text the server decrypted',
+    loadedSummary.includes('AUTHORED-IN-THE-BROWSER'),
+    loadedSummary.slice(0, 60),
+  );
+
+  await evaluate(`
+    (() => {
+      const input = document.querySelector('[data-testid="cc-summary"]');
+      const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
+      setter.call(input, ${JSON.stringify(`${marker}`)});
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      return true;
+    })()
+  `);
+
+  await evaluate(`
+    [...document.querySelectorAll('button')]
+      .find((b) => b.textContent.trim() === 'Save and publish status')
+      ?.click()
+  `);
+
+  const saved = await waitFor(
+    `[...document.querySelectorAll('[data-testid="cc-notice"]')].some((n) => /version/.test(n.textContent))`,
+    'the revision to save',
+    30_000,
+  );
+  check('a revision saves through the screen', saved);
+
+  const notice = await evaluate(
+    `[...document.querySelectorAll('[data-testid="cc-notice"]')].map((n) => n.textContent).join(' ')`,
+  );
+  check(
+    'and it became a new version rather than overwriting the last',
+    /version 2/.test(notice),
+    notice.trim(),
+  );
+
+  // The decisive one: read the body back through the server and confirm the change
+  // is what is stored. A screen that reported success while writing a placeholder
+  // would pass every check above.
+  const editorReadBack = await fetch(
+    `${supabaseUrl}/functions/v1/upsert-sop?sopId=${authoredBody.sopId}`,
+    { headers: { Authorization: `Bearer ${editor.token}` } },
+  );
+  const readBack = await editorReadBack.json();
+  check(
+    'the server stored the revised text, not a placeholder',
+    editorReadBack.ok && readBack?.body?.summary === `${marker}`,
+    JSON.stringify(readBack?.body?.summary ?? readBack?.error ?? '').slice(0, 70),
   );
 
   // ------------------------------------------------------------ 4. signing out --
