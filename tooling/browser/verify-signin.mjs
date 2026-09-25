@@ -130,6 +130,59 @@ await fetch(`${supabaseUrl}/rest/v1/users`, {
   }),
 });
 
+/**
+ * An ops_manager session, so the harness can publish the way a person would —
+ * through the edge function, never by writing to the database directly.
+ */
+async function provisionPublisher() {
+  const password = `Sp-${randomUUID()}`;
+  const email = 'signin-publisher@alpha.example';
+  const list = await (
+    await fetch(`${supabaseUrl}/auth/v1/admin/users?page=1&per_page=1000`, { headers: adminHeaders })
+  ).json();
+  const existing = (list?.users ?? []).find((user) => user?.email === email);
+  const metadata = { tenant_id: TENANT, app_role: 'ops_manager' };
+
+  let userId = existing?.id ?? null;
+  if (existing) {
+    await fetch(`${supabaseUrl}/auth/v1/admin/users/${existing.id}`, {
+      method: 'PUT',
+      headers: adminHeaders,
+      body: JSON.stringify({ email_confirm: true, password, app_metadata: metadata }),
+    });
+  } else {
+    const created = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
+      method: 'POST',
+      headers: adminHeaders,
+      body: JSON.stringify({ email, password, email_confirm: true, app_metadata: metadata }),
+    });
+    if (!created.ok) throw new Error(`could not provision the publisher: ${await created.text()}`);
+    userId = (await created.json()).id;
+  }
+
+  await fetch(`${supabaseUrl}/rest/v1/users`, {
+    method: 'POST',
+    headers: { ...adminHeaders, Prefer: 'resolution=merge-duplicates' },
+    body: JSON.stringify({
+      id: userId,
+      tenant_id: TENANT,
+      display_name: 'Sign-in Publisher',
+      role: 'ops_manager',
+    }),
+  });
+
+  const signIn = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
+    method: 'POST',
+    headers: { apikey: publishableKey, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  const body = await signIn.json();
+  if (body?.access_token === undefined) {
+    throw new Error(`could not sign the publisher in: ${JSON.stringify(body).slice(0, 200)}`);
+  }
+  return { token: body.access_token };
+}
+
 // ------------------------------------------------------------------- the browser --
 
 process.stdout.write('==> starting the dev server\n');
@@ -153,6 +206,13 @@ const server = spawn(
       ...process.env,
       VITE_SUPABASE_URL: supabaseUrl,
       VITE_SUPABASE_PUBLISHABLE_KEY: publishableKey,
+      // The public halves of the keys the publish function holds. Vite only
+      // exposes VITE_-prefixed variables to the bundle, and the app needs these to
+      // verify a signature and derive the shared secret. Without them it refused
+      // to serve anything at all, which is the correct behaviour and was a useful
+      // thing to see happen rather than assume.
+      VITE_TENANT_SIGNING_PUBLIC_KEY: env('SOP_TENANT_SIGNING_PUBLIC_KEY'),
+      VITE_SERVER_WRAPPING_PUBLIC_KEY: env('SOP_SERVER_WRAPPING_PUBLIC_KEY'),
     },
     stdio: ['ignore', 'pipe', 'pipe'],
   },
@@ -365,6 +425,114 @@ try {
     'the query box',
   );
   check('the application is reachable once signed in', appVisible);
+
+  // The corpus has to come from the bundle that was signed for this tenant, and
+  // from nothing else. The assertion is the count the tenant actually has: the
+  // fixture tenant was seeded with one policy bundle holding one procedure, and a
+  // silent fallback to the five-procedure file in the repository would show five.
+  // The bundle sync is behind the explicit activation button, by design: the
+  // model is not fetched until a person asks for it, and the Phase 4 record is
+  // explicit that a page must not phone home before it is asked to. So the harness
+  // has to click it like a person would.
+  await evaluate(`
+    [...document.querySelectorAll('button')]
+      .find((b) => b.textContent.trim() === 'Load model and build index')
+      ?.click()
+  `);
+
+  // Wait for a *settled* state, not merely for the element to exist. The panel
+  // renders immediately with "not loaded yet", so a presence check reads the
+  // initial value and reports a failure for a sync that is still in flight. The
+  // same class of error as waiting for a button that does not exist: the test,
+  // not the code.
+  const settled = await waitFor(
+    `(() => { const text = document.querySelector('[data-testid="bundle-state"]')?.textContent ?? ''; return text !== '' && !text.includes('not loaded yet'); })()`,
+    'the bundle state to settle',
+    120_000,
+  );
+  check('the app reports what bundle it is serving', settled);
+
+  // At this point the app has enrolled its own device and found no bundle — which
+  // is the documented behaviour for a device that registers after publication, and
+  // the reason the app says so rather than serving something. So the rest of the
+  // loop is driven from here: publish for the enrolled devices, then let the app
+  // try again.
+  const beforePublish = await evaluate(
+    `document.querySelector('[data-testid="bundle-state"]')?.textContent ?? ''`,
+  );
+  check(
+    'a device with no published bundle is told so, not served something',
+    beforePublish.includes('No bundle is serving'),
+    beforePublish.trim(),
+  );
+
+  // An ops_manager publishes through the edge function, for whoever is enrolled.
+  const publisher = await provisionPublisher();
+  const publishResponse = await fetch(`${supabaseUrl}/functions/v1/publish-bundle`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${publisher.token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      sops: [
+        {
+          id: 'browser-sop-1',
+          title: 'Browser published procedure',
+          category: 'probe',
+          body: 'A procedure that only exists because the server published it.',
+          suggestedReply: 'No action.',
+          escalationRequired: false,
+          triggerKeywords: ['browser'],
+          status: 'published',
+        },
+        {
+          id: 'browser-sop-2',
+          title: 'Second browser published procedure',
+          category: 'probe',
+          body: 'A second one, so the served count is distinguishable from the file in the repository.',
+          suggestedReply: 'No action.',
+          escalationRequired: false,
+          triggerKeywords: ['browser', 'second'],
+          status: 'published',
+        },
+      ],
+    }),
+  });
+  const published = await publishResponse.json();
+  check(
+    'a published bundle goes out through the edge function',
+    publishResponse.ok,
+    publishResponse.ok ? `bundle ${published.bundleVersion}` : published.error,
+  );
+
+  // Let the app try again, the way a person would after new procedures are sent.
+  await evaluate(`
+    [...document.querySelectorAll('button')]
+      .find((b) => /Retry model load|Load model and build index/.test(b.textContent.trim()))
+      ?.click()
+  `);
+
+  const served = await waitFor(
+    `(() => { const text = document.querySelector('[data-testid="bundle-state"]')?.textContent ?? ''; return text.includes('Serving bundle'); })()`,
+    'the app to serve the newly published bundle',
+    120_000,
+  );
+  check('the app then serves the bundle the server published', served);
+
+  const bundleText = await evaluate(
+    `document.querySelector('[data-testid="bundle-state"]')?.textContent ?? ''`,
+  );
+  check(
+    'and it is that bundle\'s procedures, not the five in the repository file',
+    bundleText.includes('2 procedure(s)') && !bundleText.includes('5 procedure'),
+    bundleText.trim(),
+  );
+  check(
+    'and it names the version the server assigned',
+    bundleText.includes(`bundle ${published.bundleVersion}`),
+    bundleText.trim(),
+  );
 
   // ------------------------------------------------------------ 4. signing out --
 

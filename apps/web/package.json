@@ -13,6 +13,7 @@
   "dependencies": {
     "@sop/core": "workspace:*",
     "@sop/embedder": "workspace:*",
+    "@sop/sync": "workspace:*",
     "@sop/vector-store": "workspace:*",
     "@supabase/supabase-js": "^2.117.1",
     "react": "^19.2.7",

@@ -1011,10 +1011,74 @@ auth principal and the Vite server, so it cannot be a required check until the
 project's secrets are available to CI. It is a local gate today and belongs in
 `ci.yml` as soon as the hosted environment stops being a laptop.
 
-**Still unbuilt.** The corpus still comes from a checked-in `knowledgeBase.json`
-rather than from the bundle a device can now fetch and install — the transport
-exists and the app is not using it yet. There is no automatic flush scheduler, no
-Command Center, and no rotation procedure for the signing key that now exists. The
-product can be signed into and can deliver telemetry, and it still answers queries
-from a file in the repository.
+**Still unbuilt at the time of this record.** The corpus still came from a checked-in
+`knowledgeBase.json` rather than from the bundle a device can now fetch and install
+— superseded by the record below, which closes it. Also missing: an automatic
+flush scheduler, no Command Center, and no rotation procedure for the signing key
+that now exists.
 
+
+## The app serves its own bundle - 2026-09-25
+
+**Executed.** The join between three slices of transport work and the application
+that answers queries. Until now the two had never met: the app loaded
+`apps/web/src/data/knowledgeBase.json` out of the repository, and the transport was
+proven only by probes.
+
+**`apps/web/src/bundle-client.ts`.** Load or mint the device identity, register or
+re-register the device, fetch this device's bundle, install it through the real
+pipeline, and report what is now serving. It never throws for an ordinary
+condition: no bundle yet, a failed fetch and a rejected install are three different
+states the UI has to be able to name, and an exception would collapse them into
+"something went wrong".
+
+**The rule the file exists to enforce: the corpus the app searches is the corpus
+that was signed for this tenant.** No fallback, no bundled copy, no default. The
+app says it has no bundle. Serving a repository file when the tenant's bundle is
+missing is the same failure as telemetry that never left the browser: a product
+that appears to work for a tenant it has not actually been given anything. The
+panel above the query box now names which bundle is serving and how many
+procedures it holds, and `knowledgeBase.json` survives only as a fixture corpus
+for the harnesses.
+
+**`pnpm run verify:signin` - 16/16, in real headless Chrome.** The full loop, driven
+as a person would drive it: sign in, activate, the app enrols its own device and
+finds no bundle and *says so*; an ops_manager publishes through the edge function;
+the app retries and now serves that bundle. The assertion is the procedure count
+the tenant actually has, so a silent fallback to the five-procedure file in the
+repository would fail it.
+
+**Two errors this found, and the second is the valuable one.**
+
+1. `device_registrations.tenant_id` is NOT NULL and `registerDevice` passed `null`.
+2. The device lookup filtered on tenant and platform but **not on `user_id`**, so
+   the app adopted *another user's* device row - the tenant's seed registers a
+   device for a different user - and then tried to re-key it. The re-key silently
+   did nothing, because **row-level security filters rows rather than raising**:
+   the update matched nothing visible and reported success. So the app believed it
+   held a device whose public key it did not have, and the publisher wrapped a
+   bundle for a key nobody could unwrap. The lookup is now scoped to the user, and
+   the update selects the affected rows, because a re-key that RLS filtered to zero
+   is otherwise indistinguishable from one that worked.
+
+**Also worth recording.** Two earlier runs of this harness failed on the *test*
+rather than the code: a presence check that read a panel's initial "not loaded yet"
+text, and a click the app never received. The bundle sync sits behind the explicit
+activation button by design - the model must not be fetched before a person asks -
+so the harness has to ask. And a genuine product behaviour showed up as a failure
+worth keeping: a device that enrols *after* a bundle is published correctly gets no
+bundle until the next publication, and the app reported exactly that instead of
+serving something.
+
+**Verified.** `verify` 6/6, browser sign-in and bundle 16/16, typecheck, lint and
+build green, audit gate 0 new and 0 escalated. Hosted SQL suites unchanged at
+156/156.
+
+**Still unbuilt.** An automatic flush scheduler, so telemetry goes out on a timer
+rather than per decision. The Command Center, which is the only place a tenant's
+procedures can be authored: today they arrive in the publish request body, which is
+honest about the boundary but means no tenant can edit its own policy. A rotation
+procedure for the tenant signing key, which now exists and has never been rotated.
+Offline operation in the browser: the bundle survives a reload, but nothing proves
+the app starts and serves with the network down. And the 36 advisories in the
+unbuilt mobile tree, which the gate stops but does not clear.

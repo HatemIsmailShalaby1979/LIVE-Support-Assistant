@@ -14,7 +14,7 @@ import { TelemetryQueue, type QueryTelemetryEvent } from './telemetry';
 import { SupabaseTransport } from './transport';
 import { useIdentity } from './auth';
 import { SignInGate, SessionBar } from './SignIn';
-import knowledgeBase from './data/knowledgeBase.json';
+import { syncBundle, type BundleState } from './bundle-client';
 
 /** The one sentence the telemetry panel shows. Never claims more than happened. */
 function deliveryText(delivery: DeliveryState, queued: number): string {
@@ -32,7 +32,7 @@ function deliveryText(delivery: DeliveryState, queued: number): string {
   }
 }
 
-const corpus: readonly SopDocument[] = knowledgeBase;
+
 
 /**
  * What the telemetry panel says about delivery.
@@ -89,7 +89,19 @@ function App() {
   const [latencyMs, setLatencyMs] = useState(0);
   const [queue] = useState(() => new TelemetryQueue());
   const [transport] = useState(() => new SupabaseTransport());
+  const [bundleState, setBundleState] = useState<BundleState>({ status: 'unavailable', detail: 'not loaded yet' });
+  const bundleVersion =
+    bundleState.status === 'ready' ? bundleState.bundleVersion : BUNDLE_VERSION;
   const [delivery, setDelivery] = useState<DeliveryState>({ state: 'idle', sent: 0 });
+
+
+  // The corpus the app searches is the bundle that was signed for this tenant.
+  // Empty until one is installed, which is honest: a search over nothing returns
+  // nothing, rather than quietly answering from procedures this tenant never got.
+  const EMPTY_CORPUS: readonly SopDocument[] = [];
+  const activeCorpus: readonly SopDocument[] =
+    bundleState.status === 'ready' ? bundleState.sops : EMPTY_CORPUS;
+
   const [queued, setQueued] = useState(() => queue.pending);
   const [copyStatus, setCopyStatus] = useState('');
   const activeLoad = useRef(0);
@@ -124,10 +136,29 @@ function App() {
     setSearching(false);
     setQueryError('');
     setLoadError('');
-    setLoadProgress({ label: 'Loading search runtime', loaded: 0, total: 0 });
+    setLoadProgress({ label: 'Checking for a policy bundle', loaded: 0, total: 0 });
     setStatus('loading');
 
     try {
+      // The corpus comes from the bundle that was signed for this tenant, and
+      // from nothing else. There is deliberately no fallback to a file in this
+      // repository: silently serving procedures the tenant was never given is the
+      // same failure as telemetry that never left the browser — a product that
+      // appears to work for a tenant it has not actually been given anything.
+      const bundle = await syncBundle();
+      setBundleState(bundle);
+
+      if (attempt !== activeLoad.current) {
+        return;
+      }
+
+      if (bundle.status === 'unavailable') {
+        setStatus('failed');
+        setLoadError(bundle.detail);
+        setLoadProgress(null);
+        return;
+      }
+
       const { createEmbedder } = await import('@sop/embedder');
       if (attempt !== activeLoad.current) {
         return;
@@ -157,7 +188,7 @@ function App() {
         return;
       }
 
-      const passages = buildCorpusPassages(corpus);
+      const passages = buildCorpusPassages(bundle.sops);
       const vectors = await embedder.embedPassages(passages.map((passage) => passage.text));
       const entries = passages.map((passage, position) => {
         const vector = vectors[position];
@@ -256,7 +287,7 @@ function App() {
       const queryEventId = crypto.randomUUID();
       const queryOccurredAt = new Date().toISOString();
       const escalationId = crypto.randomUUID();
-      const nextView = buildAgentView(decision, corpus, BUNDLE_VERSION, escalationId);
+      const nextView = buildAgentView(decision, activeCorpus, bundleVersion, escalationId);
 
       setView(nextView);
       setLatencyMs(performance.now() - started);
@@ -321,7 +352,7 @@ function App() {
         setSearching(false);
       }
     }
-  }, [index, inputText, minMargin, queue, flush]);
+  }, [index, inputText, minMargin, queue, flush, activeCorpus, bundleVersion]);
 
 
   const copyToClipboard = useCallback(async () => {
@@ -339,8 +370,7 @@ function App() {
   }, [suggestedReply]);
 
   const sopTitle = (sopId: string) =>
-    corpus.find((document) => document.id === sopId)?.title ?? sopId;
-
+    activeCorpus.find((document) => document.id === sopId)?.title ?? sopId;
   const { auth, signIn, signOut } = useIdentity();
 
   // A signed-out visitor gets the sign-in form and nothing else — not a
@@ -365,6 +395,14 @@ function App() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
+        <div
+          data-testid="bundle-state"
+          className="mb-4 text-xs text-gray-500 border border-gray-200 rounded px-3 py-2"
+        >
+          {bundleState.status === 'ready'
+            ? `Serving bundle ${bundleState.bundleVersion} — ${bundleState.sops.length} procedure(s), signed for this tenant.`
+            : `No bundle is serving: ${bundleState.detail}`}
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-md p-6">

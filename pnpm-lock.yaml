@@ -63,6 +63,9 @@ importers:
       '@sop/embedder':
         specifier: workspace:*
         version: link:../../packages/embedder
+      '@sop/sync':
+        specifier: workspace:*
+        version: link:../../packages/sync
       '@sop/vector-store':
         specifier: workspace:*
         version: link:../../packages/vector-store
