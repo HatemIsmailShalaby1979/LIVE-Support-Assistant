@@ -103,11 +103,27 @@ Deno.serve(async (request) => {
   try {
     body = await request.json();
   } catch {
-    return json({ error: 'the body must be JSON' }, 400);
+    body = {};
   }
 
-  if (!Array.isArray(body.sops)) {
-    return json({ error: 'the body must carry a sops array' }, 400);
+  // The corpus is read from the database, not from the request.
+  //
+  // A caller-supplied corpus is the last thing that should be authoritative: it
+  // means the device's procedures are whatever the HTTP body happened to contain,
+  // and a tenant cannot review what it is about to be told. So this function
+  // assembles the corpus from the tenant's own published procedures, decrypting
+  // each body with the key that only this side of the platform holds.
+  const read = await readCorpus(client, tenant as string);
+  if ('error' in read) {
+    return json({ error: read.error }, 502);
+  }
+  const corpus = read.corpus;
+
+  if (corpus.length === 0) {
+    return json(
+      { error: 'this tenant has no published procedure, so there is nothing to publish' },
+      409,
+    );
   }
 
   const required = [
@@ -186,7 +202,7 @@ Deno.serve(async (request) => {
   const published = await publishBundle({
     tenantId: tenant as string,
     bundleVersion: Number(nextVersion),
-    sops: body.sops as never,
+    sops: corpus as never,
     model: model as never,
     signingPrivateKey,
     wrappingPrivateKey,
@@ -227,4 +243,100 @@ Deno.serve(async (request) => {
 
 function toHex(bytes: Uint8Array): string {
   return [...bytes].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+function fromHex(hex: string): Uint8Array {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < bytes.length; i += 1) {
+    bytes[i] = Number.parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+  }
+  return bytes;
+}
+
+function base64ToBytes(value: string): Uint8Array {
+  const binary = atob(value);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
+/**
+ * Assemble the tenant's published procedures, decrypting each body.
+ *
+ * Only `published` procedures, and only each one's latest version — an older
+ * version is history, not what agents should be told. A body that will not decrypt
+ * fails the whole read rather than being skipped: a device that silently receives
+ * a tenant's procedures minus one is worse than a publish that reports an error.
+ * The failure names the procedure, because "the server could not read this
+ * tenant's procedures" sends a reader to the wrong system entirely.
+ */
+async function readCorpus(
+  client: ReturnType<typeof createClient>,
+  tenantId: string,
+): Promise<{ corpus: unknown[] } | { error: string }> {
+  const bodyKeyValue = Deno.env.get('SOP_BODY_KEY') ?? '';
+  if (bodyKeyValue === '') return { error: 'the server has no SOP_BODY_KEY' };
+
+  const { data: sops, error } = await client
+    .from('sops')
+    .select('id, title')
+    .eq('tenant_id', tenantId)
+    .eq('status', 'published');
+
+  if (error) return { error: `could not read this tenant's procedures: ${error.message}` };
+
+  const key = await crypto.subtle.importKey(
+    'raw',
+    base64ToBytes(bodyKeyValue) as BufferSource,
+    { name: 'AES-GCM' },
+    false,
+    ['decrypt'],
+  );
+
+  const corpus: unknown[] = [];
+
+  for (const sop of sops ?? []) {
+    const { data: version } = await client
+      .from('sop_versions')
+      .select('body_ciphertext')
+      .eq('sop_id', sop.id)
+      .order('version', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (version === null || version === undefined) {
+      return { error: `procedure "${sop.title}" has no version to publish` };
+    }
+
+    // iv || ciphertext || tag, as written by upsert-sop. Anything shorter, or
+    // anything that fails the authentication tag, is not a body this server wrote —
+    // a fixture placeholder, typically. Named rather than skipped, because
+    // publishing around it would ship a tenant fewer procedures than it believes.
+    const packed = fromHex(String(version.body_ciphertext).replace(/^\\x/, ''));
+
+    if (packed.length < 12 + 16) {
+      return {
+        error:
+          `procedure "${sop.title}" has a body this server did not write, so it cannot be ` +
+          'published. Every published procedure must have been authored through the server.',
+      };
+    }
+
+    try {
+      const plaintext = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: packed.slice(0, 12) },
+        key,
+        packed.slice(12) as BufferSource,
+      );
+      corpus.push({
+        id: sop.id,
+        title: sop.title,
+        ...JSON.parse(new TextDecoder().decode(plaintext)),
+      });
+    } catch {
+      return { error: `procedure "${sop.title}" could not be decrypted with the server's body key` };
+    }
+  }
+
+  return { corpus };
 }

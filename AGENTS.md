@@ -1082,3 +1082,63 @@ procedure for the tenant signing key, which now exists and has never been rotate
 Offline operation in the browser: the bundle survives a reload, but nothing proves
 the app starts and serves with the network down. And the 36 advisories in the
 unbuilt mobile tree, which the gate stops but does not clear.
+## The corpus comes from the tenant's records - 2026-09-25
+
+**Executed.** The Command Center's first half, and the half that decides whether
+the rest is worth building. Until now the publish function took the corpus in the
+HTTP request body: the procedures a device was told were whatever the caller typed.
+A tenant could not review them, could not change them, and no audit trail existed.
+
+**`supabase/functions/upsert-sop`.** A procedure body is stored encrypted
+(`sop_versions.body_ciphertext`), and the key that encrypts it must never be held
+by the browser that typed it - so authoring is the same shape as publishing. The
+caller is authorized by row-level security; the function owns the key. Every edit
+is a new immutable version, never an update, and `sops.status` moves draft ->
+in_review -> published -> retired. The encrypted body is the whole procedure
+document as JSON; the title stays in the clear, because a procedure's name is not
+the sensitive part and an auditor needs to see it without a decryption key.
+
+**`publish-bundle` now reads the corpus from the database** and decrypts each
+published procedure's latest version with the key only that side of the platform
+holds. A request body is no longer authoritative for anything.
+
+**`pnpm run probe:corpus` - 12/12.** An editor authors a procedure; the stored body
+is not readable as text and a hash of the plaintext is recorded beside it; an agent
+cannot author and a procedure with no summary is refused; a tenant with nothing
+published cannot publish; a body this server did not write is refused **by name**;
+publishing sends an empty request body and still succeeds; and a device installs a
+bundle whose procedure summary is the authored text, verbatim.
+
+**Three errors this found.**
+
+1. The first read of the tenant's procedures failed and the function returned a
+   generic 502. The seed leaves placeholder procedures marked `published` whose
+   body is a single zero byte, which is not an envelope this server wrote - so the
+   function crashed on a `decrypt` it could not catch. It now refuses with the
+   procedure's own name, because "the server could not read this tenant's
+   procedures" sends a reader to the wrong system entirely.
+2. I had invented a "this tenant already has a procedure" rule with a 409, and the
+   lookup behind it used `maybeSingle()` over a table that legitimately holds
+   several rows. A tenant is supposed to have many procedures. Removed.
+3. The probe registered its device *after* publishing, so the fetch correctly
+   returned null - the same ordering lesson as the browser harness, now the third
+   time this shape has cost a run. The device has to exist before the publish,
+   because a bundle wraps its key only for the devices enrolled at that moment.
+
+**One test bug worth naming.** The check that a non-decryptable body is refused
+depended on a seeded placeholder that the *previous* run had already retired, so it
+passed once and then reported `undefined` forever. A test that measures the history
+of the test is worse than no test: it now creates its own undecryptable procedure
+and retires it afterwards.
+
+**Still unbuilt.** The Command Center *interface* - no screen yet where an author
+types a procedure, reviews it, or promotes it. `upsert-sop` is the path that screen
+will call, and it is proven, so the UI is a client of something that works rather
+than a thing being designed against a hope. Also still open: the escalation
+console, the automatic flush scheduler, a rotation procedure for the signing key,
+and offline operation in the browser.
+
+**The hosted project is now carrying real content.** It holds encrypted procedure
+bodies written by this function, real bundles, and a dozen throwaway auth
+principals. It remains a development database and must not hold customer data
+until a retention policy exists.
