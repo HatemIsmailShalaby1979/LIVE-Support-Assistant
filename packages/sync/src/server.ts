@@ -24,6 +24,7 @@ import {
   generateContentKey,
   sha256Hex,
   signBytes,
+  tenantKekSalt,
   wrapContentKey,
 } from './crypto.js';
 import { manifestBytes, type BundleManifest, type SignedBundle } from './manifest.js';
@@ -50,7 +51,11 @@ export interface PublishParams {
   readonly model: ModelIdentity;
   readonly signingPrivateKey: CryptoKey;
   readonly wrappingPrivateKey: CryptoKey;
-  readonly kekSalt: Uint8Array;
+  /**
+   * Optional. Derived from the tenant id when omitted, so a publisher and a
+   * device cannot disagree about it.
+   */
+  readonly kekSalt?: Uint8Array;
   readonly devices: readonly EnrolledDevice[];
   readonly publishedAt?: string;
 }
@@ -109,7 +114,7 @@ export async function publishBundle(
     const kek = await deriveKek(
       params.wrappingPrivateKey,
       device.publicKey,
-      params.kekSalt,
+      params.kekSalt ?? tenantKekSalt(params.tenantId),
       KEK_INFO,
     );
 

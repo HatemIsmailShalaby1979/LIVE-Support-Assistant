@@ -21,6 +21,7 @@ import {
   decryptPayload,
   fromBase64,
   sha256Hex,
+  tenantKekSalt,
   unwrapContentKey,
   verifyBytes,
 } from './crypto.js';
@@ -61,7 +62,12 @@ export interface SyncIdentity {
   readonly devicePrivateKey: CryptoKey;
   readonly tenantSigningPublicKey: CryptoKey;
   readonly serverWrappingPublicKey: CryptoKey;
-  readonly kekSalt: Uint8Array;
+  /**
+   * Optional. Derived from the manifest's tenant id when omitted, which is the
+   * case for any real device: the salt has to match the publisher's, and a value
+   * both sides had to be handed is a value they can silently disagree on.
+   */
+  readonly kekSalt?: Uint8Array;
 }
 
 export type InstallResult =
@@ -129,7 +135,7 @@ export async function installBundle(
   const kek = await deriveKek(
     identity.devicePrivateKey,
     identity.serverWrappingPublicKey,
-    identity.kekSalt,
+    identity.kekSalt ?? tenantKekSalt(signed.manifest.tenantId),
     KEK_INFO,
   );
 

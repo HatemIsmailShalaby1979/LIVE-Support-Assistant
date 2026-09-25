@@ -74,6 +74,42 @@ export async function generateWrappingKeyPair(): Promise<CryptoKeyPair> {
   return crypto.subtle.generateKey({ name: 'X25519' }, true, ['deriveBits']);
 }
 
+/**
+ * Generate a device's X25519 keypair, with a non-extractable private key.
+ *
+ * For an asymmetric algorithm the `extractable` argument applies to the private
+ * key only; the public key is always exportable, which is what makes this
+ * possible: the public half still has to be exported to register the device.
+ *
+ * A non-extractable private key cannot be read out by any script on the page,
+ * which is the point. It can still be used to derive bits, and it can still be
+ * written to IndexedDB, because a CryptoKey is structured-cloneable and the
+ * browser re-wraps it with its own origin protection. So a device can persist
+ * its identity and still never be able to hand the key to anything.
+ */
+export async function generateDeviceKeyPair(): Promise<CryptoKeyPair> {
+  return crypto.subtle.generateKey({ name: 'X25519' }, false, ['deriveBits']);
+}
+
+/**
+ * The per-tenant KDF salt, derived rather than agreed.
+ *
+ * The salt used to derive a key-encryption key has to be identical on the
+ * publishing server and on every device, or nothing unwraps. It was previously
+ * a parameter both sides had to be handed, which is a coordination bug waiting
+ * to happen: nothing in the protocol or the database carried it, so a publisher
+ * and a device could silently disagree and the failure would surface as a GCM
+ * tag error on the content key.
+ *
+ * A KDF salt is not secret — it only has to be unique per tenant — so deriving it
+ * from the tenant id removes the coordination entirely. The tenant id is inside
+ * the signed manifest, so a device can compute the right salt from a value it has
+ * already authenticated.
+ */
+export function tenantKekSalt(tenantId: string): Uint8Array {
+  return encodeUtf8(`sop-bundle-kek-salt-v1:${tenantId}`);
+}
+
 /** Export an X25519 public key as base64 for the device registry. */
 export async function exportPublicKey(key: CryptoKey): Promise<string> {
   const raw = await crypto.subtle.exportKey('raw', key);

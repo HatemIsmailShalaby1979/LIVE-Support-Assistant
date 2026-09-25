@@ -21,6 +21,7 @@
     "probe:auth": "node tooling/transport/probe-auth.mjs",
     "probe:telemetry": "node tooling/transport/probe-telemetry.mjs",
     "probe:bundle": "node tooling/transport/probe-bundle.mjs",
+    "probe:publish": "node tooling/transport/probe-publish.mjs",
     "audit": "node tooling/audit-gate.mjs",
     "audit:update": "node tooling/audit-gate.mjs --update"
   },

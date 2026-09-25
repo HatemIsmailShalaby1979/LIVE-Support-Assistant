@@ -875,19 +875,86 @@ is computed over canonical sorted-key JSON. And the platform column is
 constrained to `web`/`desktop`/`mobile`, so a probe run must re-key its device
 rather than register a new identity under a fresh label.
 
-**Not built.** The publish half still runs in the probe process, where the tenant
-signing key is generated per run and discarded. Production wants it behind an
-authenticated edge function holding that key in a server-side secret — the
-protocol is identical, and the edge function is the whole of the difference. A
-device-key persistence layer is also still missing: the device's private key
-lives in memory for the length of a probe, which is fine for a test and not for
-a browser that reloads.
+## Device identity and server-side publish — 2026-09-25
 
-**Verified after the change.** 156 SQL probes locally and on the hosted project,
-0 failures, with the 14th migration applied. JS gate 6/6. Audit gate 0 new, 0
-escalated. Typecheck, lint and build green.
+**Executed.** The two gaps the previous record left open, both closed and proven
+rather than described.
 
-**Still unbuilt.** A sign-in surface in the UI, the publish edge function,
-device-key persistence, an automatic flush scheduler, the Command Center, and
-everything in the original audit's P1 and P2 lists.
+**Gap 1 — a device that forgets itself on reload.** `packages/sync/src/identity-store.ts`
+adds `DeviceIdentity`, `MemoryIdentityStore` and `IdbIdentityStore`, plus
+`newDeviceIdentity`. Two properties carry the whole design:
+
+- The device private key is generated **non-extractable** (`generateDeviceKeyPair`).
+  For an asymmetric algorithm the `extractable` argument applies to the private
+  key only, so the public half is still exportable and can be registered — which
+  is the only reason a non-extractable keypair is usable at all. A `CryptoKey`
+  survives a reload because it is structured-cloneable and the browser re-wraps
+  it under origin protection, so the key persists without any script on the page
+  being able to read it out.
+- The store holds exactly one record and replaces it in a single IndexedDB
+  transaction, so a torn identity is never observable. Same discipline as the
+  bundle store: an identity is a unit.
+
+**A coordination bug found while doing it.** The KEK salt was a parameter both
+the publisher and the device had to be handed, and nothing in the protocol or the
+database carried it — so a publisher and a device could silently disagree, and the
+failure would surface as an opaque GCM tag error on the content key. It is now
+derived: `tenantKekSalt(tenantId)`. A KDF salt is not secret, only unique per
+tenant, and the tenant id is inside the signed manifest, so a device can compute
+the right salt from a value it has already authenticated. Both `PublishParams.kekSalt`
+and `SyncIdentity.kekSalt` are now optional and default to it.
+
+**`verify-persistence.mjs` — 27 checks, 0 failures** (was 19). The new checks run
+through a real IndexedDB and then through the **real install pipeline** after a
+simulated restart: the private key cannot be exported before or after a reload,
+the restored key installs a bundle with no salt passed by either side, the corpus
+round-trips, one tenant's derived salt is stable and two tenants' differ, and
+clear removes it.
+
+**Gap 2 — the signing key was in a test process.**
+`supabase/functions/publish-bundle/index.ts` now holds the tenant signing keypair
+and the server wrapping keypair in the platform's secret store. It imports
+`publishBundle` from the **built** `packages/sync/dist` rather than
+reimplementing any of it, and that works because the package compiles to fully
+relative specifiers — `@sop/core` is a type-only import, so nothing bare survives
+and Deno can load it with no bundler and no import map.
+
+**Authorization is not decided in the function.** The caller's own JWT is
+forwarded to PostgREST, so `app.publish_policy_bundle` runs as the caller and RLS
+is what says no. The function holds the key; it does not get a say in who may use
+it. An early 403 on the role claim was added only so that a refusal is not
+reported as a 502 "bad gateway" — the first version returned 502 with "new row
+violates row-level security policy" underneath, which blames the wrong system.
+
+**`pnpm run probe:publish` — 8/8.** An ops_manager publishes through the function;
+the device fetches that bundle and the signature verifies and installs; an agent
+is refused 403; a caller with no session gets 401; the response carries only
+`bundleVersion`, `manifest` and `wrappedFor`, and no signing material.
+
+**Three errors the probe caught, one of them mine twice.**
+
+1. `onConflict: 'id'` on the device registration does not conflict where the unique
+   key actually is — `(tenant_id, user_id, platform)`. The insert was rejected, the
+   *previous* run's public key stayed registered, the bundle was wrapped for a key
+   nobody held, and the install failed with `key_unwrap_failed`. That reads like a
+   crypto bug and is actually a stale fixture.
+2. The first `401` path proved the boundary, but the role check was missing, so an
+   agent reached the database and was stopped by RLS — correct outcome, wrong
+   status code, and the error text named the database rather than the caller.
+3. `erasableSyntaxOnly` in the package tsconfig rejects constructor parameter
+   properties, so `IdbIdentityStore`'s factory is a declared field.
+
+**Verified.** `pnpm run verify` 6/6. Hosted SQL suites 156/156. `probe:bundle` 16/16,
+`probe:publish` 8/8, `probe:auth` 7/7, `probe:telemetry` 11/11. Typecheck, lint and
+build green. Audit gate 0 new, 0 escalated.
+
+**Still unbuilt.** A sign-in surface in the UI — the probes authenticate
+programmatically, so nobody has actually signed in to this product yet. An
+automatic flush scheduler. The Command Center, which is where the corpus the
+function encrypts will eventually come from: today it arrives in the request body,
+which is honest about the boundary but is not where a tenant's procedures live.
+Key rotation now has a signing key to rotate and no procedure for it. And the
+hosted project holds a real signing key, real fixture rows and throwaway auth
+principals: it is a development database and must not hold customer data until the
+retention policy exists.
 

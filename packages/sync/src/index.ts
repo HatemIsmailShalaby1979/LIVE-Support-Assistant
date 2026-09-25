@@ -17,16 +17,21 @@ export {
   exportPublicKey,
   fromBase64,
   generateContentKey,
+  generateDeviceKeyPair,
   generateSigningKeyPair,
   generateWrappingKeyPair,
   importWrappingPublicKey,
   sha256Hex,
   signBytes,
+  tenantKekSalt,
   toBase64,
   unwrapContentKey,
   verifyBytes,
   wrapContentKey,
 } from './crypto.js';
+
+export { IdbIdentityStore, MemoryIdentityStore, newDeviceIdentity } from './identity-store.js';
+export type { DeviceIdentity, IdentityStore } from './identity-store.js';
 
 export { manifestBytes } from './manifest.js';
 export type { BundleManifest, BundlePayload, SignedBundle } from './manifest.js';

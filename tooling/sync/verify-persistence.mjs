@@ -33,7 +33,10 @@ import {
   exportPublicKey,
   generateSigningKeyPair,
   generateWrappingKeyPair,
+  IdbIdentityStore,
   importWrappingPublicKey,
+  newDeviceIdentity,
+  tenantKekSalt,
   installBundle,
   manifestBytes,
   publishBundle,
@@ -249,6 +252,120 @@ await scenario(
   const second = new MemoryBundleStore();
   const after = await second.active();
   expect('memory: restart loses the bundle (documented limitation)', null, after, after === null);
+
+// ---- device identity persistence ----
+//
+// The bundle store is only half the problem. A device whose private key lives in
+// memory is a new device on every reload, and the failure looks like a crypto bug:
+// it cannot unwrap a bundle it was legitimately sent.
+//
+// Driven through a real IndexedDB (fake-indexeddb) and, more importantly, through
+// the *real* install pipeline — not a mock of it — after a simulated restart that
+// keeps only the database.
+
+{
+  const server = await makeServer();
+  const serverWrappingPublicKeyBase64 = await exportPublicKey(server.wrapping.publicKey);
+  const tenantSigningPublicKeyBase64 = await exportPublicKey(server.signing.publicKey);
+
+  const minted = await newDeviceIdentity(
+    'device-persist-1',
+    tenantSigningPublicKeyBase64,
+    serverWrappingPublicKeyBase64,
+  );
+
+  let exportable = true;
+  try {
+    await crypto.subtle.exportKey('pkcs8', minted.identity.devicePrivateKey);
+  } catch {
+    exportable = false;
+  }
+  expect('identity: the private key cannot be exported', false, exportable, !exportable);
+
+  const store = new IdbIdentityStore();
+  await store.save(minted.identity);
+
+  // Restart: a new store object over the same database is exactly what a page
+  // reload produces.
+  const afterReload = new IdbIdentityStore();
+  const restored = await afterReload.load();
+  expect('identity: survives a reload', true, restored !== null, restored !== null);
+
+  let restoredExportable = true;
+  try {
+    await crypto.subtle.exportKey('pkcs8', restored.devicePrivateKey);
+  } catch {
+    restoredExportable = false;
+  }
+  expect('identity: still not exportable after a reload', false, restoredExportable, !restoredExportable);
+
+  // The point of persisting it: the restored key still installs a bundle. Neither
+  // side passes a KEK salt here, so this exercises the derived path — a publisher
+  // and a device that were never told about each other.
+  const published = await publishBundle({
+    tenantId: '11111111-1111-1111-1111-111111111111',
+    bundleVersion: 1,
+    sops: corpus,
+    model: MODEL,
+    signingPrivateKey: server.signing.privateKey,
+    wrappingPrivateKey: server.wrapping.privateKey,
+    devices: [
+      { deviceId: 'device-persist-1', publicKey: await importWrappingPublicKey(minted.devicePublicKeyBase64) },
+    ],
+  });
+
+  const bundleStore = new MemoryBundleStore();
+  const outcome = await installBundle(
+    bundleForDevice(published, 'device-persist-1'),
+    {
+      devicePrivateKey: restored.devicePrivateKey,
+      tenantSigningPublicKey: restored.tenantSigningPublicKey,
+      serverWrappingPublicKey: restored.serverWrappingPublicKey,
+    },
+    bundleStore,
+  );
+  expect(
+    'identity: the restored key installs a bundle (no salt passed)',
+    'installed',
+    outcome.outcome,
+    outcome.outcome === 'installed',
+  );
+
+  const installed = await bundleStore.active();
+  expect(
+    'identity: the corpus round-trips after a reload',
+    JSON.stringify(corpus),
+    JSON.stringify(installed?.sops ?? null),
+    JSON.stringify(installed?.sops ?? null) === JSON.stringify(corpus),
+  );
+
+  // A publisher and a device that disagree about the salt unwrap nothing, and the
+  // failure is an opaque GCM tag error rather than anything that names the cause.
+  // That is why the salt is derived rather than agreed: two tenants must derive
+  // different salts, and the same tenant must derive the same one on both sides.
+  const alpha = tenantKekSalt('11111111-1111-1111-1111-111111111111');
+  const beta = tenantKekSalt('22222222-2222-2222-2222-222222222222');
+  expect(
+    'identity: the derived salt is stable for one tenant',
+    true,
+    bytesEqual(alpha, tenantKekSalt('11111111-1111-1111-1111-111111111111')),
+    bytesEqual(alpha, tenantKekSalt('11111111-1111-1111-1111-111111111111')),
+  );
+  expect(
+    'identity: two tenants derive different salts',
+    true,
+    bytesEqual(alpha, beta),
+    !bytesEqual(alpha, beta),
+  );
+
+  await afterReload.clear();
+  expect('identity: clear removes it', null, await afterReload.load(), (await afterReload.load()) === null);
+}
+
+function bytesEqual(a, b) {
+  if (a.length !== b.length) return false;
+  return a.every((value, index) => value === b[index]);
+}
 }
 
 // ---- report ----
