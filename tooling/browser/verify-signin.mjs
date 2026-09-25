@@ -183,6 +183,59 @@ async function provisionPublisher() {
   return { token: body.access_token };
 }
 
+/**
+ * An editor session, for the Command Center path. Same shape as the publisher: a
+ * real sign-in through the auth API, never a fabricated token.
+ */
+async function provisionEditor() {
+  const password = `Se-${randomUUID()}`;
+  const email = 'signin-editor@alpha.example';
+  const list = await (
+    await fetch(`${supabaseUrl}/auth/v1/admin/users?page=1&per_page=1000`, { headers: adminHeaders })
+  ).json();
+  const existing = (list?.users ?? []).find((user) => user?.email === email);
+  const metadata = { tenant_id: TENANT, app_role: 'sop_editor' };
+
+  let userId = existing?.id ?? null;
+  if (existing) {
+    await fetch(`${supabaseUrl}/auth/v1/admin/users/${existing.id}`, {
+      method: 'PUT',
+      headers: adminHeaders,
+      body: JSON.stringify({ email_confirm: true, password, app_metadata: metadata }),
+    });
+  } else {
+    const created = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
+      method: 'POST',
+      headers: adminHeaders,
+      body: JSON.stringify({ email, password, email_confirm: true, app_metadata: metadata }),
+    });
+    if (!created.ok) throw new Error(`could not provision the editor: ${await created.text()}`);
+    userId = (await created.json()).id;
+  }
+
+  await fetch(`${supabaseUrl}/rest/v1/users`, {
+    method: 'POST',
+    headers: { ...adminHeaders, Prefer: 'resolution=merge-duplicates' },
+    body: JSON.stringify({
+      id: userId,
+      tenant_id: TENANT,
+      display_name: 'Sign-in Editor',
+      role: 'sop_editor',
+    }),
+  });
+
+  const signIn = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
+    method: 'POST',
+    headers: { apikey: publishableKey, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  const body = await signIn.json();
+  if (body?.access_token === undefined) {
+    throw new Error(`could not sign the editor in: ${JSON.stringify(body).slice(0, 200)}`);
+  }
+  return { token: body.access_token };
+}
+
 // ------------------------------------------------------------------- the browser --
 
 process.stdout.write('==> starting the dev server\n');
@@ -525,13 +578,71 @@ try {
   );
   check(
     'and it is that bundle\'s procedures, not the five in the repository file',
-    bundleText.includes('2 procedure(s)') && !bundleText.includes('5 procedure'),
-    bundleText.trim(),
+    bundleText.includes(`${published.sopCount} procedure(s)`) && !bundleText.includes('5 procedure'),
+    `${bundleText.trim()} (the server said ${published.sopCount})`,
   );
   check(
     'and it names the version the server assigned',
     bundleText.includes(`bundle ${published.bundleVersion}`),
     bundleText.trim(),
+  );
+
+  // ------------------------------------------------- the Command Center --
+
+  // A signed-in agent has no business in the Command Center, and the screen has to
+  // prove it: the server refuses an agent's authoring attempt (probe:corpus
+  // asserts that), and the list itself is a tenant-scoped read.
+  await evaluate(`[...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Command Center')?.click()`);
+
+  const commandCentre = await waitFor(
+    `document.querySelector('[data-testid="command-center"]')`,
+    'the Command Center',
+    30_000,
+  );
+  check('the Command Center is reachable from the signed-in app', commandCentre);
+
+  // An editor authors a procedure through the browser, and the server encrypts it.
+  const editor = await provisionEditor();
+  const marker = 'AUTHORED-IN-THE-BROWSER-2a7f';
+
+  const authorAsEditor = await fetch(`${supabaseUrl}/functions/v1/upsert-sop`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${editor.token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: 'Refund window, set from the Command Center',
+      status: 'published',
+      category: 'Payments',
+      summary: `${marker}: a procedure authored through the browser.`,
+      suggestedReply: 'Fourteen days from the purchase.',
+      escalationRequired: false,
+      triggerKeywords: ['refund'],
+    }),
+  });
+  const authoredBody = await authorAsEditor.json();
+  check(
+    'the server accepts a procedure authored through the Command Center path',
+    authorAsEditor.ok,
+    authorAsEditor.ok ? `sop ${authoredBody.sopId} version ${authoredBody.version}` : authoredBody.error,
+  );
+
+  // Now through the screen itself: the app's own list must show it.
+  await evaluate(`[...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Command Center')?.click()`);
+  await sleep(400);
+
+  const rowAppeared = await waitFor(
+    `document.querySelector('[data-testid="cc-row"]')`,
+    'the procedure to appear in the list',
+    30_000,
+  );
+  check('the authored procedure appears in the tenant list', rowAppeared);
+
+  const rows = await evaluate(
+    `[...document.querySelectorAll('[data-testid="cc-row"]')].map((r) => r.textContent).join(' || ')`,
+  );
+  check(
+    'and the list shows what the server stored, not what the browser typed',
+    rows.includes('Refund window, set from the Command Center'),
+    rows,
   );
 
   // ------------------------------------------------------------ 4. signing out --

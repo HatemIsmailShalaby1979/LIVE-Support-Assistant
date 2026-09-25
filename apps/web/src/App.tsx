@@ -14,6 +14,7 @@ import { TelemetryQueue, type QueryTelemetryEvent } from './telemetry';
 import { SupabaseTransport } from './transport';
 import { useIdentity } from './auth';
 import { SignInGate, SessionBar } from './SignIn';
+import { CommandCenter } from './CommandCenter';
 import { syncBundle, type BundleState } from './bundle-client';
 
 /** The one sentence the telemetry panel shows. Never claims more than happened. */
@@ -90,6 +91,7 @@ function App() {
   const [queue] = useState(() => new TelemetryQueue());
   const [transport] = useState(() => new SupabaseTransport());
   const [bundleState, setBundleState] = useState<BundleState>({ status: 'unavailable', detail: 'not loaded yet' });
+  const [surface, setSurface] = useState<'ask' | 'command'>('ask');
   const bundleVersion =
     bundleState.status === 'ready' ? bundleState.bundleVersion : BUNDLE_VERSION;
   const [delivery, setDelivery] = useState<DeliveryState>({ state: 'idle', sent: 0 });
@@ -393,7 +395,36 @@ function App() {
           </p>
         </div>
       </header>
+      <nav aria-label="Workspace" className="max-w-7xl mx-auto px-4 pt-3">
+        <div className="inline-flex rounded border border-gray-300 bg-white text-sm" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            data-testid="tab-ask"
+            aria-selected={surface === 'ask'}
+            onClick={() => setSurface('ask')}
+            className={`px-3 py-1.5 rounded-l ${surface === 'ask' ? 'bg-gray-900 text-white' : 'text-gray-600'}`}
+          >
+            Ask
+          </button>
+          <button
+            type="button"
+            role="tab"
+            data-testid="tab-command"
+            aria-selected={surface === 'command'}
+            onClick={() => setSurface('command')}
+            className={`px-3 py-1.5 rounded-r border-l border-gray-300 ${surface === 'command' ? 'bg-gray-900 text-white' : 'text-gray-600'}`}
+          >
+            Command Center
+          </button>
+        </div>
+      </nav>
 
+      {surface === 'command' ? (
+        <main className="max-w-4xl mx-auto px-4 py-8">
+          <CommandCenter onPublished={() => void loadIndex()} />
+        </main>
+      ) : (
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div
           data-testid="bundle-state"
@@ -693,6 +724,7 @@ function App() {
           </div>
         </div>
       </main>
+      )}
 
       <footer className="bg-gray-100 border-t border-gray-200 mt-12">
         <div className="max-w-7xl mx-auto px-4 py-6 text-center text-gray-600 text-sm">

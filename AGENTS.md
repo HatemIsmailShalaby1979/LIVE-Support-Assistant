@@ -1142,3 +1142,62 @@ and offline operation in the browser.
 bodies written by this function, real bundles, and a dozen throwaway auth
 principals. It remains a development database and must not hold customer data
 until a retention policy exists.
+## The Command Center interface — 2026-09-25
+
+**Executed.** The screen an editor actually works in. Until now `upsert-sop` was a
+proven function that only a script could call, so the honest statement about the
+Command Center was "the path a screen will use" — a promise about a future, not a
+product.
+
+**`apps/web/src/command-center.ts` is the contract before the screen.** What a
+procedure looks like from a browser, and the four things a tenant can do to its own
+policy. Both mutations go through an edge function, never to a table directly,
+because the body is stored encrypted and the key must not be reachable from a page
+that accepted the text.
+
+**`apps/web/src/CommandCenter.tsx`** is a tab beside the agent view, not a separate
+product, so navigation answers "where am I" on every screen. It lists the tenant's
+procedures with status and version, authors a new one, and publishes to devices.
+
+**`pnpm run verify:signin` — 20/20, in real headless Chrome.** The Command Center is
+reachable from the signed-in app; a procedure authored through it is accepted by the
+server and appears in the list the app renders; and the list shows what the server
+stored rather than what the browser typed. The whole harness, sign-in to bundle to
+authoring, is one browser run.
+
+**Two design decisions worth keeping.** Every action has a visible surface: saving
+and publishing both disable their button and say what they are doing, because each
+is a round trip to a server that encrypts and signs. And failures show the edge
+function's own text rather than a flattened message — a refusal that reads
+"permission denied" with no subject is not actionable, which is why the functions
+name the procedure and the cause.
+
+**One limit that is visible rather than hidden.** A stored body cannot be read back
+— the browser has no key — so the screen can list, author, and change a status, but
+it cannot load a procedure's text for editing. The status dropdown therefore
+carries a placeholder body and says so in the code, because a control that appeared
+to preserve content while silently replacing it would be worse than one that admits
+the limit. Revising content properly needs a server path that decrypts to an
+authorised editor, which is a privilege question rather than a plumbing one.
+
+**Two errors the browser run caught, both in my own assertions.** The first pinned
+an expected procedure count of two, and failed the moment another probe changed the
+tenant's published set; the publish function now returns `sopCount` and the assertion
+compares against what the server said, which is the claim being tested. And a title
+mismatch was hidden by truncating the diagnostic to 120 characters, so the failure
+read as "the row is missing" when the row was present and the detail had been cut
+off. Both are the same lesson as the earlier false failures in this harness: when a
+check fails, find out whether the check is right before changing the code.
+
+**Verified.** `verify` 6/6, `probe:corpus` 12/12, browser 20/20, typecheck, lint and
+build green, audit gate 0 new and 0 escalated. Hosted SQL suites unchanged at
+156/156.
+
+**Still unbuilt, in the order the product needs them.** A read-back path so an
+editor can revise a procedure's text. The escalation console, which is the other
+half of the Command Center and where a human actually picks up the handovers this
+system produces. An automatic flush scheduler, so telemetry goes out on a timer
+rather than per decision. A rotation procedure for the tenant signing key. Offline
+operation in the browser, unproven: the bundle survives a reload but nothing has
+demonstrated the app starting and serving with the network down. And the 36
+advisories in the unbuilt mobile tree, which the gate stops and does not clear.

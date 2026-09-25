@@ -237,6 +237,12 @@ Deno.serve(async (request) => {
   return json({
     bundleVersion: storedVersion,
     manifest: published.manifest,
+    // The procedure count, so a client can assert what it should be serving
+    // without hard-coding a number. The tenant's published set moves as procedures
+    // are authored, so an assertion that pins a count passes until anything else
+    // touches the tenant, and then fails for a reason that has nothing to do with
+    // what is being tested.
+    sopCount: corpus.length,
     wrappedFor: devices.length,
   });
 });
