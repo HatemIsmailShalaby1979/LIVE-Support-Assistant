@@ -1257,3 +1257,75 @@ testing.
 and build for the whole of this change. All four defects passed all three. Only a
 real browser found them, and only because something was changed that made the
 browser path exist for the first time.
+
+## The escalation console — designed, not yet built — 2026-09-25
+
+**Not executed. Recorded so the next session does not repeat the discovery work.**
+An attempt was made and abandoned with the tree returned to its last green state,
+because the harness was corrupted by a line-splicing error partway through and
+finishing it properly needed more context than remained. The product files written
+during that attempt were removed rather than left half-wired, because dead code
+that nothing renders is worse than no code.
+
+**What was established, by reading the schema rather than guessing it.**
+
+- `escalations` may be read by `ops_manager`, `team_lead` and `auditor` on the
+  caller's own tenant. A frontline `agent` and a `sop_editor` may not. So the
+  console should be offered to exactly those three roles and hidden from the rest.
+- Only `ops_manager` and `team_lead` may update, and only the columns
+  `status`, `assigned_to`, `resolution`, `linked_sop_version`, `resolved_at` —
+  migration 0013 revokes blanket update and grants the workflow columns
+  individually. "Resolve it" therefore cannot rewrite the evidence even if a policy
+  were wrong, which is the property that makes an audit trail worth having.
+- `status` is `open | assigned | resolved`, enforced by a check constraint.
+- `evidence` is the `EscalationEvidence` snapshot from `@sop/core`:
+  `queryText`, `reason`, `thresholdAccept`, `minMargin`, `bundleVersion`,
+  `modelId`, `modelRevision`, `candidates[{sopId, score, passage}]`. It is the
+  reason a record outlives the telemetry partition it came from.
+- The ingest contract requires `sopId`, `score` and `margin` to be JSON **null** on
+  an escalation, because an escalation carrying a score is claiming the gate
+  answered confidently.
+
+**A defect found while wiring it, and left in place deliberately.** The Command
+Center tab is currently shown to every signed-in role, including a frontline agent
+who cannot author anything. The server refuses correctly, so this is not a
+security hole — it is a screen that renders and then fails, which is the same
+failure this project has already made twice in telemetry. Gating the tabs by the
+same role list the database enforces is the fix, and it is small. It was **not**
+committed, because gating the tabs correctly invalidates four existing harness
+checks that assume an agent can reach the Command Center, and those four have to
+move into the editor phase in the same commit. Doing it halfway is what this
+attempt did, and it is why the run went red.
+
+**The design that should be built, in one screen.**
+
+1. A queue ordered by `query_occurred_at` descending, read with no filter argument
+   so the tenant comes from the JWT through `app.current_tenant()`.
+2. Four named states: loading, **nothing waiting**, refused to read, and failed.
+   An empty queue says so; it must not look like a broken query.
+3. Each row: the query text, the reason in words rather than a machine code, the
+   bundle version, the candidate count, the assignee, and the candidates behind a
+   disclosure.
+4. A resolution note travels with the status change, because a resolved row with no
+   explanation is not a resolution — it is a deletion with a timestamp on it.
+5. `auditor` gets a read-only queue with the reason stated, rather than buttons
+   that would fail.
+6. The workflow update must `select` the affected rows and check the count.
+   Row-level security filters rows rather than raising, so an update that was
+   silently filtered to zero reports success while changing nothing — the same trap
+   as the device re-key in the bundle slice, and the reason the check exists.
+
+**How it should be proven.** Not a fixture row inserted behind the app. A real
+agent signs in, asks a query the gate refuses, and the resulting escalation is what
+the team lead then sees, takes and resolves — one browser run covering agent to
+handover to closure. The refusal must also be asserted content-free, because the
+content-free agent view is the reason the console has to exist at all.
+
+**The harness lesson, a fifth instance.** Every failure in the abandoned attempt
+came from editing a long procedural harness by splicing line ranges: an anchor
+matched a `;` inside a function body and spliced a block into the middle of
+`waitFor`, which is syntactically valid, passes `node --check`, and still breaks
+every reference. Two of the four fixes I made to the bundle-count check and the
+Command Center phase also had to be undone. Next time, move a whole named
+function rather than a line range, and re-run the gate before making the next
+edit.

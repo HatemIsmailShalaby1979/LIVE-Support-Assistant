@@ -15,6 +15,7 @@ import { SupabaseTransport } from './transport';
 import { useIdentity } from './auth';
 import { SignInGate, SessionBar } from './SignIn';
 import { CommandCenter } from './CommandCenter';
+import { canAuthorProcedures } from './roles';
 import { syncBundle, type BundleState } from './bundle-client';
 
 /** The one sentence the telemetry panel shows. Never claims more than happened. */
@@ -383,6 +384,8 @@ function App() {
   }
 
   const sessionBar = <SessionBar identity={auth.identity} onSignOut={signOut} />;
+  const role = auth.identity?.role ?? null;
+  const canAuthor = canAuthorProcedures(role);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -396,6 +399,11 @@ function App() {
         </div>
       </header>
       <nav aria-label="Workspace" className="max-w-7xl mx-auto px-4 pt-3">
+        {/* The tabs are gated by the same role lists the database enforces, from
+            `./roles`. A frontline agent is not offered a Command Center it cannot
+            use: a tab that renders and then fails is a product that appears to work
+            for a user it has not identified. RLS still refuses regardless — this only
+            decides what is offered, never what is allowed. */}
         <div className="inline-flex rounded border border-gray-300 bg-white text-sm" role="tablist">
           <button
             type="button"
@@ -407,20 +415,24 @@ function App() {
           >
             Ask
           </button>
-          <button
-            type="button"
-            role="tab"
-            data-testid="tab-command"
-            aria-selected={surface === 'command'}
-            onClick={() => setSurface('command')}
-            className={`px-3 py-1.5 rounded-r border-l border-gray-300 ${surface === 'command' ? 'bg-gray-900 text-white' : 'text-gray-600'}`}
-          >
-            Command Center
-          </button>
+          {canAuthor ? (
+            <button
+              type="button"
+              role="tab"
+              data-testid="tab-command"
+              aria-selected={surface === 'command'}
+              onClick={() => setSurface('command')}
+              className={`px-3 py-1.5 ${surface === 'command' ? 'bg-gray-900 text-white' : 'text-gray-600'} ${
+                'rounded-r'
+              }`}
+            >
+              Command Center
+            </button>
+          ) : null}
         </div>
       </nav>
 
-      {surface === 'command' ? (
+      {surface === 'command' && canAuthor ? (
         <main className="max-w-4xl mx-auto px-4 py-8">
           <CommandCenter onPublished={() => void loadIndex()} />
         </main>

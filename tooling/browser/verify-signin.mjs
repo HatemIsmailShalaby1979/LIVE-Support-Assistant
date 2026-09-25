@@ -187,14 +187,13 @@ async function provisionPublisher() {
  * An editor session, for the Command Center path. Same shape as the publisher: a
  * real sign-in through the auth API, never a fabricated token.
  */
-async function provisionEditor() {
+async function provisionEditor(role = 'sop_editor', email = 'signin-editor@alpha.example') {
   const password = `Se-${randomUUID()}`;
-  const email = 'signin-editor@alpha.example';
   const list = await (
     await fetch(`${supabaseUrl}/auth/v1/admin/users?page=1&per_page=1000`, { headers: adminHeaders })
   ).json();
   const existing = (list?.users ?? []).find((user) => user?.email === email);
-  const metadata = { tenant_id: TENANT, app_role: 'sop_editor' };
+  const metadata = { tenant_id: TENANT, app_role: role };
 
   let userId = existing?.id ?? null;
   if (existing) {
@@ -209,7 +208,7 @@ async function provisionEditor() {
       headers: adminHeaders,
       body: JSON.stringify({ email, password, email_confirm: true, app_metadata: metadata }),
     });
-    if (!created.ok) throw new Error(`could not provision the editor: ${await created.text()}`);
+    if (!created.ok) throw new Error(`could not provision the ${role}: ${await created.text()}`);
     userId = (await created.json()).id;
   }
 
@@ -219,8 +218,8 @@ async function provisionEditor() {
     body: JSON.stringify({
       id: userId,
       tenant_id: TENANT,
-      display_name: 'Sign-in Editor',
-      role: 'sop_editor',
+      display_name: `Sign-in ${role}`,
+      role,
     }),
   });
 
@@ -596,17 +595,28 @@ try {
 
   // ------------------------------------------------- the Command Center --
 
-  // A signed-in agent has no business in the Command Center, and the screen has to
-  // prove it: the server refuses an agent's authoring attempt (probe:corpus
-  // asserts that), and the list itself is a tenant-scoped read.
-  await evaluate(`[...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Command Center')?.click()`);
-
-  const commandCentre = await waitFor(
-    `document.querySelector('[data-testid="command-center"]')`,
-    'the Command Center',
-    30_000,
+  // A frontline agent must not be offered a screen it cannot use. RLS already refuses
+  // every verb on it, and the point of gating the tab is that a control the server
+  // will always reject should not be sitting on screen for someone to press. The
+  // refusal itself is still worth asserting, so it is checked against the server
+  // with an agent's own token rather than through a control that is now hidden.
+  const agentTabs = await evaluate(
+    `[...document.querySelectorAll('[data-testid^="tab-"]')].map((t) => t.dataset.testid).join(',')`,
   );
-  check('the Command Center is reachable from the signed-in app', commandCentre);
+  check('a frontline agent is offered only the Ask tab', agentTabs === 'tab-ask', agentTabs);
+
+  const refusedPrincipal = await provisionEditor('agent', 'signin-refused@alpha.example');
+  const agentRead = await fetch(`${supabaseUrl}/functions/v1/upsert-sop`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${refusedPrincipal.token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ read: true, sopId: '00000000-0000-0000-0000-000000000000' }),
+  });
+  const agentReadBody = await agentRead.json();
+  check(
+    'and an agent asking the server for a procedure body is refused, by name',
+    agentRead.status === 403 && /editor|ops manager/i.test(String(agentReadBody?.error ?? '')),
+    `${agentRead.status} ${String(agentReadBody?.error ?? '').slice(0, 60)}`,
+  );
 
   // An editor authors a procedure through the browser, and the server encrypts it.
   const editor = await provisionEditor();
@@ -636,44 +646,9 @@ try {
   await evaluate(`[...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Command Center')?.click()`);
   await sleep(400);
 
-  const rowAppeared = await waitFor(
-    `document.querySelector('[data-testid="cc-row"]')`,
-    'the procedure to appear in the list',
-    30_000,
-  );
-  check('the authored procedure appears in the tenant list', rowAppeared);
-
-  const rows = await evaluate(
-    `[...document.querySelectorAll('[data-testid="cc-row"]')].map((r) => r.textContent).join(' || ')`,
-  );
-  check(
-    'and the list shows what the server stored, not what the browser typed',
-    rows.includes('Refund window, set from the Command Center'),
-    rows,
-  );
-
-  // The browser is signed in as a frontline agent, and an agent must not be able to
-  // read decrypted procedure text any more than it can author one. The screen has to
-  // say so visibly rather than failing silently.
-  await evaluate(`
-    [...document.querySelectorAll('button')]
-      .find((b) => b.textContent.trim() === 'Edit')
-      ?.click()
-  `);
-
-  const editRefused = await waitFor(
-    `document.querySelector('[data-testid="cc-error"]')`,
-    'the refusal to appear',
-    30_000,
-  );
-  const refusalText = await evaluate(
-    `document.querySelector('[data-testid="cc-error"]')?.textContent ?? ''`,
-  );
-  check(
-    'an agent pressing Edit is refused, and the screen says why',
-    editRefused && /editor|ops manager/i.test(refusalText),
-    refusalText.trim().slice(0, 80),
-  );
+  // The list itself, and reading a body back, are the editor's business. Both are
+  // proven below, once the editor is signed in — the browser is an agent at this
+  // point, and it is no longer offered the screen at all.
 
   // Now sign in as an editor, which is the person this screen is for.
   await evaluate(`
@@ -711,7 +686,30 @@ try {
   check('the editor is signed in, and the server says so', editorRole.trim() === 'sop_editor', editorRole.trim());
 
   await evaluate(`[...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Command Center')?.click()`);
-  await waitFor(`document.querySelector('[data-testid="command-center"]')`, 'the Command Center');
+  const commandCentre = await waitFor(
+    `document.querySelector('[data-testid="command-center"]')`,
+    'the Command Center',
+    30_000,
+  );
+  check('the Command Center is reachable from the signed-in app', commandCentre);
+
+  // The editor is the role this screen is for, so the list assertions live here now
+  // rather than in the agent phase where the tab is not offered at all.
+  const rowAppeared = await waitFor(
+    `document.querySelector('[data-testid="cc-row"]')`,
+    'the procedure to appear in the list',
+    30_000,
+  );
+  check('the authored procedure appears in the tenant list', rowAppeared);
+
+  const rows = await evaluate(
+    `[...document.querySelectorAll('[data-testid="cc-row"]')].map((r) => r.textContent).join(' || ')`,
+  );
+  check(
+    'and the list shows what the server stored, not what the browser typed',
+    rows.includes('Refund window, set from the Command Center'),
+    rows.slice(0, 90),
+  );
 
   // ------------------------------------------------ revising a procedure --
 
