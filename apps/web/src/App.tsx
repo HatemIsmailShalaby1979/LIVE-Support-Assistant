@@ -11,9 +11,50 @@ import {
 import { EMBEDDING_MODEL } from '@sop/embedder/model';
 import { buildCorpusPassages, searchTopK, type VectorEntry } from '@sop/vector-store';
 import { TelemetryQueue, type QueryTelemetryEvent } from './telemetry';
+import { SupabaseTransport } from './transport';
 import knowledgeBase from './data/knowledgeBase.json';
 
+/** The one sentence the telemetry panel shows. Never claims more than happened. */
+function deliveryText(delivery: DeliveryState, queued: number): string {
+  switch (delivery.state) {
+    case 'idle':
+      return `${queued} item(s) waiting to send.`;
+    case 'sending':
+      return `Sending ${queued} item(s) to the tenant…`;
+    case 'delivered':
+      return delivery.remaining === 0
+        ? `Delivered ${delivery.sent} item(s) to the tenant.`
+        : `Delivered ${delivery.sent} item(s); ${delivery.remaining} still waiting.`;
+    case 'failed':
+      return `${delivery.failed} item(s) not delivered; ${delivery.remaining} retained and will retry.`;
+  }
+}
+
 const corpus: readonly SopDocument[] = knowledgeBase;
+
+/**
+ * What the telemetry panel says about delivery.
+ *
+ * Previously the queue had no destination and the UI said "Local only", which was
+ * true and useless. The states below are the four things that can actually have
+ * happened, including the one that matters most: it failed, and here is what is
+ * still waiting.
+ */
+type DeliveryState =
+  | { readonly state: 'idle'; readonly sent: number }
+  | { readonly state: 'sending'; readonly sent: number }
+  | {
+      readonly state: 'delivered';
+      readonly sent: number;
+      readonly remaining: number;
+    }
+  | {
+      readonly state: 'failed';
+      readonly sent: number;
+      readonly failed: number;
+      readonly remaining: number;
+      readonly detail?: string;
+    };
 const BUNDLE_VERSION = 1;
 const DEFAULT_MIN_MARGIN = DEFAULT_GATE_CONFIG.minMargin;
 
@@ -45,6 +86,8 @@ function App() {
   const [queryError, setQueryError] = useState('');
   const [latencyMs, setLatencyMs] = useState(0);
   const [queue] = useState(() => new TelemetryQueue());
+  const [transport] = useState(() => new SupabaseTransport());
+  const [delivery, setDelivery] = useState<DeliveryState>({ state: 'idle', sent: 0 });
   const [queued, setQueued] = useState(() => queue.pending);
   const [copyStatus, setCopyStatus] = useState('');
   const activeLoad = useRef(0);
@@ -139,6 +182,42 @@ function App() {
     }
   }, []);
 
+  /**
+   * Deliver what the queue is holding, and report what actually happened.
+   *
+   * The queue retains everything and the flush is what empties it, so this is
+   * the only place the UI learns whether a decision reached the server. A
+   * failure is not an error state to apologise for: the records stay queued
+   * under the queue's backoff and the label says so, which is the honest
+   * version of what used to read "Local only" forever.
+   */
+  const flush = useCallback(async () => {
+    if (queue.pending === 0) {
+      setDelivery({ state: 'idle', sent: 0 });
+      return;
+    }
+
+    setDelivery({ state: 'sending', sent: 0 });
+    try {
+      const result = await queue.flush(transport);
+      setQueued(queue.pending);
+      setDelivery({
+        state: result.failed > 0 ? 'failed' : 'delivered',
+        sent: result.eventsSent + result.escalationsSent,
+        failed: result.failed,
+        remaining: result.remaining,
+      });
+    } catch (error) {
+      setQueued(queue.pending);
+      setDelivery({
+        state: 'failed',
+        sent: 0,
+        failed: queue.pending,
+        remaining: queue.pending,
+        detail: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }, [queue, transport]);
   const findAnswer = useCallback(async () => {
     if (index === null || queryInFlight.current) {
       return;
@@ -226,6 +305,7 @@ function App() {
       }
 
       setQueued(queue.pending);
+      void flush();
     } catch (error) {
       if (attempt === activeQuery.current) {
         setView(null);
@@ -239,7 +319,8 @@ function App() {
         setSearching(false);
       }
     }
-  }, [index, inputText, minMargin, queue]);
+  }, [index, inputText, minMargin, queue, flush]);
+
 
   const copyToClipboard = useCallback(async () => {
     if (navigator.clipboard === undefined) {
@@ -377,21 +458,26 @@ function App() {
                 </p>
               </div>
 
-              {(queued > 0 || queue.hasOverflowed) && (
+              {(queued > 0 || queue.hasOverflowed || delivery.state !== 'idle') && (
                 <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between gap-4">
                   <span
                     className={
-                      queue.hasOverflowed
+                      queue.hasOverflowed || delivery.state === 'failed'
                         ? 'text-xs text-amber-700 font-medium'
                         : 'text-xs text-gray-500'
                     }
                   >
                     {queue.hasOverflowed ? 'Telemetry overflow — oldest events shed. ' : ''}
-                    {queued} item(s) retained locally; Command Centre transport is not configured.
+                    {deliveryText(delivery, queued)}
                   </span>
-                  <span className="shrink-0 px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded">
-                    Local only
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => void flush()}
+                    disabled={queued === 0 || delivery.state === 'sending'}
+                    className="shrink-0 px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded disabled:opacity-50"
+                  >
+                    {delivery.state === 'sending' ? 'Sending…' : 'Sync now'}
+                  </button>
                 </div>
               )}
             </div>

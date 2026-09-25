@@ -760,3 +760,67 @@ reachable from the product yet; the hosted database holds fixture data and
 throwaway auth principals; the `app` schema is exposed but nothing calls it.
 The CI workflow still has never executed.
 
+## Transport slice record — the first authenticated path, 2026-09-25
+
+The audit's central claim was that the client could not reach a server. That is
+now false, and it was false within a session rather than over a phase, which is
+the honest way to record a correction.
+
+**`apps/web/src/supabase.ts`** — the first module in the application that can
+reach a server. It throws at import time when `VITE_SUPABASE_URL` or
+`VITE_SUPABASE_PUBLISHABLE_KEY` is missing, rather than failing later inside a
+request with a message about the network. `apps/web/src/transport.ts` implements
+the `Transport` seam the queue was already written against, calling the two
+ingest functions from migration 0013 — the only write path to those tables, and
+one that takes the tenant from the JWT rather than from anything the caller
+supplies.
+
+**`pnpm run probe:auth` — 7/7.** A real sign-in returns a real JWT; the server
+attributes the session to the right tenant and the right role; an unauthenticated
+caller is refused. That last check is the one that matters, and if it ever starts
+passing the boundary is gone.
+
+**`pnpm run probe:telemetry` — 11/11.** A record created by client code lands in
+the hosted database: the query event is accepted and its payload round-trips
+intact, the escalation naming it is accepted, replaying both does not duplicate
+either row, and a payload claiming a foreign tenant cannot relabel the row —
+it is filed under the caller's tenant because the function ignores the claim.
+
+**The exposed-schema trap, and why the CLI was not the answer.** The client
+answered `Invalid schema: app` for every RPC, because `config.toml` only
+configures local `supabase start` while a hosted project keeps its exposed-schema
+list in its own API settings. `supabase config push` *would* have set it, and
+`config diff` showed why that route is a trap: pushing a `supabase init` config
+also disables MFA enrollment and verification, email confirmations and SMS auth,
+and shortens the OTP from 8 to 6. The fix used instead was a deliberately
+minimal config declaring only `api.schemas`; the diff then reported exactly one
+`update` and thirteen `remote_only` properties left alone, and pushing that
+changed nothing else. A `config push` with the repository's own config.toml would
+have quietly weakened a real project's security posture.
+
+**Three errors the probes caught in our own code, none of them in the schema.**
+
+1. The first telemetry payload claimed `score` and `margin` on an escalation.
+   The ingest contract requires all three of `sopId`, `score` and `margin` to be
+   JSON null, because an escalation carrying a score is claiming the gate
+   answered confidently. The server refused it correctly and the probe was wrong.
+2. The probe read its own write back as a frontline agent and saw zero rows,
+   which read as a transport failure. It is the opposite: migration 0005 makes
+   telemetry unreadable to agents, and a passing guarantee looked like a broken
+   wire. Reads were moved to the service role, and the agent's inability to read
+   is now asserted as a check of its own.
+3. `flush` was referenced from a `useCallback` dependency array above its own
+   declaration — a temporal dead zone error at render, not at build.
+
+**Still unbuilt.** Bundle publish/fetch transport and device enrolment; a
+sign-in surface in the UI (the probes authenticate programmatically); an
+automatic flush scheduler rather than flush-per-decision; the Command Center;
+and device-key persistence. The Vite build inlines the two variables and does
+not validate them, so a build without them produces a bundle that throws on
+load — a loud failure at runtime, but CI will not catch it.
+
+**Worth noting.** The hosted project now holds fixture rows, eight throwaway auth
+principals, and real telemetry written by the probes. It is a development
+database. It must not hold customer data until the Command Center exists and a
+retention policy is written.
+

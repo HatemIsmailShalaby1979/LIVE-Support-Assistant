@@ -19,6 +19,7 @@
     "verify:hosted": "bash tooling/db/verify-hosted.sh",
     "verify:all": "pnpm run verify && pnpm run verify:db",
     "probe:auth": "node tooling/transport/probe-auth.mjs",
+    "probe:telemetry": "node tooling/transport/probe-telemetry.mjs",
     "audit": "node tooling/audit-gate.mjs",
     "audit:update": "node tooling/audit-gate.mjs --update"
   },
