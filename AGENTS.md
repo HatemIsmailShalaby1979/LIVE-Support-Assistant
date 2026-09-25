@@ -958,3 +958,63 @@ hosted project holds a real signing key, real fixture rows and throwaway auth
 principals: it is a development database and must not hold customer data until the
 retention policy exists.
 
+
+
+## Sign-in surface — 2026-09-25
+
+**Executed.** Every authentication in this project had so far happened inside a
+Node script. Nobody had ever signed into this product.
+
+**`apps/web/src/auth.ts` and `apps/web/src/SignIn.tsx`.** A signed-out visitor
+gets the sign-in form and nothing else — not a disabled search box, because a page
+that renders and then fails at flush time is a product that appears to work for a
+user it has not identified. The tenant and role on screen come from
+`app.current_tenant()` and `app.current_role()`, not from decoding the JWT: a token
+is a bearer credential, its contents are not authoritative, and deciding what a
+user may do from the client is the exact boundary the database was built to avoid.
+
+Password rather than magic link, and that is a trade-off rather than a preference.
+Magic link is the better answer for this product, but it needs working outbound
+email, and a fresh Supabase project's default SMTP only delivers to the project's
+own team members. So password is what can be proven today, and the shape is
+deliberately the one a magic-link flow can replace without touching the app shell.
+
+**`pnpm run verify:signin` — 10/10, in real headless Chrome.** Not a unit test and
+not a jsdom render: the app is served by Vite, driven over the DevTools Protocol,
+and the credentials are typed into a real form. An unauthenticated visitor is shown
+the sign-in form and is *not* shown a query box; a wrong password is refused and the
+page stays signed out; the right password signs in and the tenant and role on screen
+are the ones the server reported; signing out returns to the form; the page reported
+zero console errors.
+
+It drives Chrome directly over CDP — no Puppeteer, no Playwright, no new
+dependency. Node's built-in WebSocket is enough, which mattered: the workspace
+already carries 36 advisories in its unbuilt mobile tree and had no appetite for
+adding a browser-automation package to that gate.
+
+**Two errors the run hit, both mine and both instructive.**
+
+1. The dev server bound to `localhost`, which resolves to `::1` first on Windows,
+   so a `127.0.0.1` readiness probe never reached a server that was plainly up and
+   the harness reported "the dev server never came up". Fixed with `--host
+   127.0.0.1`, which is now part of the command.
+2. The "app is reachable" check waited for `button[type="submit"]`, which the app
+   shell does not have, so it timed out on a working page. A false failure caused
+   by the test, not the code — the same category as the earlier case of a suite
+   reporting OK on 79 of 99 probes, and worth naming in both places.
+
+**Verified.** `verify` 6/6, browser sign-in 10/10, typecheck, lint, build and the
+audit gate all green. Hosted SQL suites unchanged at 156/156.
+
+**Not a CI job, and honestly so.** `verify:signin` needs a live project, a real
+auth principal and the Vite server, so it cannot be a required check until the
+project's secrets are available to CI. It is a local gate today and belongs in
+`ci.yml` as soon as the hosted environment stops being a laptop.
+
+**Still unbuilt.** The corpus still comes from a checked-in `knowledgeBase.json`
+rather than from the bundle a device can now fetch and install — the transport
+exists and the app is not using it yet. There is no automatic flush scheduler, no
+Command Center, and no rotation procedure for the signing key that now exists. The
+product can be signed into and can deliver telemetry, and it still answers queries
+from a file in the repository.
+

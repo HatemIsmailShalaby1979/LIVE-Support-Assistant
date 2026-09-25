@@ -12,6 +12,8 @@ import { EMBEDDING_MODEL } from '@sop/embedder/model';
 import { buildCorpusPassages, searchTopK, type VectorEntry } from '@sop/vector-store';
 import { TelemetryQueue, type QueryTelemetryEvent } from './telemetry';
 import { SupabaseTransport } from './transport';
+import { useIdentity } from './auth';
+import { SignInGate, SessionBar } from './SignIn';
 import knowledgeBase from './data/knowledgeBase.json';
 
 /** The one sentence the telemetry panel shows. Never claims more than happened. */
@@ -339,8 +341,20 @@ function App() {
   const sopTitle = (sopId: string) =>
     corpus.find((document) => document.id === sopId)?.title ?? sopId;
 
+  const { auth, signIn, signOut } = useIdentity();
+
+  // A signed-out visitor gets the sign-in form and nothing else — not a
+  // disabled search box. The alternative, letting the page render and failing at
+  // flush time, is a product that appears to work for a user it has not identified.
+  if (auth.status !== 'signed-in') {
+    return <SignInGate auth={auth} signIn={signIn} signOut={signOut} />;
+  }
+
+  const sessionBar = <SessionBar identity={auth.identity} onSignOut={signOut} />;
+
   return (
     <div className="min-h-screen bg-gray-50">
+      {sessionBar}
       <header className="bg-blue-600 text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <h1 className="text-2xl font-bold">LIVE Support Assistant — Explainable SOP Engine</h1>
