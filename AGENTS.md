@@ -26,7 +26,7 @@ this first in any new session; update it at the end of every completed step.
 | `tooling/db/verify-hosted.sh` | Runs all three SQL suites against a real Supabase project over the session pooler, and removes the probe functions afterwards |
 | `tooling/db/provision-hosted-fixtures.mjs` | Creates the seven fixture principals through the Auth Admin API, because a hosted project will not let us choose their UUIDs |
 | `.github/workflows/ci.yml` | Four required jobs: workspace, database, desktop, audit |
-| `supabase/config.toml` | CLI project config. Note `app` is listed in the exposed schemas, without which every RPC is unreachable |
+| `supabase/config.toml` | CLI project config. Note `app` is listed in the exposed schemas, without which every RPC is unreachable. **Never `supabase config push` it against a hosted project — see the transport record** |
 | `.env.example` | Environment contract. Two variables are read by code; the rest are reserved and labelled |
 | `docs` | System design documents |
 | `supabase` | `migrations/`, `seed/`, `tests/` — the Command Center schema and its RBAC matrix. Edge functions are Phase 3/5. |
