@@ -20,6 +20,7 @@
     "verify:all": "pnpm run verify && pnpm run verify:db",
     "probe:auth": "node tooling/transport/probe-auth.mjs",
     "probe:telemetry": "node tooling/transport/probe-telemetry.mjs",
+    "probe:bundle": "node tooling/transport/probe-bundle.mjs",
     "audit": "node tooling/audit-gate.mjs",
     "audit:update": "node tooling/audit-gate.mjs --update"
   },

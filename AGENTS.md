@@ -819,8 +819,75 @@ and device-key persistence. The Vite build inlines the two variables and does
 not validate them, so a build without them produces a bundle that throws on
 load — a loud failure at runtime, but CI will not catch it.
 
-**Worth noting.** The hosted project now holds fixture rows, eight throwaway auth
-principals, and real telemetry written by the probes. It is a development
-database. It must not hold customer data until the Command Center exists and a
-retention policy is written.
+## Bundle delivery slice record — 2026-09-25
+
+**Executed.** The next structural gap: a published bundle had no way to reach a
+device, and nothing had found out until a device asked for one.
+
+**Two defects, both invisible to any test that did not fetch.**
+
+1. **Nowhere to put a per-device wrapped content key.** `publishBundle` wraps the
+   content key to every enrolled device and returns a `Map<deviceId, key>`.
+   `app.publish_policy_bundle` had no parameter for it and `policy_bundles` had
+   no column. A published bundle was a thing **no device could ever decrypt** —
+   not a slow feature, a dead one. The old function is now dropped rather than
+   left in place, because a publish path that produces uninstallable bundles is
+   a footgun, not a fallback.
+2. **The signed manifest was not reconstructible.** The signature covers the
+   canonical JSON of the whole manifest, which includes `dimensions`, `iv`,
+   `sopCount` and `publishedAt`. Only `manifest_hash` was stored, so a client
+   could fetch a ciphertext and a signature but had to trust the server to tell
+   it the other fields — the exact dependency the signature exists to remove.
+   The manifest is now stored whole as `jsonb`, with a constraint requiring it to
+   agree with the columns that index and filter the bundle.
+
+**`pnpm run probe:bundle` — 16/16, twice in a row.** A device generates a
+keypair and enrols; the server half encrypts the corpus, signs the manifest and
+wraps the content key to that device; the device fetches its own bundle and
+installs it through the real `installBundle` pipeline; the installed corpus
+matches the published corpus field for field. The ciphertext contains no
+procedure text, a replay is refused as `not_monotonic`, a tampered manifest as
+`signature_invalid`, another tenant's device gets nothing, and the active bundle
+survives every refusal.
+
+**Four design decisions worth keeping.** The manifest is nullable, deliberately:
+a row with no manifest cannot be fetched or installed, and the RBAC matrix inserts
+bare rows to prove the monotonic version guard independently of the delivery
+path. `bundle_for_device` refuses a bundle with no manifest, so the two together
+mean a device is never handed a signature with nothing to verify. The publish
+function stays **SECURITY INVOKER** and the new table has an insert policy
+restricted to `ops_manager`, because making it SECURITY DEFINER was the easy way
+to get the insert working and it would also have let an editor publish — RLS is
+the authority here, not a check in a function body. And the check constraint is
+written with explicit `is not null` on every field, because a CHECK passes on
+NULL: the first version compared with `=` and was therefore vacuously true, and a
+partially populated manifest satisfied it.
+
+**Four errors the probe caught in our own code.** `device_registrations.user_id`
+references `public.users`, and a GoTrue identity is not a tenant user until
+onboarding creates that row — so enrolment failed on a foreign key before
+anything crypto was exercised. PostgREST takes `bytea` as a hex string, and
+passing a Buffer stored something else entirely; the client then rejected the
+result with `payload_hash_mismatch`, which was the protocol working correctly.
+The manifest comparison used `JSON.stringify`, which fails on a bundle that is
+in fact identical, because `jsonb` does not preserve key order and the signature
+is computed over canonical sorted-key JSON. And the platform column is
+constrained to `web`/`desktop`/`mobile`, so a probe run must re-key its device
+rather than register a new identity under a fresh label.
+
+**Not built.** The publish half still runs in the probe process, where the tenant
+signing key is generated per run and discarded. Production wants it behind an
+authenticated edge function holding that key in a server-side secret — the
+protocol is identical, and the edge function is the whole of the difference. A
+device-key persistence layer is also still missing: the device's private key
+lives in memory for the length of a probe, which is fine for a test and not for
+a browser that reloads.
+
+**Verified after the change.** 156 SQL probes locally and on the hosted project,
+0 failures, with the 14th migration applied. JS gate 6/6. Audit gate 0 new, 0
+escalated. Typecheck, lint and build green.
+
+**Still unbuilt.** A sign-in surface in the UI, the publish edge function,
+device-key persistence, an automatic flush scheduler, the Command Center, and
+everything in the original audit's P1 and P2 lists.
 

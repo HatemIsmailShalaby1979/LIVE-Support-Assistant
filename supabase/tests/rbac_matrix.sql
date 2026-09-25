@@ -370,18 +370,50 @@ declare
   v_observed text;
   v_own_devices bigint;
   v_foreign_devices bigint;
+  v_own_device uuid;
+  v_next bigint;
 begin
   -- Resolved by email: a dollar-quoted body, so psql expands nothing inside it,
   -- and a hosted project cannot choose these UUIDs. See the preamble.
   select id into v_ops from auth.users where email = 'ops@alpha.example';
   select id into v_editor from auth.users where email = 'editor@alpha.example';
+  select id into v_own_device from device_registrations
+   where tenant_id = v_tenant and platform = 'web' limit 1;
   perform rbac_claims('ops_manager', v_tenant, v_ops);
   execute 'set local role authenticated';
 
+  -- The manifest is stored whole as jsonb and the columns are derived from it, so
+  -- a publisher cannot sign one document and index another. The signature is
+  -- opaque here: this matrix proves who may publish, not the crypto, which lives
+  -- in tooling/transport/probe-bundle.mjs.
+  -- The version is server-assigned, so the publisher asks for it before signing:
+  -- a manifest that named a different version would be stored with columns that
+  -- disagree with the document the signature covers, which is the exact hole the
+  -- agreement constraint exists to close. Hard-coding a literal here only works
+  -- until another probe publishes first.
+  select app.next_bundle_version(v_tenant) into v_next;
+
   v_version := app.publish_policy_bundle(
-    v_tenant, 'manifest-3', 'sig-3',
-    'Xenova/all-MiniLM-L6-v2', '751bff37182d3f1213fa05d7196b954e230abad9', 'q8',
-    '\x00'::bytea, v_ops);
+    v_tenant,
+    jsonb_build_object(
+      'tenantId', v_tenant::text,
+      'bundleVersion', v_next,
+      'modelId', 'Xenova/all-MiniLM-L6-v2',
+      'modelRevision', '751bff37182d3f1213fa05d7196b954e230abad9',
+      'quantization', 'q8',
+      'dimensions', 384,
+      'payloadHash', 'hash-alpha-' || v_next,
+      'iv', 'aXYtZm9yLXRoZS1wcm9iZQ==',
+      'sopCount', 2,
+      'publishedAt', '2026-09-25T00:00:00.000Z'
+    ),
+    'sig-3',
+    '\x00'::bytea,
+    jsonb_build_array(jsonb_build_object(
+      'deviceId', v_own_device,
+      'wrappedKey', encode('\x01'::bytea, 'base64')
+    )),
+    v_ops);
 
   -- Alpha has one enrolled device at this point in the fixtures; the device
   -- enrolment section below adds a second, later.
@@ -414,9 +446,26 @@ begin
 
   begin
     perform app.publish_policy_bundle(
-      v_tenant, 'manifest-4', 'sig-4',
-      'Xenova/all-MiniLM-L6-v2', '751bff37182d3f1213fa05d7196b954e230abad9', 'q8',
-      '\x00'::bytea, v_editor);
+      v_tenant,
+      jsonb_build_object(
+        'tenantId', v_tenant::text,
+        'bundleVersion', (select app.next_bundle_version(v_tenant)),
+        'modelId', 'Xenova/all-MiniLM-L6-v2',
+        'modelRevision', '751bff37182d3f1213fa05d7196b954e230abad9',
+        'quantization', 'q8',
+        'dimensions', 384,
+        'payloadHash', 'hash-alpha-editor',
+        'iv', 'aXYtZm9yLXRoZS1wcm9iZQ==',
+        'sopCount', 2,
+        'publishedAt', '2026-09-25T00:00:00.000Z'
+      ),
+      'sig-4',
+      '\x00'::bytea,
+      jsonb_build_array(jsonb_build_object(
+        'deviceId', v_own_device,
+        'wrappedKey', encode('\x02'::bytea, 'base64')
+      )),
+      v_editor);
     v_observed := 'allowed';
   exception
     when others then v_observed := 'error:' || sqlstate || ' ' || sqlerrm;
