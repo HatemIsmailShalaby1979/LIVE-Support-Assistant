@@ -1203,12 +1203,18 @@ demonstrated the app starting and serving with the network down. And the 36
 advisories in the unbuilt mobile tree, which the gate stops and does not clear.
 ## Read-back, and a CORS hole the browser found — 2026-09-25
 
-**Executed, and not finished.** The Command Center could author and change a
-status but could not load a procedure's text, so revising content meant retyping
-it — and the status dropdown was carrying a placeholder body to compensate, which
-would have quietly replaced every procedure anyone edited. `upsert-sop` now serves
-a decrypted read to an editor or ops manager, the screen has an Edit action that
-loads the current text, and a revision is a new version carrying the real body.
+**Executed and verified.** The Command Center could author and change a status but
+could not load a procedure's text, so revising content meant retyping it — and the
+status dropdown was carrying a placeholder body to compensate, which would have
+quietly replaced every procedure anyone edited. `upsert-sop` now serves a decrypted
+read to an editor or ops manager, the screen has an Edit action that loads the
+current text, and a revision is a new version carrying the real body.
+
+**`pnpm run verify:signin` — 29/29, in real headless Chrome.** An agent pressing
+Edit is refused and the screen says why; the editor signs in and the server reports
+`sop_editor`; the authored procedure loads into the form holding the decrypted
+text; a revision saves as version 2; the server stored the **revised** text and not
+the original; and the page reported zero console errors.
 
 **A hole no probe could have found, because nothing had ever called an edge
 function from the browser.** The whole transport to date went through PostgREST,
@@ -1216,34 +1222,38 @@ which answers CORS itself. The first browser call to an edge function returned
 "Failed to send a request to the Edge Function" — supabase-js's message when the
 *preflight* goes unanswered, which is indistinguishable from a network outage. A
 legitimate 403 was being reported as a network fault, and the search went looking
-for a transport bug that did not exist.
+for a transport bug that did not exist. `upsert-sop` now answers OPTIONS itself and
+sets the CORS headers on every response.
 
-`upsert-sop` now answers OPTIONS itself and sets the CORS headers on every
-response. That is a real integration fix, and it would have shipped as "the Command
-Center does not work" without a browser in the loop.
+**Second finding: `functions.invoke` drops the error body.** A refusal arrived as
+"Edge Function returned a non-2xx status code" — a string that names neither the
+procedure nor the cause. The functions say exactly what is wrong ("authoring a
+procedure requires an editor or ops manager"), and `callFunction` now uses plain
+`fetch` so that text survives to the screen.
 
-**Second finding from the same run: `functions.invoke` drops the error body.** A
-refusal arrived as "Edge Function returned a non-2xx status code" — a string that
-names neither the procedure nor the cause. The functions say exactly what is wrong
-("authoring a procedure requires an editor or ops manager"), and `callFunction` now
-uses plain `fetch` so that text survives to the screen. A generic failure message
-sends the reader to the wrong system, which is the whole reason the functions were
-written to name their subject.
+**Third finding, and the one that took longest: React was crashing, not timing
+out.** The panel threw on render, and the only symptom in the log was a component
+stack with no message. Asking the server directly — from Node, where the answer is
+printable — named it in one shot: the stored body has **no `title`**. The title is
+a column on `sops`, deliberately kept in the clear so an auditor can read a
+procedure's name without a key, so it is *not* inside the encrypted body. The
+client typed the response as a whole `ProcedureDraft`, handed the form
+`title: undefined`, and every field bound to an undefined value. `readProcedure`
+now assembles the draft from the title plus the body and defaults each field, so a
+body written by an older client degrades instead of taking the screen down. The
+harness now pins the split: the title is in the clear, the rest is encrypted, and
+the body does not duplicate the title.
 
-**Verified so far, in a real browser:** an agent pressing Edit is refused and the
-screen says why; the editor signs in and the server reports `sop_editor`; the
-authored procedure appears in the list showing what the server stored.
-
-**Not yet verified: the editor's read-back in the browser.** The server half is
-proven — the same request succeeds from Node, and `probe:corpus` proves the
-decryption and the version arithmetic. The browser path times out waiting for the
-loaded form, and the cause is not yet identified. It is almost certainly a selector
-or a refresh ordering issue in the screen rather than the function, because the
-agent's refusal on the same screen arrives correctly. **It is not claimed as
-working.**
+**Three harness bugs, all mine, and the same lesson as every earlier one.** The run
+clicked Edit *then* waited, so it clicked a page whose list had not rendered yet —
+the third time this shape has cost a run, and the fix is always to wait for the
+thing you are about to touch. The revision wrote `${marker}`, the text it started
+from, so the decisive assertion would have passed while proving nothing about the
+content moving. And a `String.Replace` meant to switch the harness's own read to
+POST silently did not match, leaving it on the GET path it was meant to stop
+testing.
 
 **Lesson, and it is the same one again.** The screen was green in typecheck, lint
-and build for the whole of this change. Every one of the three defects above —
-missing CORS, a dropped error body, a placeholder body in a status control — passed
-all three. Only a real browser found them, and only because something was changed
-that made the browser path exist for the first time.
+and build for the whole of this change. All four defects passed all three. Only a
+real browser found them, and only because something was changed that made the
+browser path exist for the first time.

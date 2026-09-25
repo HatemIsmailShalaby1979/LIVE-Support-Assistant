@@ -57,6 +57,16 @@ export interface PublishResult {
   readonly wrappedFor: number;
 }
 
+/** Parse a response body, tolerating an empty or non-JSON one. */
+function parseJson(text: string): unknown {
+  if (text === '') return null;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
 async function callFunction<T>(
   name: string,
   body: Record<string, unknown>,
@@ -78,12 +88,7 @@ async function callFunction<T>(
   });
 
   const text = await response.text();
-  let parsed: unknown = null;
-  try {
-    parsed = text === '' ? null : JSON.parse(text);
-  } catch {
-    parsed = null;
-  }
+  const parsed = parseJson(text);
 
   if (!response.ok) {
     const reason =
@@ -121,6 +126,60 @@ export interface LoadedProcedure {
   readonly draft: ProcedureDraft;
 }
 
+/** The shape the server actually returns: the title in the clear, the body encrypted. */
+interface ReadResponse {
+  readonly sopId: string;
+  readonly title: string;
+  readonly status: ProcedureStatus;
+  readonly version: number;
+  readonly body: Partial<ProcedureDraft> | null;
+}
+
+/**
+ * Load a procedure's current text so it can be revised.
+ *
+ * This is the path the earlier version of this client did not have, and its
+ * absence had a visible cost: a status change had to send a placeholder body,
+ * because there was no way to know what the real one was. Anything that changes a
+ * row has to carry the content forward, and only the server can supply it.
+ *
+ * The draft is assembled rather than passed through, and the reason is a real bug
+ * this shape caused: the title is a column on `sops`, deliberately kept in the
+ * clear so an auditor can see a procedure's name without a key, so it is *not* in
+ * the encrypted body. Treating the body as a whole `ProcedureDraft` handed the form
+ * `title: undefined`, every field bound to an undefined value, and React tore the
+ * panel down. A body written by an older version of the client has the same problem,
+ * so the fields are defaulted rather than trusted.
+ */
+export async function readProcedure(sopId: string): Promise<LoadedProcedure> {
+  const loaded = await callFunction<ReadResponse>(
+    'upsert-sop',
+    { read: true, sopId },
+    await accessToken(),
+    SUPABASE_URL,
+  );
+  const body = loaded.body ?? {};
+  const text = (value: unknown): string => (typeof value === 'string' ? value : '');
+
+  return {
+    sopId: loaded.sopId,
+    title: loaded.title,
+    status: loaded.status,
+    version: loaded.version,
+    draft: {
+      title: loaded.title,
+      category: text(body.category),
+      summary: text(body.summary),
+      suggestedReply: text(body.suggestedReply),
+      escalationRequired: body.escalationRequired === true,
+      escalationReason: text(body.escalationReason),
+      triggerKeywords: Array.isArray(body.triggerKeywords)
+        ? body.triggerKeywords.map((keyword) => String(keyword))
+        : [],
+    },
+  };
+}
+
 export async function listProcedures(): Promise<ProcedureSummary[]> {
   // The embedded versions come back over the foreign key, so the version number
   // costs no extra round trip. RLS scopes it to the caller's own tenant, and a
@@ -147,17 +206,7 @@ export async function listProcedures(): Promise<ProcedureSummary[]> {
   });
 }
 
-/**
- * Load a procedure's current text so it can be revised.
- *
- * This is the path the earlier version of this client did not have, and its
- * absence had a visible cost: a status change had to send a placeholder body,
- * because there was no way to know what the real one was. Anything that changes a
- * row has to carry the content forward, and only the server can supply it.
- */
-export async function readProcedure(sopId: string): Promise<LoadedProcedure> {
-  return callFunction<LoadedProcedure>('upsert-sop', { read: true, sopId }, await accessToken(), SUPABASE_URL);
-}
+
 
 export async function saveProcedure(
   draft: ProcedureDraft,

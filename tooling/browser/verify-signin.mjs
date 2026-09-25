@@ -350,9 +350,16 @@ try {
     if (message.method === 'Runtime.consoleAPICalled' && message.params.type === 'error') {
       consoleErrors.push(message.params.args.map((a) => a.value ?? a.description ?? '').join(' '));
     }
-    if (message.method === 'Runtime.exceptionThrown') {
-      consoleErrors.push(message.params.exceptionDetails.text ?? 'exception');
-    }
+  if (message.method === 'Runtime.exceptionThrown') {
+    const details = message.params.exceptionDetails;
+    consoleErrors.push(
+      [
+        details.exception?.description ?? details.text ?? 'exception',
+        details.url === undefined ? '' : ` @ ${details.url}`,
+      ].join(''),
+    );
+  }
+
   });
 
   function send(method, params = {}, sessionId) {
@@ -714,11 +721,49 @@ try {
   // change rather than a placeholder.
   const editMarker = `REVISED-IN-THE-BROWSER-${Math.random().toString(36).slice(2, 8)}`;
 
-  await evaluate(`
-    [...document.querySelectorAll('button')]
-      .find((b) => b.textContent.trim() === 'Edit' && b.dataset.testid === 'cc-edit-${authoredBody.sopId}')
-      ?.click()
-  `);
+  // Wait for the button, do not click and then wait. The list loads asynchronously
+  // after the tab opens, so clicking immediately hit a page that had not rendered it
+  // yet — `?.click()` swallowed the miss and the run then timed out waiting for a
+  // form that was never requested. That is the third time this shape has cost a run,
+  // and the fix is always the same: wait for the thing you are about to touch.
+  const editButton = `[...document.querySelectorAll('button')].find((b) => b.dataset.testid === 'cc-edit-${authoredBody.sopId}')`;
+  const buttonThere = await waitFor(
+    editButton,
+    'the authored procedure to appear in the editor list',
+    30_000,
+  );
+  check('the editor can see the procedure it authored, ready to revise', buttonThere === true);
+
+  // The split is deliberate and worth pinning: the title is a column on `sops`, in
+  // the clear so an auditor can read a procedure's name without a key, and the rest
+  // of the draft is inside the encrypted body. A client that expects `title` in the
+  // body hands the form `undefined` and React tears the panel down — which is
+  // exactly what happened before this check existed.
+  const shapeProbe = await (
+    await fetch(`${supabaseUrl}/functions/v1/upsert-sop`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${editor.token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ read: true, sopId: authoredBody.sopId }),
+    })
+  ).json();
+  const encryptedFields = [
+    'category',
+    'summary',
+    'suggestedReply',
+    'escalationRequired',
+    'escalationReason',
+    'triggerKeywords',
+  ];
+  check(
+    'the read splits the draft the way the schema does — title in the clear, the rest encrypted',
+    typeof shapeProbe?.title === 'string' &&
+      shapeProbe.title.length > 0 &&
+      encryptedFields.every((field) => Object.hasOwn(shapeProbe?.body ?? {}, field)) &&
+      !Object.hasOwn(shapeProbe?.body ?? {}, 'title'),
+    `title=${JSON.stringify(shapeProbe?.title ?? null)} body keys: ${Object.keys(shapeProbe?.body ?? {}).join(',')}`,
+  );
+
+  await evaluate(`${editButton}?.click()`);
 
   const loaded = await waitFor(
     `document.querySelector('[data-testid="cc-editing"]')`,
@@ -736,11 +781,14 @@ try {
     loadedSummary.slice(0, 60),
   );
 
+  // The revision has to change the text. Writing the original summary back would
+  // produce a second version and satisfy every other check while proving nothing
+  // about the content actually moving.
   await evaluate(`
     (() => {
       const input = document.querySelector('[data-testid="cc-summary"]');
       const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
-      setter.call(input, ${JSON.stringify(`${marker}`)});
+      setter.call(input, ${JSON.stringify(`${editMarker}: revised from the Command Center`)});
       input.dispatchEvent(new Event('input', { bubbles: true }));
       return true;
     })()
@@ -770,15 +818,19 @@ try {
 
   // The decisive one: read the body back through the server and confirm the change
   // is what is stored. A screen that reported success while writing a placeholder
-  // would pass every check above.
-  const editorReadBack = await fetch(
-    `${supabaseUrl}/functions/v1/upsert-sop?sopId=${authoredBody.sopId}`,
-    { headers: { Authorization: `Bearer ${editor.token}` } },
-  );
+  // would pass every check above. It goes over the same POST contract the app uses,
+  // not the GET, so this proves the path the product actually takes.
+  const editorReadBack = await fetch(`${supabaseUrl}/functions/v1/upsert-sop`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${editor.token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ read: true, sopId: authoredBody.sopId }),
+  });
   const readBack = await editorReadBack.json();
   check(
     'the server stored the revised text, not a placeholder',
-    editorReadBack.ok && readBack?.body?.summary === `${marker}`,
+    editorReadBack.ok &&
+      String(readBack?.body?.summary ?? '').startsWith(editMarker) &&
+      !String(readBack?.body?.summary ?? '').includes(marker),
     JSON.stringify(readBack?.body?.summary ?? readBack?.error ?? '').slice(0, 70),
   );
 
