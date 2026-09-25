@@ -1,0 +1,21 @@
+[package]
+name = "sop-desktop"
+version = "0.1.0"
+edition = "2021"
+description = "Desktop shell for the Explainable SOP Escalation & Audit Engine"
+authors = ["Hatem Ismail Shalaby"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+
+[profile.release]
+strip = true
+
+[patch.crates-io]
+# Upstream schemars 0.8.2x writes the preserve_order alias with two generic
+# arguments, but its indexmap requirement resolves to 1.9.3, whose IndexMap
+# takes three. Fix the alias; see tauri-apps/tauri#14928.
+schemars = { path = "vendor/schemars-0.8.22" }

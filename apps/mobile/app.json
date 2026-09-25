@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "LIVE Support Assistant",
+    "slug": "live-support-assistant",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "sop",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.helixcodex.sop.mobile"
+    },
+    "android": {
+      "package": "com.helixcodex.sop.mobile"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
+    "extra": {
+      "engineOrigin": "http://localhost:4174"
+    }
+  }
+}
