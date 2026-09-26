@@ -1258,7 +1258,84 @@ and build for the whole of this change. All four defects passed all three. Only 
 real browser found them, and only because something was changed that made the
 browser path exist for the first time.
 
-## Signing out has to release the tenant, not just the session — 2026-09-25
+## Retention: the finding is recorded, the implementation is not finished — 2026-09-25
+
+**One small thing shipped; one thing abandoned with its findings written down.**
+
+**Shipped: the meta description.** It read *"an explainable support prototype … over
+five public TikTok LIVE policy entries"*, which stopped being true the moment the
+corpus came from each tenant's own authored procedures. It now describes what the
+product does. It is the one line a stranger sees in a link preview, and it was
+contradicting the product.
+
+**A repo defect found while running the database suite: no `.gitattributes`.** A
+`git checkout` of `tooling/db/verify-phase7.sh` on Windows rewrote it to CRLF, and
+bash then died on line 2 with `$'\r': command not found`. The file was fine; the
+checkout was not. This is invisible on a Linux clone and only appears on a machine
+that checked the file out — so it would have been discovered in CI, on someone
+else's day. Added `.gitattributes` pinning `*.sh` and `*.sql` to LF.
+
+### P0-2 — retention and plaintext query text: NOT DONE, and here is what was learned
+
+**The finding that changes the plan, and it is worth more than the code would have
+been.** A plan reading "retention = drop old partitions" would look finished and
+leave the personal data in place, because the query text exists in two places with
+opposite lifecycles:
+
+- `telemetry_events.payload` — partitioned by month (`telemetry_events_2026_09`, plus
+  a `telemetry_events_default` catch-all), droppable, and an append-only record of
+  every query anyone asked.
+- `escalations.evidence` — **not** partitioned, deliberately: the schema comment says
+  an escalation must outlive the telemetry that produced it, so it carries its own
+  copy of the query, the scores and the candidates.
+
+**So dropping a telemetry partition does not remove the customer's words.** Retention
+is two jobs with different justifications: telemetry is *dropped* (volume, and the
+audit value expires); escalations are **redacted, not deleted** — the row, the
+reason, the timing, the assignee and the resolution note are the audit trail, and
+that value is not in the customer's words. Deleting the row instead would destroy the
+audit trail to solve a retention problem.
+
+**What was written and then removed**, because the suite did not pass and an
+unfinished suite must not be committed as though it worked. The findings:
+
+1. `revoke … from public, anon, authenticated` **fails locally** — the container has
+   only `authenticated`; `anon` and `service_role` exist only on a hosted project. The
+   role names have to be resolved inside a `DO` block that checks `pg_roles`. A
+   migration that only applies to production is a migration that is never tested.
+2. Seeding an event by direct insert is **refused** — migration 0013 made
+   `app.ingest_telemetry_event()` the only write path. Correct behaviour; the fixture
+   must go through the same function a client uses, or it tests a schema state that
+   cannot occur.
+3. That function **validates every candidate's shape**, so `'[]'::jsonb` is rejected
+   with *telemetry candidates failed contract validation*. A real
+   `{sopId, score, passage}` object is required.
+4. `:'alpha_ops'` inside a dollar-quoted body is **not** expanded by psql, so
+   `r_seed()` was never created and every later check failed with a cascade of
+   unrelated errors. This is the **seventh** occurrence of that lesson in this
+   repository. Pass it as a function argument instead.
+5. The suite was **not self-contained**: the first run's purge removed the expired
+   event, so a re-run found nothing expired and reported the removal checks as
+   *vacuously passing*. A retention suite that can pass because its fixture is
+   already gone is worse than no suite. It must delete its own fixture rows first.
+6. Even after that, three checks still failed on the last run: the expired telemetry
+   row survived (it lands in the `telemetry_events_default` catch-all, and the
+   delete was scoped to that partition, so the scope needs proving rather than
+   assuming), the redaction count was read after a second run had already consumed
+   it, and one assertion counted *all* escalations with a matching reason instead of
+   scoping to its own fixture id.
+
+**Recommended next step.** Re-apply the migration as a **migration only**, with its
+privilege block, and prove the partition-drop path in a suite that seeds its own
+fixture and asserts on **its own ids**. Do not attempt idempotence and the
+default-partition case in the same pass. Then decide the horizon as a product
+question: 90 days is a starting point, not a legal answer, and the right period
+depends on the tenant's obligations, which this repository cannot decide.
+
+**Still open from the audit, untouched:** ingest is unthrottled, and
+`access-control-allow-origin: '*'` sits on the one function that returns decrypted
+procedure bodies.
+
 
 **Executed. P0-1 of the production-readiness audit, and the only finding on that
 list that could hand one tenant's policy to another.**

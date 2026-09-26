@@ -1,0 +1,9 @@
+# Shell scripts must keep LF. Without this, a checkout on Windows with
+# core.autocrlf=true rewrites a .sh to CRLF, and bash then fails on line 2 with
+# "$'\r': command not found" -- a repository defect that only appears on a machine
+# that checked the file out rather than cloned it on Linux.
+*.sh text eol=lf
+
+# The SQL test suites and migrations are fed to psql via stdin. CRLF is tolerated
+# there, but pinning them removes a class of "works locally, fails in CI".
+*.sql text eol=lf
