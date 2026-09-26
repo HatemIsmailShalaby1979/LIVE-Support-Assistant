@@ -173,6 +173,10 @@ async function loadOrMintIdentity(platform: 'web'): Promise<DeviceIdentity> {
  */
 export async function syncBundle(platform: 'web' = 'web'): Promise<BundleState> {
   const store = new IdbBundleStore();
+  // Read from the server, not from the token, for the same reason the enrolment
+  // path does: the tenant this device is serving has to be the one the platform
+  // attributes to the session, not a claim the page decoded out of a JWT.
+  const servingTenant = await currentTenant();
 
   let identity: DeviceIdentity;
   try {
@@ -207,6 +211,20 @@ export async function syncBundle(platform: 'web' = 'web'): Promise<BundleState> 
         fetchError === null
           ? 'no policy bundle has been published for this tenant yet'
           : `could not fetch this tenant's bundle: ${fetchError.message}`,
+    };
+  }
+
+  // A cached bundle is tenant data, and this device may be shared. If the record
+  // belongs to a different tenant than the one now signed in, serving it would hand
+  // one tenant's decrypted policy to another — and the panel would cheerfully
+  // announce it as signed for this tenant, because the signature really is valid.
+  // It came from the wrong tenant. The `tenantId` is a top-level field the server
+  // set, so this is not a judgement call made from a filename or a cache key.
+  if (servingTenant !== null && active.tenantId !== servingTenant) {
+    await store.clear();
+    return {
+      status: 'unavailable',
+      detail: `this device was holding another tenant's policy bundle, which has been discarded; nothing is serving until this tenant publishes one`,
     };
   }
 

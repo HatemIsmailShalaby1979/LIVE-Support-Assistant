@@ -1258,7 +1258,69 @@ and build for the whole of this change. All four defects passed all three. Only 
 real browser found them, and only because something was changed that made the
 browser path exist for the first time.
 
-## The flush scheduler, and one bug my own effect contained — 2026-09-25
+## Signing out has to release the tenant, not just the session — 2026-09-25
+
+**Executed. P0-1 of the production-readiness audit, and the only finding on that
+list that could hand one tenant's policy to another.**
+
+**The defect, measured rather than reasoned.** `signOut` was two lines: end the
+Supabase session. Three things survived it, all tenant data in plain storage on a
+machine the next person will use:
+
+1. the active bundle — a decrypted procedure corpus, in IndexedDB under one record
+   keyed `bundle` with **no tenant and no user**;
+2. the device identity — and it is tenant-coupled, because the KEK salt is derived
+   from the tenant id, so a cached identity for another tenant cannot unwrap anything
+   here and only produces a `key_unwrap_failed` that reads like a crypto fault;
+3. the telemetry queue — **customer query text**, in `localStorage`.
+
+The sequence that leaks, and each step was verified against the code: agent A signs
+in, a bundle installs at version 5; agent A signs out; agent B signs in as a
+*different* tenant; the fetch returns that tenant's bundle at version 1; the install
+pipeline refuses it as `not_monotonic` against the cached version 5; so the device
+keeps serving the previous tenant's procedures — and the panel reports *"Serving
+bundle 5 — signed for this tenant"*, because the signature genuinely is valid. It
+came from the wrong tenant. **The no-fallback rule was honest about a missing bundle
+while the cache was a fallback by another name.**
+
+**Two independent fixes, because one of them is not enough.**
+
+1. **Refuse to serve another tenant's cache.** `syncBundle` reads the tenant from
+   `app.current_tenant()` — the server, not the token — and compares it against
+   `active.tenantId`, which is inside the signed manifest. A mismatch discards the
+   record and says so. This defends every path, including the ones nobody thought
+   about: a crash, a closed tab, a sign-out that never ran.
+2. **Wipe on sign-out.** `apps/web/src/device-state.ts` owns the list of what a
+   browser holds for a tenant, so the control is reviewable in one file rather than
+   scattered. A security control nobody can see is a control nobody maintains. The
+   session ends *first*: if the wipe then fails, the leftover data sits on a device
+   with no valid credential, which is the lower-risk state. A failed wipe is reported
+   on the signed-out screen — "Do not use this machine until it has been cleared" —
+   rather than swallowed.
+
+**`clear()` is now on the `BundleStore` interface, not optional.** A store you cannot
+clear is a store you cannot secure, and putting it on the interface is what found the
+two implementations that lacked it: `IdbBundleStore` and `SqliteBundleStore`. The
+persistence harness's fake SQLite driver also had to learn `delete from active_bundle`;
+that the double could not answer a new statement is the double's honesty showing.
+
+**Verified. `verify:signin` — 45/45, and persistence 33 checks (was 27).** The new
+persistence checks run per store: the bundle is held before a wipe, a wipe leaves
+nothing a reader could serve, and a wiped store can install again — the last one
+because a device that is bricked rather than wiped is its own failure. The browser
+check asserts against the **actual storage**, not the UI, because this is a property
+of the device: the next person uses these stores, not this page.
+
+**And the gate was made to fail on purpose.** With the wipe disabled it reports
+`{"bundle":"present","telemetry":"present"}` and fails. A gate that has never failed
+is not evidence.
+
+**One thing this audit found that is not fixed here.** The `meta description` in
+`apps/web/index.html` still reads *"an explainable support prototype … over five
+public TikTok LIVE policy entries"*, which is no longer true — the corpus comes from
+each tenant's own authored procedures. It is five minutes' work and it is the one
+line a stranger sees in a link preview.
+
 
 **Executed.** The last item that had been listed as unbuilt since the transport
 slice. Telemetry went out at the moment a decision was made and at no other time, so

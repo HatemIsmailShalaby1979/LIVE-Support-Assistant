@@ -63,4 +63,18 @@ export class IdbBundleStore implements BundleStore {
 
     await requestToPromise(tx.objectStore(STORE_NAME).put(bundle, RECORD_KEY));
   }
+
+  /**
+   * Discard the active bundle.
+   *
+   * Deletes the record rather than writing a null, so there is no state in which a
+   * caller can read an "empty" bundle and mistake it for a real one. This is what a
+   * sign-out calls, because the record is another tenant's decrypted policy.
+   */
+  async clear(): Promise<void> {
+    const db = await this.db;
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+
+    await requestToPromise(tx.objectStore(STORE_NAME).delete(RECORD_KEY));
+  }
 }

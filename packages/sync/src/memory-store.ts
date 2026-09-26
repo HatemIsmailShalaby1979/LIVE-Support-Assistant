@@ -34,6 +34,18 @@ export class MemoryBundleStore implements BundleStore {
     this.#commits += 1;
   }
 
+  /**
+   * Discard the active bundle and reset the commit count.
+   *
+   * A sign-out calls this. The count is reset with it so a later test cannot read a
+   * commit that happened before the wipe as though it happened after.
+   */
+  async clear(): Promise<void> {
+    await this.#delay();
+    this.#active = null;
+    this.#commits = 0;
+  }
+
   /** Number of successful commits. Used to prove rejections are side-effect free. */
   get commits(): number {
     return this.#commits;

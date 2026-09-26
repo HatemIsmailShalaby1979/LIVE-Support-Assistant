@@ -19,12 +19,19 @@ import { useState } from 'react';
 import type { AuthState, Identity } from './auth';
 
 interface SignInProps {
-  readonly auth: AuthState;
-  readonly signIn: (email: string, password: string) => Promise<void>;
-  readonly signOut: () => Promise<void>;
-}
+    readonly auth: AuthState;
+    readonly signIn: (email: string, password: string) => Promise<void>;
+    readonly signOut: () => Promise<void>;
+    /**
+     * Set when sign-out ended the session but could not release everything this
+     * device holds. It is shown on the signed-out screen on purpose: the next person
+     * to use the machine should be told, not left to find out.
+     */
+    readonly wipeFailure?: string;
+  }
 
-export function SignInGate({ auth, signIn, signOut }: SignInProps) {
+  export function SignInGate({ auth, signIn, signOut, wipeFailure }: SignInProps) {
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -68,6 +75,16 @@ export function SignInGate({ auth, signIn, signOut }: SignInProps) {
 
   return (
     <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+  {wipeFailure !== undefined && wipeFailure !== '' && (
+        <p
+          data-testid="wipe-failure"
+          role="alert"
+          className="w-full max-w-sm text-sm text-red-800 bg-red-50 border border-red-200 rounded px-3 py-2"
+        >
+          {wipeFailure}
+        </p>
+      )}
+
       <form
         onSubmit={submit}
         className="w-full max-w-sm bg-white rounded-lg shadow-md p-6 space-y-4"

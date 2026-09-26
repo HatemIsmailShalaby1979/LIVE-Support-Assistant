@@ -55,7 +55,16 @@ export interface InstalledBundle {
 export interface BundleStore {
   active(): Promise<InstalledBundle | null>;
   commit(bundle: InstalledBundle): Promise<void>;
+  /**
+   * Discard everything this device holds.
+   *
+   * Not optional. A store that cannot be cleared is a store that cannot be wiped,
+   * and "wiped" is what has to happen when a person signs out on a machine the next
+   * person will use. The active bundle is another tenant's decrypted policy.
+   */
+  clear(): Promise<void>;
 }
+
 
 /** What the device holds, and what it needs to verify a bundle. */
 export interface SyncIdentity {

@@ -17,6 +17,7 @@ import { SignInGate, SessionBar } from './SignIn';
 import { CommandCenter } from './CommandCenter';
 import { EscalationConsole } from './EscalationConsole';
 import { canAuthorProcedures, canReadEscalations } from './roles';
+import { wipeDeviceState } from './device-state';
 import { syncBundle, type BundleState } from './bundle-client';
 
 /** The one sentence the telemetry panel shows. Never claims more than happened. */
@@ -433,14 +434,38 @@ function App() {
     activeCorpus.find((document) => document.id === sopId)?.title ?? sopId;
   const { auth, signIn, signOut } = useIdentity();
 
+  // Signing out has to end the session *and* release what this browser is holding for
+  // the tenant. Ending the session alone left a decrypted policy corpus, a
+  // tenant-coupled device key and the customer's query text in plain storage on a
+  // machine the next person will use.
+  //
+  // Order matters and it is not the obvious way round. The session ends first: if the
+  // wipe then fails, the leftover data sits on a device with no valid credential,
+  // which is the lower-risk state. Wiping first and failing would leave a live session
+  // *and* the data.
+  const [wipeFailure, setWipeFailure] = useState('');
+  const signOutAndWipe = useCallback(async () => {
+    setWipeFailure('');
+    await signOut();
+    const result = await wipeDeviceState();
+    if (result.failed.length > 0) {
+      setWipeFailure(
+        `Signed out, but this device still holds ${result.failed
+          .map((f) => `${f.what} (${f.reason})`)
+          .join(', ')}. Do not use this machine until it has been cleared.`,
+      );
+    }
+  }, [signOut]);
+
   // A signed-out visitor gets the sign-in form and nothing else — not a
   // disabled search box. The alternative, letting the page render and failing at
   // flush time, is a product that appears to work for a user it has not identified.
   if (auth.status !== 'signed-in') {
-    return <SignInGate auth={auth} signIn={signIn} signOut={signOut} />;
+    return <SignInGate auth={auth} signIn={signIn} signOut={signOutAndWipe} wipeFailure={wipeFailure} />;
   }
 
-  const sessionBar = <SessionBar identity={auth.identity} onSignOut={signOut} />;
+  const sessionBar = <SessionBar identity={auth.identity} onSignOut={signOutAndWipe} />;
+
   const role = auth.identity?.role ?? null;
   const canAuthor = canAuthorProcedures(role);
   const canReadQueue = canReadEscalations(role);

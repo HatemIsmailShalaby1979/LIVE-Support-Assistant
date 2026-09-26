@@ -178,6 +178,25 @@ async function scenario(makeStore, label) {
   expect(`${label}: bundle survives a store restart`, 2, afterReload?.bundleVersion,
     afterReload?.bundleVersion === 2);
 
+  // 6. wiping the device.
+  //
+  // Signing out used to end the session and nothing else, so on a machine the next
+  // person would use, the last tenant's decrypted procedure corpus stayed in storage
+  // under one unkeyed record. These pin the primitive that closes it: a store that
+  // can be cleared, and a cleared store that is genuinely gone rather than holding an
+  // "empty" bundle that any caller would read as installed.
+  const heldBeforeWipe = await store.active();
+  expect(`${label}: the device holds the tenant's bundle before a wipe`, '11111111-1111-1111-1111-111111111111',
+    heldBeforeWipe?.tenantId, heldBeforeWipe?.tenantId === '11111111-1111-1111-1111-111111111111');
+
+  await store.clear();
+  const afterWipe = await store.active();
+  expect(`${label}: a wipe leaves nothing a reader could serve`, 'null', String(afterWipe), afterWipe === null);
+
+  // A wiped store must still work, or the device is bricked rather than wiped.
+  const reinstalled = await installBundle(bundleForDevice(v1, 'device-1'), identity, store);
+  expect(`${label}: a wiped store can install again`, 'installed', reinstalled.outcome,
+    reinstalled.outcome === 'installed' && (await store.active())?.bundleVersion === 1);
   return { identity, v1, v2 };
 }
 
@@ -198,10 +217,18 @@ function fakeSqliteDriver() {
         tableReady = true;
         return;
       }
-      if (sql.startsWith('insert or replace')) {
-        row = { manifest: params[0], sops: params[1], installed_at: params[2] };
-        return;
-      }
+        if (sql.startsWith('insert or replace')) {
+          row = { manifest: params[0], sops: params[1], installed_at: params[2] };
+          return;
+        }
+        // The table holds exactly one row, so an unqualified delete is the whole
+        // table. This is standard SQL, not a dialect quirk, which is why the double
+        // can model it honestly rather than pattern-match a quirk.
+        if (sql.startsWith('delete')) {
+          row = null;
+          return;
+        }
+
       throw new Error(`unexpected sql: ${sql}`);
     },
     async getAllAsync(sql) {
@@ -368,7 +395,6 @@ function bytesEqual(a, b) {
 }
 }
 
-// ---- report ----
 const failed = checks.filter((check) => !check.ok);
 
 console.log('\n=== device persistence ===');

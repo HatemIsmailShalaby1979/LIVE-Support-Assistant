@@ -1124,6 +1124,36 @@ try {
   );
   check('signing out returns the visitor to the form', signedOut);
 
+  // Signing out has to release what this browser holds for the tenant, not just end
+  // the session. Asserted against the actual storage rather than through the UI,
+  // because this is a property of the device, not of the screen: the next person to
+  // use this machine reads these stores, not this page.
+  const wiped = await evaluate(`
+    (async () => {
+      const readBundle = await new Promise((resolve) => {
+        const request = indexedDB.open('sop-bundles');
+        request.onsuccess = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains('active')) return resolve('no-store');
+          const tx = db.transaction('active', 'readonly').objectStore('active').get('bundle');
+          tx.onsuccess = () => resolve(tx.result === undefined ? 'empty' : 'present');
+          tx.onerror = () => resolve('error');
+        };
+        request.onerror = () => resolve('open-failed');
+      });
+      return JSON.stringify({
+        bundle: readBundle,
+        telemetry: localStorage.getItem('sop-telemetry-queue-v2') === null ? 'absent' : 'present',
+      });
+    })()
+  `);
+  const wipeState = JSON.parse(wiped);
+  check(
+    'and the device no longer holds a bundle or queued telemetry for that tenant',
+    wipeState.bundle === 'empty' && wipeState.telemetry === 'absent',
+    wiped,
+  );
+
   check(
     'the page reported no console errors',
     consoleErrors.length === 0,

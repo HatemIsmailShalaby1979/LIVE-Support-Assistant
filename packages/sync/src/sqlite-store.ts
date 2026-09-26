@@ -70,12 +70,25 @@ export class SqliteBundleStore implements BundleStore {
   }
 
   async commit(bundle: InstalledBundle): Promise<void> {
-    await this.ready;
+      await this.ready;
 
-    await this.db.runAsync(
-      `insert or replace into active_bundle (id, manifest, sops, installed_at)
-       values (1, ?, ?, ?)`,
-      [JSON.stringify(bundle.manifest), JSON.stringify(bundle.sops), bundle.installedAt],
-    );
+      await this.db.runAsync(
+        `insert or replace into active_bundle (id, manifest, sops, installed_at)
+         values (1, ?, ?, ?)`,
+        [JSON.stringify(bundle.manifest), JSON.stringify(bundle.sops), bundle.installedAt],
+      );
+    }
+
+    /**
+     * Discard the active bundle.
+     *
+     * The row is deleted rather than blanked, so there is no state in which the
+     * stored `sops` are empty but the row still reads as an installed bundle.
+     */
+    async clear(): Promise<void> {
+      await this.ready;
+
+      await this.db.runAsync('delete from active_bundle');
+    }
   }
-}
+
