@@ -1602,3 +1602,41 @@ the full-body path, unaffected), browser 52/52 twice, typecheck, lint and build
 green, audit 0 new and 0 escalated. The Part 1 harness retry that retired the seed
 placeholder stays: it is what a person does, and it is now backed by a product path
 rather than standing in for one.
+
+
+## CORS pinned to an allowlist on the decrypting function - 2026-09-25
+
+**Executed and verified.** `upsert-sop` answered every response and every preflight
+with `access-control-allow-origin: '*'`, and it is the one function that returns
+decrypted procedure bodies. A valid JWT was always required, so `*` was never
+directly exploitable - but "not exploitable today" is not a control, and a token
+that ever leaks into a browser context becomes usable from any origin under `*`.
+That was my own line, set while fixing the CORS hole, and it stayed broader than it
+needed to be for six slices.
+
+**The fix.** The origin is echoed back if and only if it appears in the
+`ALLOWED_ORIGINS` secret (comma-separated), with `Vary: Origin` on every response.
+An unlisted origin gets no ACAO header, so the browser refuses the read.
+Non-browser callers are unaffected - CORS is a browser policy, and the JWT check
+still applies to everyone. If the secret is unset, nothing gets the header
+(fail-closed). The set of app origins is a deployment fact rather than a code fact,
+so it lives in the secret rather than the file: the dev server today, the hosted
+web app when it deploys, the Tauri origins when desktop ships.
+
+**Proven in both directions, at the wire and in the product.** An OPTIONS from the
+dev origin returns 204 with the origin echoed; the same request from
+`https://evil.example` returns 204 with no ACAO header at all. The browser harness
+then exercises the allowed path end to end - authoring, reads, revision and the
+status-only repair all go through this function - at 52/52, twice in a row.
+
+**An intermittent the change did not cause, recorded rather than chased.** Four
+browser runs since the deploy went fail, pass, fail, pass, and every failure began
+in the agent-query phase - local model inference and a PostgREST flush, neither of
+which touches this function. All checks exercising the changed function passed in
+all four runs, including the failing ones. That is the evidence the two are
+unrelated; the agent-phase flake predates this slice and belongs to whoever owns
+that phase next.
+
+**Verified.** Wire-level allow and deny, browser 52/52 twice, `probe:corpus` 12/12,
+`verify` 6/6, audit 0 new and 0 escalated. `publish-bundle` carries platform-default
+CORS and returns no plaintext bodies, so it is out of scope and untouched.

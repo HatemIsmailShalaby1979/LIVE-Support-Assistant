@@ -39,16 +39,44 @@ interface SopBody {
 // indistinguishable from a network outage and sent this slice's first browser run
 // looking for a transport fault instead of a 403. Nothing has called an edge
 // function from the browser until now, so nothing had answered the preflight.
-const CORS_HEADERS: Record<string, string> = {
-  'access-control-allow-origin': '*',
-  'access-control-allow-headers': 'authorization, x-client-info, apikey, content-type',
-  'access-control-allow-methods': 'POST, PUT, GET, OPTIONS',
-};
+//
+// The origin is pinned to an allowlist, not `*`. This function returns decrypted
+// procedure bodies, and `*` lets any website in the world attempt requests against
+// it. A valid JWT is still required, so `*` was never directly exploitable — but
+// "not exploitable today" is not a control, and a token that ever leaks into a
+// browser context (pasted somewhere, logged somewhere) becomes usable from any
+// origin under `*`. The allowlist lives in the `ALLOWED_ORIGINS` secret as a
+// comma-separated list, because the set of app origins is a deployment fact, not a
+// code fact: the dev server, the hosted web app, and later the Tauri origins are
+// different strings in different environments. An origin that is not listed gets no
+// `access-control-allow-origin` header at all, so the browser refuses the read.
+// Non-browser callers are unaffected — CORS is a browser policy, and the JWT check
+// still applies to everyone. If the secret is unset, nothing gets the header
+// (fail-closed); the function still answers, the browser just cannot read it.
+function allowedOrigins(): string[] {
+  return (Deno.env.get('ALLOWED_ORIGINS') ?? '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter((origin) => origin !== '');
+}
 
-function json(body: unknown, status: number): Response {
+function corsHeaders(request: Request): Record<string, string> {
+  const headers: Record<string, string> = {
+    'access-control-allow-headers': 'authorization, x-client-info, apikey, content-type',
+    'access-control-allow-methods': 'POST, PUT, GET, OPTIONS',
+    vary: 'origin',
+  };
+  const origin = request.headers.get('origin') ?? '';
+  if (origin !== '' && allowedOrigins().includes(origin)) {
+    headers['access-control-allow-origin'] = origin;
+  }
+  return headers;
+}
+
+function json(request: Request, body: unknown, status: number): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { 'content-type': 'application/json', ...CORS_HEADERS },
+    headers: { 'content-type': 'application/json', ...corsHeaders(request) },
   });
 }
 
@@ -96,6 +124,7 @@ function claimsOf(authorization: string): Record<string, unknown> | null {
  * same key.
  */
 async function readBack(
+  request: Request,
   client: ReturnType<typeof createClient>,
   tenantId: string,
   key: CryptoKey,
@@ -108,9 +137,9 @@ async function readBack(
     .eq('tenant_id', tenantId)
     .maybeSingle();
 
-  if (sopError) return json({ error: `could not read the procedure: ${sopError.message}` }, 502);
+  if (sopError) return json(request, { error: `could not read the procedure: ${sopError.message}` }, 502);
   if (sop === null || sop === undefined) {
-    return json({ error: 'no such procedure on this tenant' }, 404);
+    return json(request, { error: 'no such procedure on this tenant' }, 404);
   }
 
   const { data: version } = await client
@@ -122,13 +151,13 @@ async function readBack(
     .maybeSingle();
 
   if (version === null || version === undefined) {
-    return json({ sopId, title: sop.title, status: sop.status, version: 0, body: null });
+    return json(request, { sopId, title: sop.title, status: sop.status, version: 0, body: null });
   }
 
   const packed = fromHex(String(version.body_ciphertext).replace(/^\\x/, ''));
 
   if (packed.length < 12 + 16) {
-    return json(
+    return json(request, 
       { error: `procedure "${sop.title}" has a body this server did not write, so it cannot be read` },
       502,
     );
@@ -140,7 +169,7 @@ async function readBack(
       key,
       packed.slice(12) as BufferSource,
     );
-    return json({
+    return json(request, {
       sopId,
       title: sop.title,
       status: sop.status,
@@ -148,7 +177,7 @@ async function readBack(
       body: JSON.parse(new TextDecoder().decode(plaintext)),
     });
   } catch {
-    return json(
+    return json(request, 
       { error: `procedure "${sop.title}" could not be decrypted with the server's body key` },
       502,
     );
@@ -164,6 +193,7 @@ async function readBack(
  * will publish or read, and the row stops blocking the tenant.
  */
 async function statusOnly(
+  request: Request,
   client: ReturnType<typeof createClient>,
   tenantId: string,
   userId: string | null,
@@ -172,7 +202,7 @@ async function statusOnly(
   const sopId = payload.sopId as string;
   const status = typeof payload.status === 'string' ? payload.status : 'draft';
   if (!ALLOWED_STATUS.has(status)) {
-    return json({ error: `status must be one of ${[...ALLOWED_STATUS].join(', ')}` }, 400);
+    return json(request, { error: `status must be one of ${[...ALLOWED_STATUS].join(', ')}` }, 400);
   }
   const changeNote =
     typeof payload.changeNote === 'string' && payload.changeNote !== ''
@@ -186,9 +216,9 @@ async function statusOnly(
     .eq('tenant_id', tenantId)
     .maybeSingle();
 
-  if (sopError) return json({ error: `could not read the procedure: ${sopError.message}` }, 502);
+  if (sopError) return json(request, { error: `could not read the procedure: ${sopError.message}` }, 502);
   if (sop === null || sop === undefined) {
-    return json({ error: 'no such procedure on this tenant' }, 404);
+    return json(request, { error: 'no such procedure on this tenant' }, 404);
   }
 
   const { data: latest, error: versionError } = await client
@@ -200,10 +230,10 @@ async function statusOnly(
     .maybeSingle();
 
   if (versionError) {
-    return json({ error: `could not read the current version: ${versionError.message}` }, 502);
+    return json(request, { error: `could not read the current version: ${versionError.message}` }, 502);
   }
   if (latest === null || latest === undefined) {
-    return json({ error: 'the procedure has no version to carry forward' }, 400);
+    return json(request, { error: 'the procedure has no version to carry forward' }, 400);
   }
 
   const title =
@@ -218,7 +248,7 @@ async function statusOnly(
     .eq('tenant_id', tenantId);
 
   if (updateError) {
-    return json({ error: `could not update the procedure: ${updateError.message}` }, 502);
+    return json(request, { error: `could not update the procedure: ${updateError.message}` }, 502);
   }
 
   const { data: written, error: writeError } = await client
@@ -236,22 +266,22 @@ async function statusOnly(
     .single();
 
   if (writeError) {
-    return json({ error: `could not write the version: ${writeError.message}` }, 502);
+    return json(request, { error: `could not write the version: ${writeError.message}` }, 502);
   }
 
-  return json({ sopId, version: (latest.version as number) + 1, status, versionId: written?.id });
+  return json(request, { sopId, version: (latest.version as number) + 1, status, versionId: written?.id });
 }
 
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: CORS_HEADERS });
+    return new Response(null, { status: 204, headers: corsHeaders(request) });
   }
 
   const authorization = request.headers.get('authorization') ?? '';
-  if (authorization === '') return json({ error: 'a bearer token is required' }, 401);
+  if (authorization === '') return json(request, { error: 'a bearer token is required' }, 401);
 
   const claims = claimsOf(authorization);
-  if (claims === null) return json({ error: 'the bearer token is not a JWT' }, 401);
+  if (claims === null) return json(request, { error: 'the bearer token is not a JWT' }, 401);
 
   const appMetadata = (claims.app_metadata ?? {}) as Record<string, unknown>;
   const role = String(appMetadata.app_role ?? '');
@@ -261,7 +291,7 @@ Deno.serve(async (request) => {
   // may not, and row-level security is what decides that no matter what a token
   // claims.
   if (role !== 'ops_manager' && role !== 'sop_editor') {
-    return json({ error: 'authoring a procedure requires an editor or ops manager' }, 403);
+    return json(request, { error: 'authoring a procedure requires an editor or ops manager' }, 403);
   }
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
@@ -269,7 +299,7 @@ Deno.serve(async (request) => {
   const bodyKey = Deno.env.get('SOP_BODY_KEY') ?? '';
 
   if (bodyKey === '') {
-    return json({ error: 'the server has no SOP_BODY_KEY, so bodies cannot be read or stored' }, 503);
+    return json(request, { error: 'the server has no SOP_BODY_KEY, so bodies cannot be read or stored' }, 503);
   }
 
   const client = createClient(supabaseUrl, anonKey, {
@@ -278,7 +308,7 @@ Deno.serve(async (request) => {
   });
 
   const { data: tenant, error: tenantError } = await client.schema('app').rpc('current_tenant');
-  if (tenantError) return json({ error: `the session has no tenant: ${tenantError.message}` }, 403);
+  if (tenantError) return json(request, { error: `the session has no tenant: ${tenantError.message}` }, 403);
 
   const key = await crypto.subtle.importKey(
     'raw',
@@ -301,26 +331,26 @@ Deno.serve(async (request) => {
   if (request.method === 'GET') {
     const sopId = url.searchParams.get('sopId');
     if (sopId === null || sopId === '') {
-      return json({ error: 'a GET needs a sopId' }, 400);
+      return json(request, { error: 'a GET needs a sopId' }, 400);
     }
-    return readBack(client, tenant as string, key, sopId);
+    return readBack(request, client, tenant as string, key, sopId);
   }
 
   if (request.method !== 'POST' && request.method !== 'PUT') {
-    return json({ error: 'use POST to create, PUT to revise, or GET to read one' }, 405);
+    return json(request, { error: 'use POST to create, PUT to revise, or GET to read one' }, 405);
   }
 
   let payload: Record<string, unknown>;
   try {
     payload = await request.json();
   } catch {
-    return json({ error: 'the body must be JSON' }, 400);
+    return json(request, { error: 'the body must be JSON' }, 400);
   }
 
   if (payload.read === true) {
     const sopId = typeof payload.sopId === 'string' ? payload.sopId : '';
-    if (sopId === '') return json({ error: 'a read needs a sopId' }, 400);
-    return readBack(client, tenant as string, key, sopId);
+    if (sopId === '') return json(request, { error: 'a read needs a sopId' }, 400);
+    return readBack(request, client, tenant as string, key, sopId);
   }
 
   // A change that carries no body fields is a status change, not a revision.
@@ -354,15 +384,15 @@ Deno.serve(async (request) => {
     payload.sopId !== '' &&
     !carriesBody
   ) {
-    return statusOnly(client, tenant as string, claims.sub ?? null, payload);
+    return statusOnly(request, client, tenant as string, claims.sub ?? null, payload);
   }
 
   const title = typeof payload.title === 'string' ? payload.title.trim() : '';
-  if (title === '') return json({ error: 'a procedure needs a title' }, 400);
+  if (title === '') return json(request, { error: 'a procedure needs a title' }, 400);
 
   const status = typeof payload.status === 'string' ? payload.status : 'draft';
   if (!ALLOWED_STATUS.has(status)) {
-    return json({ error: `status must be one of ${[...ALLOWED_STATUS].join(', ')}` }, 400);
+    return json(request, { error: `status must be one of ${[...ALLOWED_STATUS].join(', ')}` }, 400);
   }
 
   const sopId = typeof payload.sopId === 'string' && payload.sopId !== '' ? payload.sopId : null;
@@ -383,7 +413,7 @@ Deno.serve(async (request) => {
   };
 
   if (body.summary === '') {
-    return json({ error: 'a procedure needs a summary — it is what retrieval matches against' }, 400);
+    return json(request, { error: 'a procedure needs a summary — it is what retrieval matches against' }, 400);
   }
 
   // No check on how many procedures a tenant has. There was one here — a
@@ -404,7 +434,7 @@ Deno.serve(async (request) => {
       })
       .select('id')
       .single();
-    if (error) return json({ error: `could not create the procedure: ${error.message}` }, 502);
+    if (error) return json(request, { error: `could not create the procedure: ${error.message}` }, 502);
     targetId = created.id as string;
   } else {
     const { error } = await client
@@ -412,7 +442,7 @@ Deno.serve(async (request) => {
       .update({ title, status })
       .eq('id', targetId)
       .eq('tenant_id', tenant);
-    if (error) return json({ error: `could not update the procedure: ${error.message}` }, 502);
+    if (error) return json(request, { error: `could not update the procedure: ${error.message}` }, 502);
   }
 
   const { data: versions, error: versionError } = await client
@@ -423,7 +453,7 @@ Deno.serve(async (request) => {
     .limit(1);
 
   if (versionError) {
-    return json({ error: `could not read the current version: ${versionError.message}` }, 502);
+    return json(request, { error: `could not read the current version: ${versionError.message}` }, 502);
   }
 
   const nextVersion = (versions?.[0]?.version ?? 0) + 1;
@@ -450,8 +480,8 @@ Deno.serve(async (request) => {
     .single();
 
   if (writeError) {
-    return json({ error: `could not write the version: ${writeError.message}` }, 502);
+    return json(request, { error: `could not write the version: ${writeError.message}` }, 502);
   }
 
-  return json({ sopId: targetId, version: nextVersion, status, versionId: written?.id });
+  return json(request, { sopId: targetId, version: nextVersion, status, versionId: written?.id });
 });
