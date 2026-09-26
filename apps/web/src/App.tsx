@@ -15,7 +15,8 @@ import { SupabaseTransport } from './transport';
 import { useIdentity } from './auth';
 import { SignInGate, SessionBar } from './SignIn';
 import { CommandCenter } from './CommandCenter';
-import { canAuthorProcedures } from './roles';
+import { EscalationConsole } from './EscalationConsole';
+import { canAuthorProcedures, canReadEscalations } from './roles';
 import { syncBundle, type BundleState } from './bundle-client';
 
 /** The one sentence the telemetry panel shows. Never claims more than happened. */
@@ -92,7 +93,7 @@ function App() {
   const [queue] = useState(() => new TelemetryQueue());
   const [transport] = useState(() => new SupabaseTransport());
   const [bundleState, setBundleState] = useState<BundleState>({ status: 'unavailable', detail: 'not loaded yet' });
-  const [surface, setSurface] = useState<'ask' | 'command'>('ask');
+  const [surface, setSurface] = useState<'ask' | 'command' | 'escalations'>('ask');
   const bundleVersion =
     bundleState.status === 'ready' ? bundleState.bundleVersion : BUNDLE_VERSION;
   const [delivery, setDelivery] = useState<DeliveryState>({ state: 'idle', sent: 0 });
@@ -386,6 +387,7 @@ function App() {
   const sessionBar = <SessionBar identity={auth.identity} onSignOut={signOut} />;
   const role = auth.identity?.role ?? null;
   const canAuthor = canAuthorProcedures(role);
+  const canReadQueue = canReadEscalations(role);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -423,10 +425,24 @@ function App() {
               aria-selected={surface === 'command'}
               onClick={() => setSurface('command')}
               className={`px-3 py-1.5 ${surface === 'command' ? 'bg-gray-900 text-white' : 'text-gray-600'} ${
-                'rounded-r'
+                canReadQueue ? '' : 'rounded-r'
               }`}
             >
               Command Center
+            </button>
+          ) : null}
+          {canReadQueue ? (
+            <button
+              type="button"
+              role="tab"
+              data-testid="tab-escalations"
+              aria-selected={surface === 'escalations'}
+              onClick={() => setSurface('escalations')}
+              className={`px-3 py-1.5 rounded-r border-l border-gray-300 ${
+                surface === 'escalations' ? 'bg-gray-900 text-white' : 'text-gray-600'
+              }`}
+            >
+              Escalations
             </button>
           ) : null}
         </div>
@@ -435,6 +451,10 @@ function App() {
       {surface === 'command' && canAuthor ? (
         <main className="max-w-4xl mx-auto px-4 py-8">
           <CommandCenter onPublished={() => void loadIndex()} />
+        </main>
+      ) : surface === 'escalations' && canReadQueue ? (
+        <main className="max-w-4xl mx-auto px-4 py-8">
+          <EscalationConsole role={role} />
         </main>
       ) : (
       <main className="max-w-7xl mx-auto px-4 py-8">

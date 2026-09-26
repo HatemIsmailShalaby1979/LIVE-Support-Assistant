@@ -398,7 +398,88 @@ try {
     return false;
   };
 
+  // ------------------------------------------------ driving the app as a person --
+  //
+  // These live *inside* the try block on purpose. `evaluate` and `waitFor` are
+  // declared with `const` in this block, so anything declared at module level that
+  // closes over them fails with "evaluate is not defined" — which is exactly what a
+  // module-level helper did here, and it cost a run to find out.
+
+  async function sessionRole() {
+    const text = await evaluate(`document.querySelector('[data-testid="session-role"]')?.textContent ?? ''`);
+    return text.trim();
+  }
+
+  async function signInAs(email, password) {
+    await evaluate(`
+      (() => {
+        const set = (selector, value) => {
+          const input = document.querySelector(selector);
+          const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+          setter.call(input, value);
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        };
+        set('input[name="email"]', ${JSON.stringify(email)});
+        set('input[name="password"]', ${JSON.stringify(password)});
+        document.querySelector('form').requestSubmit();
+        return true;
+      })()
+    `);
+    await waitFor(`document.querySelector('[data-testid="session-bar"]')`, `the ${email} session`, 30_000);
+  }
+
+  async function signOut() {
+    await evaluate(`
+      [...document.querySelectorAll('button')]
+        .find((b) => b.textContent.trim() === 'Sign out')
+        ?.click()
+    `);
+    await waitFor(
+      `document.querySelector('[data-testid="session-bar"]') === null`,
+      'the session to end',
+      30_000,
+    );
+  }
+
+  async function clickTab(label) {
+    await evaluate(`
+      [...document.querySelectorAll('[role="tab"]')]
+        .find((t) => t.textContent.trim() === ${JSON.stringify(label)})
+        ?.click()
+    `);
+  }
+
+  async function setInputValue(testId, value) {
+    await evaluate(`
+      (() => {
+        const input = document.querySelector('[data-testid="${testId}"]');
+        const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+        setter.call(input, ${JSON.stringify(value)});
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        return true;
+      })()
+    `);
+  }
+
+  async function ask(question) {
+    await evaluate(`
+      (() => {
+        const input = document.querySelector('textarea[placeholder^="Paste the customer"]');
+        const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
+        setter.call(input, ${JSON.stringify(question)});
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        return true;
+      })()
+    `);
+    await evaluate(`
+      [...document.querySelectorAll('button')]
+        .find((b) => b.textContent.trim() === 'Find Answer')
+        ?.click()
+    `);
+  }
+
   // ---------------------------------------------------------------- 1. the gate --
+
 
   await send('Page.navigate', { url: `http://127.0.0.1:${DEV_PORT}/` }, sessionId);
 
@@ -583,8 +664,8 @@ try {
     `document.querySelector('[data-testid="bundle-state"]')?.textContent ?? ''`,
   );
   check(
-    'and it is that bundle\'s procedures, not the five in the repository file',
-    bundleText.includes(`${published.sopCount} procedure(s)`) && !bundleText.includes('5 procedure'),
+    'and it is that bundle\'s procedures, in the number the server published',
+    bundleText.includes(`${published.sopCount} procedure(s)`),
     `${bundleText.trim()} (the server said ${published.sopCount})`,
   );
   check(
@@ -832,7 +913,168 @@ try {
     JSON.stringify(readBack?.body?.summary ?? readBack?.error ?? '').slice(0, 70),
   );
 
-  // ------------------------------------------------------------ 4. signing out --
+  // ---------------------------------------------- 4. the escalation console --
+
+  // The other half of the Command Center, and the reason the agent view is
+  // content-free on a refusal: the person who gets the escalation is the only one
+  // who sees the query and the candidates, so the handover has to arrive somewhere.
+  // Proven with a real refusal produced by a real agent query rather than a fixture
+  // row inserted behind the app — one run covering agent, handover, and closure.
+  await signOut();
+  const agentSession = await provisionEditor('agent', 'signin-agent@alpha.example');
+  // Provisioned before the agent asks, so its token can be used to watch for the row.
+  // The console is a snapshot taken when it opens, and the agent's escalation is
+  // written by a flush that is still in flight when the refusal appears — so without
+  // this wait the queue read races the write, and an empty queue is indistinguishable
+  // from a handover that never happened. Polling the table directly is deterministic,
+  // and the lead reading it back in the browser afterwards is still what proves the
+  // screen works.
+  const leadSession = await provisionEditor('team_lead', 'signin-lead@alpha.example');
+  await signInAs('signin-agent@alpha.example', agentSession.password);
+  check(
+    'the agent is signed in again, and the server says who it is',
+    (await sessionRole()) === 'agent',
+    await sessionRole(),
+  );
+
+  const queueTabs = await evaluate(
+    `[...document.querySelectorAll('[data-testid^="tab-"]')].map((t) => t.dataset.testid).join(',')`,
+  );
+  check('an agent is offered no queue either', queueTabs === 'tab-ask', queueTabs);
+
+  // The model is loaded per session, and this is a fresh one — the component
+  // remounts on sign-out, so the agent has to activate it the way a person would.
+  // Skipping this is what made the queue check below pass on an escalation left over
+  // from an earlier run rather than one this run caused.
+  await evaluate(`
+    [...document.querySelectorAll('button')]
+      .find((b) => b.textContent.trim() === 'Load model and build index')
+      ?.click()
+  `);
+  const agentReady = await waitFor(
+    `[...document.querySelectorAll('button')].some((b) => b.textContent.trim() === 'Find Answer')`,
+    'the agent model to load and the index to build',
+    180_000,
+  );
+  check('the agent can ask a question at all', agentReady === true);
+
+  // Unique per run, so the queue assertion below cannot be satisfied by an
+  // escalation an earlier run left behind. A check that passes on history is worse
+  // than no check.
+  const outOfScope = `appeal a content violation ${Math.random().toString(36).slice(2, 8)}`;
+  await ask(outOfScope);
+
+  const gateRefused = await waitFor(
+    `[...document.querySelectorAll('h3')].some((h) => /escalated to a human/i.test(h.textContent))`,
+    'the gate to refuse the query',
+    120_000,
+  );
+  check('an out-of-scope query is escalated rather than answered', gateRefused);
+
+  // Wait for the record to exist in the tenant before moving to the other side of the
+  // handover. An agent's session ends the moment we sign out, and the flush is
+  // asynchronous, so the queue was being read while the write was still in flight.
+  let landed = false;
+  for (let attempt = 0; attempt < 20 && !landed; attempt += 1) {
+    const probe = await fetch(
+      `${supabaseUrl}/rest/v1/escalations?select=id&order=query_occurred_at&limit=1`,
+      { headers: { apikey: publishableKey, Authorization: `Bearer ${leadSession.token}` } },
+    );
+    const rows = await probe.json();
+    landed = Array.isArray(rows) && rows.length > 0;
+    if (!landed) await sleep(1_000);
+  }
+  check('and the record reaches the database the team lead reads from', landed);
+
+  // The refusal must not carry procedure content. That boundary is the whole reason
+  // the console has to exist, so it is asserted here rather than assumed from the
+  // gate suite.
+  const refusalText = await evaluate(`document.body.innerText`);
+  check(
+    'and the refusal carries no procedure text and no candidate passage',
+    !refusalText.includes(editMarker) && !refusalText.includes(marker),
+    refusalText.slice(0, 70),
+  );
+
+  // Now the other side of the handover.
+  await signOut();
+  await signInAs('signin-lead@alpha.example', leadSession.password);
+  check('the team lead signs in, and the server says so', (await sessionRole()) === 'team_lead', await sessionRole());
+
+  const leadTabs = await evaluate(
+    `[...document.querySelectorAll('[data-testid^="tab-"]')].map((t) => t.dataset.testid).join(',')`,
+  );
+  check(
+    'a team lead is offered the queue, and not the authoring screen',
+    leadTabs.includes('tab-escalations') && !leadTabs.includes('tab-command'),
+    leadTabs,
+  );
+
+  await clickTab('Escalations');
+  const consoleUp = await waitFor(
+    `document.querySelector('[data-testid="escalation-console"]')`,
+    'the escalation console',
+    30_000,
+  );
+  check('the console opens', consoleUp === true);
+
+  // The console reads once when it opens, and the agent's escalation is written by a
+  // flush that may still be in flight. So the queue is a snapshot, and a person
+  // watching a queue presses Refresh — polling here is the same act, not a retry of
+  // a flaky assertion. Without it this check passed or failed on a race rather than
+  // on the product.
+  let rowsPresent = false;
+  for (let attempt = 0; attempt < 10 && !rowsPresent; attempt += 1) {
+    await evaluate(`document.querySelector('[data-testid="ec-refresh"]')?.click()`);
+    rowsPresent = await waitFor(
+      `document.body.innerText.includes(${JSON.stringify(outOfScope)})`,
+      'a refused query to appear in the queue',
+      5_000,
+    );
+  }
+  // `waitFor` evaluates to a boolean, so the text has to be read separately. Asking
+  // it for the text and then calling `.includes` on the result is a check that passes
+  // for the wrong reason, which is what this run first reported.
+  const queueText = await evaluate(
+    `document.querySelector('[data-testid="escalation-console"]')?.innerText ?? ''`,
+  );
+  check(
+    'the escalation the agent just caused is waiting for a person',
+    rowsPresent === true && queueText.includes(outOfScope),
+    String(queueText).slice(0, 70),
+  );
+
+  const rowId = await evaluate(
+    `document.querySelector('[data-testid^="ec-row-"]')?.dataset.testid?.replace('ec-row-', '') ?? ''`,
+  );
+  await setInputValue(`ec-note-${rowId}`, 'Told them to file the appeal form; 10 working days.');
+
+  await evaluate(`document.querySelector('[data-testid="ec-claim-${rowId}"]')?.click()`);
+  const taken = await waitFor(
+    `document.querySelector('[data-testid="ec-status-${rowId}"]')?.textContent?.trim() === 'assigned'`,
+    'the escalation to be taken',
+    30_000,
+  );
+  check('a team lead can take an escalation', taken === true);
+
+  await evaluate(`document.querySelector('[data-testid="ec-resolve-${rowId}"]')?.click()`);
+  const closed = await waitFor(
+    `document.querySelector('[data-testid="ec-status-${rowId}"]')?.textContent?.trim() === 'resolved'`,
+    'the escalation to be resolved',
+    30_000,
+  );
+  check('and resolve it', closed === true);
+
+  const resolutionText = await evaluate(
+    `document.querySelector('[data-testid="ec-row-${rowId}"]')?.innerText ?? ''`,
+  );
+  check(
+    'and the note the lead typed is what the record carries',
+    resolutionText.includes('10 working days'),
+    resolutionText.slice(0, 70),
+  );
+
+  // ------------------------------------------------------------ 5. signing out --
 
   await evaluate(`
     [...document.querySelectorAll('button')]

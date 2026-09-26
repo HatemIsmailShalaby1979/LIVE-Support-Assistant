@@ -1258,74 +1258,66 @@ and build for the whole of this change. All four defects passed all three. Only 
 real browser found them, and only because something was changed that made the
 browser path exist for the first time.
 
-## The escalation console — designed, not yet built — 2026-09-25
+## The escalation console, and the race a screen cannot see — 2026-09-25
 
-**Not executed. Recorded so the next session does not repeat the discovery work.**
-An attempt was made and abandoned with the tree returned to its last green state,
-because the harness was corrupted by a line-splicing error partway through and
-finishing it properly needed more context than remained. The product files written
-during that attempt were removed rather than left half-wired, because dead code
-that nothing renders is worse than no code.
+**Executed and verified. `pnpm run verify:signin` — 43/43, twice, in real headless
+Chrome.** The full handover in one run: an agent asks a question the gate refuses,
+the record reaches the database, a team lead sees the query and the candidates,
+takes it, resolves it, and the note they typed is what the record carries. Zero
+console errors.
 
-**What was established, by reading the schema rather than guessing it.**
+**The console.** `apps/web/src/escalations.ts` and `EscalationConsole.tsx`. A queue
+ordered by `query_occurred_at`, read with no filter argument so the tenant comes from
+the JWT through `app.current_tenant()`. Four named states — loading, **nothing
+waiting**, refused to read, failed — because an empty queue and a broken query look
+identical to a team lead, and that difference is a quiet day versus an incident. Each
+row carries the query text, the reason in words rather than the stored machine code,
+the bundle version, the candidate count, the assignee, and the candidates behind a
+disclosure. The status change and the resolution note travel together, because a
+resolved row with no explanation is a deletion with a timestamp on it.
 
-- `escalations` may be read by `ops_manager`, `team_lead` and `auditor` on the
-  caller's own tenant. A frontline `agent` and a `sop_editor` may not. So the
-  console should be offered to exactly those three roles and hidden from the rest.
-- Only `ops_manager` and `team_lead` may update, and only the columns
-  `status`, `assigned_to`, `resolution`, `linked_sop_version`, `resolved_at` —
-  migration 0013 revokes blanket update and grants the workflow columns
-  individually. "Resolve it" therefore cannot rewrite the evidence even if a policy
-  were wrong, which is the property that makes an audit trail worth having.
-- `status` is `open | assigned | resolved`, enforced by a check constraint.
-- `evidence` is the `EscalationEvidence` snapshot from `@sop/core`:
-  `queryText`, `reason`, `thresholdAccept`, `minMargin`, `bundleVersion`,
-  `modelId`, `modelRevision`, `candidates[{sopId, score, passage}]`. It is the
-  reason a record outlives the telemetry partition it came from.
-- The ingest contract requires `sopId`, `score` and `margin` to be JSON **null** on
-  an escalation, because an escalation carrying a score is claiming the gate
-  answered confidently.
+**What the schema already guaranteed, and what therefore shaped it.** Only
+`ops_manager` and `team_lead` may update, and only the five workflow columns, so
+"resolve it" cannot rewrite the evidence even if a policy were wrong. An `auditor`
+reads the queue and is told why they cannot act on it, rather than being shown
+buttons that would fail. The workflow update `select`s the affected rows and checks
+the count, because row-level security filters rows rather than raising — an update
+silently filtered to zero reports success while changing nothing, which is the same
+trap as the device re-key in the bundle slice.
 
-**A defect found while wiring it, and left in place deliberately.** The Command
-Center tab is currently shown to every signed-in role, including a frontline agent
-who cannot author anything. The server refuses correctly, so this is not a
-security hole — it is a screen that renders and then fails, which is the same
-failure this project has already made twice in telemetry. Gating the tabs by the
-same role list the database enforces is the fix, and it is small. It was **not**
-committed, because gating the tabs correctly invalidates four existing harness
-checks that assume an agent can reach the Command Center, and those four have to
-move into the editor phase in the same commit. Doing it halfway is what this
-attempt did, and it is why the run went red.
+**The race, and it is the finding worth keeping.** The console reads once when it
+opens. The agent's escalation is written by a flush that is still in flight at the
+moment the refusal appears, and the agent's session ends the instant we sign out. So
+the lead read the queue while the write was in flight, and an empty queue is
+indistinguishable from a handover that never happened. It was intermittent, which is
+worse than consistent: it passed once and failed twice.
 
-**The design that should be built, in one screen.**
+Fixed on the harness side by polling the table with the lead's own token before
+moving to the browser, and by giving every run a **unique query string**. The unique
+string matters more than it looks — the first version reused a literal from an
+abandoned attempt, and a check that can be satisfied by a row an earlier run left
+behind is worse than no check. This is the third instance of that lesson in this
+project, and the pattern is now: any assertion about accumulated data needs an
+identity that only this run could have produced.
 
-1. A queue ordered by `query_occurred_at` descending, read with no filter argument
-   so the tenant comes from the JWT through `app.current_tenant()`.
-2. Four named states: loading, **nothing waiting**, refused to read, and failed.
-   An empty queue says so; it must not look like a broken query.
-3. Each row: the query text, the reason in words rather than a machine code, the
-   bundle version, the candidate count, the assignee, and the candidates behind a
-   disclosure.
-4. A resolution note travels with the status change, because a resolved row with no
-   explanation is not a resolution — it is a deletion with a timestamp on it.
-5. `auditor` gets a read-only queue with the reason stated, rather than buttons
-   that would fail.
-6. The workflow update must `select` the affected rows and check the count.
-   Row-level security filters rows rather than raising, so an update that was
-   silently filtered to zero reports success while changing nothing — the same trap
-   as the device re-key in the bundle slice, and the reason the check exists.
+**Two harness bugs, and one product bug the browser found.**
 
-**How it should be proven.** Not a fixture row inserted behind the app. A real
-agent signs in, asks a query the gate refuses, and the resulting escalation is what
-the team lead then sees, takes and resolves — one browser run covering agent to
-handover to closure. The refusal must also be asserted content-free, because the
-content-free agent view is the reason the console has to exist at all.
+1. `waitFor` evaluates to a **boolean**, so asking it for the queue's text and then
+   calling `.includes` on its result passes for the wrong reason. The text has to be
+   read with a separate `evaluate`.
+2. `!bundleText.includes('5 procedure')` was a proxy for "not the repository file",
+   and it started failing once the tenant genuinely had fifteen procedures, because
+   `"5 procedure"` is a substring of `"15 procedure(s)"`. A magic number asserting
+   an accident. The claim is that what serves is what the server published, which is
+   the count the server reported.
+3. **The module-level-helper trap, and the reason the run failed three times first.**
+   `evaluate` and `waitFor` are `const` declarations *inside* the harness's `try`
+   block, so any helper declared at module level that closes over them dies with
+   "evaluate is not defined". The helpers belong immediately after `waitFor` closes,
+   inside the block. A stack trace names the line; a bare message does not, so the
+   run's failure report now carries the first three frames.
 
-**The harness lesson, a fifth instance.** Every failure in the abandoned attempt
-came from editing a long procedural harness by splicing line ranges: an anchor
-matched a `;` inside a function body and spliced a block into the middle of
-`waitFor`, which is syntactically valid, passes `node --check`, and still breaks
-every reference. Two of the four fixes I made to the bundle-count check and the
-Command Center phase also had to be undone. Next time, move a whole named
-function rather than a line range, and re-run the gate before making the next
-edit.
+**Lesson, and it is the same one for the sixth time.** The screen was green in
+typecheck, lint and build throughout. The race, the substring bug and the scope trap
+all passed all three. A real browser and a real database, asked the question in the
+order a person meets them, found every one.
