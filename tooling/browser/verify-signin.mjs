@@ -422,6 +422,69 @@ try {
     return '';
   };
 
+  /**
+   * Retire an unreadable procedure by title, writing a fresh valid version that
+   * carries status retired.
+   *
+   * The stored bytes are replaced rather than read, which is exactly what an
+   * unreadable row needs: nothing in it is worth preserving, and no reader can
+   * decrypt it anyway. This is the harness doing what a person would do when the
+   * server names the row that blocks a publish.
+   */
+  async function retireProcedureByTitle(editorToken, title) {
+    const list = await fetch(
+      `${supabaseUrl}/rest/v1/sops?select=id,title,status&title=eq.${encodeURIComponent(title)}`,
+      { headers: { apikey: publishableKey, Authorization: `Bearer ${editorToken}` } },
+    );
+    const rows = await list.json();
+    const row = (Array.isArray(rows) ? rows : []).find((r) => r?.status === 'published');
+    if (!row) return false;
+    const retire = await fetch(`${supabaseUrl}/functions/v1/upsert-sop`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${editorToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sopId: row.id,
+        title: row.title,
+        status: 'retired',
+        category: 'probe',
+        summary: 'retired by the harness so the tenant can publish',
+        suggestedReply: '-',
+        escalationRequired: false,
+        triggerKeywords: [],
+      }),
+    });
+    return retire.ok;
+  }
+
+  /**
+   * Publish, retiring one unreadable procedure and retrying once if the server
+   * names it.
+   *
+   * A seed placeholder — published, zero-byte body — fails the whole publish by
+   * naming itself, and the hosted re-seed restores it, so any run can meet it.
+   * Retiring it here is what a person would do. It does not hide the product
+   * deadlock (one bad row bricks publishing with no UI repair path); that is Part 2,
+   * and this retry is the reason it is needed rather than a substitute for it.
+   */
+  async function publishBundleAs(publisherToken, editorToken, sopsBody) {
+    const attempt = () =>
+      fetch(`${supabaseUrl}/functions/v1/publish-bundle`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${publisherToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(sopsBody),
+      });
+    let response = await attempt();
+    let result = await response.json();
+    const unreadable = /procedure "([^"]+)" has a body this server did not write/.exec(
+      result?.error ?? '',
+    );
+    if (!response.ok && unreadable && (await retireProcedureByTitle(editorToken, unreadable[1]))) {
+      response = await attempt();
+      result = await response.json();
+    }
+    return { response, result };
+  }
+
   // ------------------------------------------------ driving the app as a person --
   //
   // These live *inside* the try block on purpose. `evaluate` and `waitForCondition` are
@@ -631,14 +694,15 @@ try {
   );
 
   // An ops_manager publishes through the edge function, for whoever is enrolled.
+  // The editor token is provisioned here rather than reused from later in the run:
+  // the run's editor session does not exist yet at this point, and reaching forward
+  // for it would be the initialization-order trap by another name.
   const publisher = await provisionPublisher();
-  const publishResponse = await fetch(`${supabaseUrl}/functions/v1/publish-bundle`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${publisher.token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
+  const retireEditor = await provisionEditor();
+  const { response: publishResponse, result: published } = await publishBundleAs(
+    publisher.token,
+    retireEditor.token,
+    {
       sops: [
         {
           id: 'browser-sop-1',
@@ -661,9 +725,8 @@ try {
           status: 'published',
         },
       ],
-    }),
-  });
-  const published = await publishResponse.json();
+    },
+  );
   check(
     'a published bundle goes out through the edge function',
     publishResponse.ok,
@@ -1002,13 +1065,16 @@ try {
   );
   check('an out-of-scope query is escalated rather than answered', gateRefused);
 
-  // Wait for the record to exist in the tenant before moving to the other side of the
+  // Wait for THIS run's record to exist before moving to the other side of the
   // handover. An agent's session ends the moment we sign out, and the flush is
   // asynchronous, so the queue was being read while the write was still in flight.
+  // The filter is the run's own unique query string: polling for any row passed on
+  // history once, which is the fourth instance of the lesson that an assertion
+  // about accumulated data needs an identity only this run could have produced.
   let landed = false;
   for (let attempt = 0; attempt < 20 && !landed; attempt += 1) {
     const probe = await fetch(
-      `${supabaseUrl}/rest/v1/escalations?select=id&order=query_occurred_at&limit=1`,
+      `${supabaseUrl}/rest/v1/escalations?select=id&evidence->>queryText=eq.${encodeURIComponent(outOfScope)}`,
       { headers: { apikey: publishableKey, Authorization: `Bearer ${leadSession.token}` } },
     );
     const rows = await probe.json();
