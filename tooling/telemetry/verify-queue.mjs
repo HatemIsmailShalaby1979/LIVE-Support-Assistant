@@ -158,6 +158,49 @@ function expect(name, expected, observed, ok) {
   checks.push({ name, expected: String(expected), observed: String(observed), ok: Boolean(ok) });
 }
 
+// ---- 10. the scheduler's contract, without a clock or a browser ----
+//
+// The app drains the queue on an interval and on `visibilitychange`, and the only
+// part of that worth a test is the decision it makes: *is anything due?* Both the
+// interval and the tab-hiding handler call the same guard, so a tick is a no-op
+// unless `due()` is positive. Getting that wrong is what the guard exists to prevent
+// — a poisoned item must back off rather than be retried every tick, and an empty
+// queue must not produce a request at all.
+{
+  // The queue loads from a shared fake localStorage, so every construction has to
+  // start from an empty backing store or it inherits the previous block's items.
+  backing.clear();
+  const empty = new TelemetryQueue();
+  expect('an empty queue has nothing due, so a tick is a no-op', 0, empty.due(1_000), empty.due(1_000) === 0);
+
+  backing.clear();
+  const queued = new TelemetryQueue();
+  queued.enqueueEvent(event('sched-1'));
+  expect('a freshly enqueued record is due immediately', 1, queued.due(1_000), queued.due(1_000) === 1);
+
+  // A failed send is what puts an item into backoff, and that is the state a
+  // repeating tick has to respect. Waiting for real time is not acceptable in a
+  // harness, so the clock is passed explicitly, which is why `due` and `flush` take
+  // one at all.
+  backing.clear();
+  const poison = new TelemetryQueue();
+  poison.enqueueEvent(event('sched-2'));
+  const refusing = {
+    async sendEvent() { throw new Error('transport down'); },
+    async sendEscalation() { throw new Error('transport down'); },
+  };
+  const failed = await poison.flush(refusing, 1_000);
+  expect('the failed item is not due again immediately', 0, poison.due(1_000), poison.due(1_000) === 0);
+  expect(
+    'and it becomes due again once its backoff has elapsed',
+    1,
+    poison.due(1_000 + 60_000),
+    poison.due(1_000 + 60_000) === 1,
+  );
+  expect('the failed flush reported it rather than losing it', 1, failed.failed, failed.failed === 1);
+}
+
+
 // ---- 1. clean drain ----
   backing.clear();
 {

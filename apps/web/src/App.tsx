@@ -63,6 +63,17 @@ type DeliveryState =
 const BUNDLE_VERSION = 1;
 const DEFAULT_MIN_MARGIN = DEFAULT_GATE_CONFIG.minMargin;
 
+/**
+ * How often the queue is drained while something is waiting.
+ *
+ * Fifteen seconds is a product decision, not a technical one: long enough that a
+ * busy agent is not making a request per question, short enough that a handover is
+ * on a lead's screen while they are still reading the query. The interval is only a
+ * backstop — a record is still flushed as soon as it is enqueued — so this governs
+ * the worst case, not the common one.
+ */
+const FLUSH_INTERVAL_MS = 15_000;
+
 type IndexStatus = 'idle' | 'loading' | 'ready' | 'failed';
 
 interface Index {
@@ -255,6 +266,51 @@ function App() {
       });
     }
   }, [queue, transport]);
+
+  /**
+   * Flush on a timer, not only when a decision is made.
+   *
+   * Without this, a record only leaves the browser at the moment a query is decided.
+   * That is a real loss, not a theoretical one: the escalation console run found the
+   * agent's escalation still in flight when the session ended, and a team lead
+   * reading the queue too early sees an empty queue — which is indistinguishable
+   * from a handover that never happened.
+   *
+   * A timer is not sufficient on its own either. A tab closed between enqueue and
+   * the next tick loses the record anyway, so the scheduler also fires on the events
+   * that precede a tab going away. `visibilitychange` to hidden is the reliable one:
+   * `pagehide` and `beforeunload` are not guaranteed to run, and an async fetch
+   * started during `unload` is usually cancelled before it leaves.
+   *
+   * The interval only attempts *due* items, so a poisoned item still backs off
+   * rather than being retried on every tick.
+   */
+  useEffect(() => {
+    // Deliberately not guarded on `queue.pending`. The queue object is a stable
+    // reference, so an effect conditioned on its contents would install the interval
+    // once and never again — the timer would exist only if the app happened to start
+    // with something already queued, which is the one case that does not need it.
+    // `due()` returns 0 for an empty queue, so the tick is a cheap no-op instead.
+    const tick = () => {
+      if (queue.due(Date.now()) > 0) {
+        void flush();
+      }
+    };
+    const interval = setInterval(tick, FLUSH_INTERVAL_MS);
+
+    const onHidden = () => {
+      if (document.visibilityState === 'hidden') {
+        tick();
+      }
+    };
+    document.addEventListener('visibilitychange', onHidden);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onHidden);
+    };
+  }, [queue, flush]);
+
   const findAnswer = useCallback(async () => {
     if (index === null || queryInFlight.current) {
       return;
@@ -576,6 +632,13 @@ function App() {
               {(queued > 0 || queue.hasOverflowed || delivery.state !== 'idle') && (
                 <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between gap-4">
                   <span
+                    // `role="status"` because this sentence changes on its own, on a
+                    // timer, with nothing focused and no click to trigger it. Without
+                    // a live region it is invisible to anyone using a screen reader —
+                    // the agent would have no way to know their telemetry is failing or
+                    // that it went out.
+                    role="status"
+                    data-testid="delivery"
                     className={
                       queue.hasOverflowed || delivery.state === 'failed'
                         ? 'text-xs text-amber-700 font-medium'

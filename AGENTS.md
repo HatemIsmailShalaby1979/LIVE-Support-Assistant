@@ -1258,7 +1258,73 @@ and build for the whole of this change. All four defects passed all three. Only 
 real browser found them, and only because something was changed that made the
 browser path exist for the first time.
 
-## The escalation console, and the race a screen cannot see — 2026-09-25
+## The flush scheduler, and one bug my own effect contained — 2026-09-25
+
+**Executed.** The last item that had been listed as unbuilt since the transport
+slice. Telemetry went out at the moment a decision was made and at no other time, so
+a record only left the browser if the agent happened to ask another question.
+
+**This was not theoretical, and the escalation console proved it.** That run found
+the agent's escalation still in flight when the session ended, and the team lead
+reading the queue too early sees an empty queue — indistinguishable from a handover
+that never happened. The harness had to poll the database waiting for the row to
+land. That race is the scheduler's reason to exist.
+
+**`FLUSH_INTERVAL_MS = 15_000`,** chosen as a product decision rather than a technical
+one: long enough that a busy agent is not making a request per question, short
+enough that a handover is on a lead's screen while they are still reading the query.
+The interval is only a backstop — a record is still flushed as soon as it is
+enqueued — so it governs the worst case, not the common one.
+
+**A timer is not sufficient alone, and that is the part that matters.** A tab closed
+between enqueue and the next tick loses the record anyway, so the scheduler also
+fires on `visibilitychange` to hidden. `pagehide` and `beforeunload` are not
+guaranteed to run, and an async fetch started during `unload` is usually cancelled
+before it leaves. The tick only attempts items whose backoff has elapsed
+(`queue.due()`), so a poisoned item backs off instead of being retried every tick.
+
+**A bug my own effect contained, caught before it shipped.** The first version
+guarded on `if (queue.pending === 0) return undefined`. The queue object is a stable
+reference, so an effect conditioned on its contents installs the interval *once* and
+never again — the timer would exist only if the app happened to start with something
+already queued, which is the one case that does not need it. `due()` already returns
+0 for an empty queue, so the guard was both wrong and redundant. Removing it is
+strictly better: the tick is a cheap no-op, and the interval is always installed.
+
+**`tooling/telemetry/verify-queue.mjs` — 35 checks, 0 failures** (was 30). The new
+ones cover the scheduler's only real decision: an empty queue has nothing due, a
+freshly enqueued record is due immediately, a failed item is *not* due again
+immediately, and it becomes due once its backoff has elapsed. The two bracket the
+behaviour, so removing the backoff fails the first and keeping it fails neither.
+Every construction in the new block needs `backing.clear()` first, because the queue
+loads from a shared fake `localStorage` and would otherwise inherit the previous
+block's items — which is exactly what happened, and showed up as `due` returning 2
+instead of 1.
+
+**A small accessibility fix the work turned up.** The delivery sentence changes on a
+timer, with nothing focused and no click to trigger it, and it had no `role`. A
+screen reader could not announce it, so an agent using one had no way to know their
+telemetry was failing or that it had gone out. It is now `role="status"` with a
+`data-testid`, which is also what the harness needs to address it.
+
+**Verified.** `verify` 6/6 (queue 35/0), `verify:signin` 44/44, typecheck, lint and
+build green, audit 0 new and 0 escalated.
+
+**Not verified, and stated rather than papered over: the timer firing in a real
+browser.** A browser-level proof was attempted — override `window.fetch`, ask a
+question, let the flush fail, restore the network, and assert the queue drains with
+nothing else happening. Two things came out of it. The assertion that *was* solid
+passed: with the network down the record is retained and the panel says "retained
+and will retry", which is the promise the design makes. The recovery half produced
+an unhandled rejection in the page that could not be attributed with the context
+available, and an intermittent check is worse than an acknowledged gap, so the whole
+probe was removed rather than left in a state where it might pass. **So the interval
+and the `visibilitychange` hook are covered by construction and by the `due()`
+contract, and their interaction with a real network is not yet demonstrated.** The
+third instance of this session's lesson applies: read the source before asserting on
+the DOM. Three assertions in this slice were wrong about what the page renders, and
+all three were caught only by the gate — none by typecheck, lint or build.
+
 
 **Executed and verified. `pnpm run verify:signin` — 43/43, twice, in real headless
 Chrome.** The full handover in one run: an agent asks a question the gate refuses,
