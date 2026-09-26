@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Hosted verification: run all three SQL suites against a real Supabase project.
+# Hosted verification: run all four SQL suites against a real Supabase project.
 #
 # This is the check that matters, and it is not the same as verify-phase7.sh.
 # That script proves the schema behaves correctly in a container running plain
@@ -203,6 +203,7 @@ run_suite() {
 run_suite supabase/tests/rbac_matrix.sql      "RBAC MATRIX OK"
 run_suite supabase/tests/phase5_telemetry.sql "PHASE5 OK"
 run_suite supabase/tests/rls_bypass.sql       "RLS BYPASS SUITE OK"
+run_suite supabase/tests/phase8_retention.sql  "RETENTION SUITE OK"
 
 # ------------------------------------------------------------------ cleanup --
 
@@ -246,9 +247,14 @@ cleanup() {
     drop function if exists public.b_probe(text, app_role, uuid, uuid, text, text, text, text);
     drop function if exists public.b_read(text, app_role, uuid, uuid, text, text);
     drop function if exists public.b_anon_read(text, text, text);
+    drop function if exists public.r_expect(text, text, text, text, boolean);
+    drop function if exists public.r_claims(text, uuid, uuid);
+    drop function if exists public.r_denied(text, text);
+    drop function if exists public.r_seed();
     drop table if exists public.rbac_results;
     drop table if exists public.phase5_results;
     drop table if exists public.bypass_results;
+    drop table if exists public.retention_results;
   " >/dev/null 2>&1
   cleanup_status=$?
   set -e
@@ -287,4 +293,4 @@ if [ $status -ne 0 ]; then
 fi
 
 echo ""
-echo "Hosted verification complete: all three suites reported OK on the real project."
+echo "Hosted verification complete: all four suites reported OK on the real project."

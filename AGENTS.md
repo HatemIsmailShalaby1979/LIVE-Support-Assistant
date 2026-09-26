@@ -1275,12 +1275,11 @@ checkout was not. This is invisible on a Linux clone and only appears on a machi
 that checked the file out — so it would have been discovered in CI, on someone
 else's day. Added `.gitattributes` pinning `*.sh` and `*.sql` to LF.
 
-### P0-2 — retention and plaintext query text: NOT DONE, and here is what was learned
+### P0-2 — retention and plaintext query text: DONE — 2026-09-25
 
-**The finding that changes the plan, and it is worth more than the code would have
-been.** A plan reading "retention = drop old partitions" would look finished and
-leave the personal data in place, because the query text exists in two places with
-opposite lifecycles:
+**The finding that changed the plan, and it is worth more than the code.** A plan
+reading "retention = drop old partitions" would look finished and leave the personal
+data in place, because the query text exists in two places with opposite lifecycles:
 
 - `telemetry_events.payload` — partitioned by month (`telemetry_events_2026_09`, plus
   a `telemetry_events_default` catch-all), droppable, and an append-only record of
@@ -1296,8 +1295,28 @@ reason, the timing, the assignee and the resolution note are the audit trail, an
 that value is not in the customer's words. Deleting the row instead would destroy the
 audit trail to solve a retention problem.
 
-**What was written and then removed**, because the suite did not pass and an
-unfinished suite must not be committed as though it worked. The findings:
+**Executed.** Migration `20260925001500_retention.sql`: `app.purge_telemetry_older_than`
+drops whole monthly partitions older than the horizon and deletes expired rows from
+the catch-all default partition; `app.redact_escalation_query_text` tombstones the
+query text while preserving reason, bundle version and candidates; `app.run_retention`
+runs both and reports all three counts. The horizon is a parameter defaulting to 90
+days — a starting point, not a legal answer, because the right period depends on the
+tenant's obligations, which this repository cannot decide.
+
+**Verified, both environments.** `supabase/tests/phase8_retention.sql` — 16 checks:
+
+| Section | Result |
+|---|---|
+| removes what it should | 7/7 — expired fixture present before the run, expired monthly partition gone, event row gone with it, escalation row survives, query text redacted, non-PII evidence preserved |
+| never too eager | 4/4 — current partition intact, recent event and question survive, recent escalation not redacted |
+| closed to app roles | 5/5 — ops_manager, team_lead, agent, auditor, sop_editor all `denied:privilege` |
+
+Local: `verify-phase7.sh` exit 0, all four suites OK. Hosted (`lxlokqtowvaesxjishqz`,
+migration pushed with the owner's approval): all four suites OK. The negative control
+is the pre-run presence assertion — a retention function that does nothing fails the
+suite because the expired fixture is proven present first.
+
+**The six findings from the abandoned first attempt stand as permanent warnings:**
 
 1. `revoke … from public, anon, authenticated` **fails locally** — the container has
    only `authenticated`; `anon` and `service_role` exist only on a hosted project. The
@@ -1312,25 +1331,24 @@ unfinished suite must not be committed as though it worked. The findings:
    `{sopId, score, passage}` object is required.
 4. `:'alpha_ops'` inside a dollar-quoted body is **not** expanded by psql, so
    `r_seed()` was never created and every later check failed with a cascade of
-   unrelated errors. This is the **seventh** occurrence of that lesson in this
+   unrelated errors. This was the **eighth** occurrence of that lesson in this
    repository. Pass it as a function argument instead.
 5. The suite was **not self-contained**: the first run's purge removed the expired
    event, so a re-run found nothing expired and reported the removal checks as
    *vacuously passing*. A retention suite that can pass because its fixture is
    already gone is worse than no suite. It must delete its own fixture rows first.
-6. Even after that, three checks still failed on the last run: the expired telemetry
-   row survived (it lands in the `telemetry_events_default` catch-all, and the
-   delete was scoped to that partition, so the scope needs proving rather than
-   assuming), the redaction count was read after a second run had already consumed
-   it, and one assertion counted *all* escalations with a matching reason instead of
-   scoping to its own fixture id.
+6. Three checks still failed on the unfinished run: the expired telemetry row
+   survived (it lands in the `telemetry_events_default` catch-all), the redaction
+   count was read after a second run had already consumed it, and one assertion
+   counted *all* escalations with a matching reason instead of scoping to its own
+   fixture id. The finished suite sidesteps the first two by proving the
+   **partition-drop** path with a dedicated January partition, and scopes every
+   assertion to its own fixture ids.
 
-**Recommended next step.** Re-apply the migration as a **migration only**, with its
-privilege block, and prove the partition-drop path in a suite that seeds its own
-fixture and asserts on **its own ids**. Do not attempt idempotence and the
-default-partition case in the same pass. Then decide the horizon as a product
-question: 90 days is a starting point, not a legal answer, and the right period
-depends on the tenant's obligations, which this repository cannot decide.
+**Two things this slice deliberately does not do.** It does not run on a schedule —
+`app.run_retention` is a function, not a cron job; Supabase pg_cron or an external
+scheduler still has to call it. And it does not set the horizon as policy — 90 days
+is the default, and the legal answer belongs to the tenant.
 
 **Still open from the audit, untouched:** ingest is unthrottled, and
 `access-control-allow-origin: '*'` sits on the one function that returns decrypted

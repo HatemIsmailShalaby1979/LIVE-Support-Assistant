@@ -8,6 +8,7 @@
 #   1. rbac_matrix.sql       — the privilege matrix (99 probes)
 #   2. phase5_telemetry.sql  — ingest contracts + dashboards (17 probes)
 #   3. rls_bypass.sql        — the attack suite (40 probes)
+#   4. phase8_retention.sql  — retention removes expired data, redacts escalations, stays closed
 #
 # The database is dropped and recreated on every run, so the result is
 # reproducible from an empty cluster and cannot pass because of leftover state.
@@ -99,6 +100,7 @@ run_suite() {
 run_suite supabase/tests/rbac_matrix.sql      "RBAC MATRIX OK"
 run_suite supabase/tests/phase5_telemetry.sql "PHASE5 OK"
 run_suite supabase/tests/rls_bypass.sql       "RLS BYPASS SUITE OK"
+run_suite supabase/tests/phase8_retention.sql  "RETENTION SUITE OK"
 
 if [ $status -ne 0 ]; then
   echo ""
@@ -107,4 +109,4 @@ if [ $status -ne 0 ]; then
 fi
 
 echo ""
-echo "Phase 7 verification complete: all three suites reported OK."
+echo "Phase 7 verification complete: all four suites reported OK."
