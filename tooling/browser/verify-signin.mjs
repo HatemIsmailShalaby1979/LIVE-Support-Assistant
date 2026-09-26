@@ -388,7 +388,17 @@ try {
     return result.result.value;
   };
 
-  const waitFor = async (expression, label, timeoutMs = 30_000) => {
+  /**
+   * Wait for a condition. **Returns a boolean, never the value it waited for.**
+   *
+   * The name says so, because the earlier name did not and the coercion below is
+   * silent: `if (await evaluate('Boolean(...)')) return true` discards whatever the
+   * expression produced. Writing `const text = await waitFor(...)` therefore yielded
+   * `true`, and a following `.includes` on a boolean returns `false` without throwing
+   * — a check that passes or fails for the wrong reason rather than one that breaks.
+   * If you want the value, use `waitForText`.
+   */
+  const waitForCondition = async (expression, label, timeoutMs = 30_000) => {
     const until = Date.now() + timeoutMs;
     while (Date.now() < until) {
       if (await evaluate(`Boolean(${expression})`)) return true;
@@ -398,9 +408,23 @@ try {
     return false;
   };
 
+  /** Wait for an expression to become truthy and return its text. Use this to get a value. */
+  const waitForText = async (expression, label, timeoutMs = 30_000) => {
+    const until = Date.now() + timeoutMs;
+    while (Date.now() < until) {
+      const value = await evaluate(`(${expression})`);
+      if (value !== null && value !== undefined && value !== false && value !== '') {
+        return String(value);
+      }
+      await sleep(250);
+    }
+    process.stderr.write(`    timed out waiting for ${label}\n`);
+    return '';
+  };
+
   // ------------------------------------------------ driving the app as a person --
   //
-  // These live *inside* the try block on purpose. `evaluate` and `waitFor` are
+  // These live *inside* the try block on purpose. `evaluate` and `waitForCondition` are
   // declared with `const` in this block, so anything declared at module level that
   // closes over them fails with "evaluate is not defined" — which is exactly what a
   // module-level helper did here, and it cost a run to find out.
@@ -425,7 +449,7 @@ try {
         return true;
       })()
     `);
-    await waitFor(`document.querySelector('[data-testid="session-bar"]')`, `the ${email} session`, 30_000);
+    await waitForCondition(`document.querySelector('[data-testid="session-bar"]')`, `the ${email} session`, 30_000);
   }
 
   async function signOut() {
@@ -434,7 +458,7 @@ try {
         .find((b) => b.textContent.trim() === 'Sign out')
         ?.click()
     `);
-    await waitFor(
+    await waitForCondition(
       `document.querySelector('[data-testid="session-bar"]') === null`,
       'the session to end',
       30_000,
@@ -483,7 +507,7 @@ try {
 
   await send('Page.navigate', { url: `http://127.0.0.1:${DEV_PORT}/` }, sessionId);
 
-  const formAppeared = await waitFor(
+  const formAppeared = await waitForCondition(
     `document.querySelector('input[name="email"]')`,
     'the sign-in form',
   );
@@ -511,7 +535,7 @@ try {
     })()
   `);
 
-  const refused = await waitFor(
+  const refused = await waitForCondition(
     `document.querySelector('[role="alert"]')`,
     'the refusal message',
   );
@@ -537,7 +561,7 @@ try {
     })()
   `);
 
-  const signedIn = await waitFor(
+  const signedIn = await waitForCondition(
     `document.querySelector('[data-testid="session-bar"]')`,
     'the session bar',
   );
@@ -560,7 +584,7 @@ try {
   // surface: an earlier version waited for `button[type="submit"]`, which the app
   // shell does not have, so the wait timed out on a page that was plainly
   // working — a false failure caused by the test, not the code.
-  const appVisible = await waitFor(
+  const appVisible = await waitForCondition(
     `document.querySelector('textarea')`,
     'the query box',
   );
@@ -585,7 +609,7 @@ try {
   // initial value and reports a failure for a sync that is still in flight. The
   // same class of error as waiting for a button that does not exist: the test,
   // not the code.
-  const settled = await waitFor(
+  const settled = await waitForCondition(
     `(() => { const text = document.querySelector('[data-testid="bundle-state"]')?.textContent ?? ''; return text !== '' && !text.includes('not loaded yet'); })()`,
     'the bundle state to settle',
     120_000,
@@ -653,7 +677,7 @@ try {
       ?.click()
   `);
 
-  const served = await waitFor(
+  const served = await waitForCondition(
     `(() => { const text = document.querySelector('[data-testid="bundle-state"]')?.textContent ?? ''; return text.includes('Serving bundle'); })()`,
     'the app to serve the newly published bundle',
     120_000,
@@ -663,9 +687,16 @@ try {
   const bundleText = await evaluate(
     `document.querySelector('[data-testid="bundle-state"]')?.textContent ?? ''`,
   );
+  // The count is parsed and compared as a number, never matched as a substring. The
+  // earlier `!bundleText.includes('5 procedure')` was a proxy for "not the repository
+  // file" that broke the moment the tenant genuinely had fifteen procedures, because
+  // "5 procedure" is a substring of "15 procedure(s)". A literal count is also wrong
+  // in the other direction: interpolating 1 would match "21 procedure(s)". Comparing
+  // the parsed integer to the number the server reported is the claim itself.
+  const servedCount = Number(/(\d+)\s+procedure\(s\)/.exec(bundleText)?.[1] ?? 'NaN');
   check(
     'and it is that bundle\'s procedures, in the number the server published',
-    bundleText.includes(`${published.sopCount} procedure(s)`),
+    servedCount === published.sopCount,
     `${bundleText.trim()} (the server said ${published.sopCount})`,
   );
   check(
@@ -737,7 +768,7 @@ try {
       .find((b) => b.textContent.trim() === 'Sign out')
       ?.click()
   `);
-  await waitFor(`document.querySelector('input[name="email"]')`, 'the form to return');
+  await waitForCondition(`document.querySelector('input[name="email"]')`, 'the form to return');
 
   const editorSession = await provisionEditor();
 
@@ -755,7 +786,7 @@ try {
       return true;
     })()
   `);
-  await waitFor(
+  await waitForCondition(
     `document.querySelector('[data-testid="session-bar"]')`,
     'the editor session',
     30_000,
@@ -767,7 +798,7 @@ try {
   check('the editor is signed in, and the server says so', editorRole.trim() === 'sop_editor', editorRole.trim());
 
   await evaluate(`[...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Command Center')?.click()`);
-  const commandCentre = await waitFor(
+  const commandCentre = await waitForCondition(
     `document.querySelector('[data-testid="command-center"]')`,
     'the Command Center',
     30_000,
@@ -776,7 +807,7 @@ try {
 
   // The editor is the role this screen is for, so the list assertions live here now
   // rather than in the agent phase where the tab is not offered at all.
-  const rowAppeared = await waitFor(
+  const rowAppeared = await waitForCondition(
     `document.querySelector('[data-testid="cc-row"]')`,
     'the procedure to appear in the list',
     30_000,
@@ -806,7 +837,7 @@ try {
   // form that was never requested. That is the third time this shape has cost a run,
   // and the fix is always the same: wait for the thing you are about to touch.
   const editButton = `[...document.querySelectorAll('button')].find((b) => b.dataset.testid === 'cc-edit-${authoredBody.sopId}')`;
-  const buttonThere = await waitFor(
+  const buttonThere = await waitForCondition(
     editButton,
     'the authored procedure to appear in the editor list',
     30_000,
@@ -844,7 +875,7 @@ try {
 
   await evaluate(`${editButton}?.click()`);
 
-  const loaded = await waitFor(
+  const loaded = await waitForCondition(
     `document.querySelector('[data-testid="cc-editing"]')`,
     'the procedure to load for editing',
     30_000,
@@ -879,7 +910,7 @@ try {
       ?.click()
   `);
 
-  const saved = await waitFor(
+  const saved = await waitForCondition(
     `[...document.querySelectorAll('[data-testid="cc-notice"]')].some((n) => /version/.test(n.textContent))`,
     'the revision to save',
     30_000,
@@ -951,7 +982,7 @@ try {
       .find((b) => b.textContent.trim() === 'Load model and build index')
       ?.click()
   `);
-  const agentReady = await waitFor(
+  const agentReady = await waitForCondition(
     `[...document.querySelectorAll('button')].some((b) => b.textContent.trim() === 'Find Answer')`,
     'the agent model to load and the index to build',
     180_000,
@@ -964,7 +995,7 @@ try {
   const outOfScope = `appeal a content violation ${Math.random().toString(36).slice(2, 8)}`;
   await ask(outOfScope);
 
-  const gateRefused = await waitFor(
+  const gateRefused = await waitForCondition(
     `[...document.querySelectorAll('h3')].some((h) => /escalated to a human/i.test(h.textContent))`,
     'the gate to refuse the query',
     120_000,
@@ -1011,37 +1042,42 @@ try {
   );
 
   await clickTab('Escalations');
-  const consoleUp = await waitFor(
+  const consoleUp = await waitForCondition(
     `document.querySelector('[data-testid="escalation-console"]')`,
     'the escalation console',
     30_000,
   );
   check('the console opens', consoleUp === true);
 
+  // The two waiting helpers return different types on purpose, and that difference
+  // is what their names exist to communicate. Asserted once, so a future change that
+  // collapses them is caught here rather than by a check that quietly stops meaning
+  // what it says.
+  check(
+    'the two wait helpers are distinguishable by return type',
+    (await waitForText(`1 + 1`, 'arithmetic')) === '2' &&
+      (await waitForCondition(`1 + 1 === 2`, 'a true condition')) === true &&
+      (await waitForCondition(`1 + 1 === 3`, 'a false condition', 500)) === false,
+  );
+
   // The console reads once when it opens, and the agent's escalation is written by a
   // flush that may still be in flight. So the queue is a snapshot, and a person
   // watching a queue presses Refresh — polling here is the same act, not a retry of
   // a flaky assertion. Without it this check passed or failed on a race rather than
   // on the product.
-  let rowsPresent = false;
-  for (let attempt = 0; attempt < 10 && !rowsPresent; attempt += 1) {
+  let queueText = '';
+  for (let attempt = 0; attempt < 10 && !queueText.includes(outOfScope); attempt += 1) {
     await evaluate(`document.querySelector('[data-testid="ec-refresh"]')?.click()`);
-    rowsPresent = await waitFor(
-      `document.body.innerText.includes(${JSON.stringify(outOfScope)})`,
+    queueText = await waitForText(
+      `document.querySelector('[data-testid="escalation-console"]')?.innerText ?? ''`,
       'a refused query to appear in the queue',
       5_000,
     );
   }
-  // `waitFor` evaluates to a boolean, so the text has to be read separately. Asking
-  // it for the text and then calling `.includes` on the result is a check that passes
-  // for the wrong reason, which is what this run first reported.
-  const queueText = await evaluate(
-    `document.querySelector('[data-testid="escalation-console"]')?.innerText ?? ''`,
-  );
   check(
     'the escalation the agent just caused is waiting for a person',
-    rowsPresent === true && queueText.includes(outOfScope),
-    String(queueText).slice(0, 70),
+    queueText.includes(outOfScope),
+    queueText.slice(0, 70),
   );
 
   const rowId = await evaluate(
@@ -1050,7 +1086,7 @@ try {
   await setInputValue(`ec-note-${rowId}`, 'Told them to file the appeal form; 10 working days.');
 
   await evaluate(`document.querySelector('[data-testid="ec-claim-${rowId}"]')?.click()`);
-  const taken = await waitFor(
+  const taken = await waitForCondition(
     `document.querySelector('[data-testid="ec-status-${rowId}"]')?.textContent?.trim() === 'assigned'`,
     'the escalation to be taken',
     30_000,
@@ -1058,7 +1094,7 @@ try {
   check('a team lead can take an escalation', taken === true);
 
   await evaluate(`document.querySelector('[data-testid="ec-resolve-${rowId}"]')?.click()`);
-  const closed = await waitFor(
+  const closed = await waitForCondition(
     `document.querySelector('[data-testid="ec-status-${rowId}"]')?.textContent?.trim() === 'resolved'`,
     'the escalation to be resolved',
     30_000,
@@ -1082,7 +1118,7 @@ try {
       ?.click()
   `);
 
-  const signedOut = await waitFor(
+  const signedOut = await waitForCondition(
     `document.querySelector('input[name="email"]')`,
     'the sign-in form to return',
   );

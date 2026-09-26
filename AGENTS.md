@@ -1300,22 +1300,32 @@ behind is worse than no check. This is the third instance of that lesson in this
 project, and the pattern is now: any assertion about accumulated data needs an
 identity that only this run could have produced.
 
-**Two harness bugs, and one product bug the browser found.**
+**Two harness bugs, and one product bug the browser found.** All three are now
+closed *structurally*, not just where they were first hit.
 
-1. `waitFor` evaluates to a **boolean**, so asking it for the queue's text and then
-   calling `.includes` on its result passes for the wrong reason. The text has to be
-   read with a separate `evaluate`.
+1. `waitFor` coerced its expression through `Boolean(...)` and so **discarded the
+   value**, which made `const text = await waitFor(...)` yield `true`; a following
+   `.includes` on a boolean returns `false` rather than throwing, so a check passes
+   or fails for the wrong reason instead of breaking. The name never said so. It is
+   now `waitForCondition` and states the return type in its own doc comment, and a
+   sibling `waitForText` returns the value for the cases that want it. A new check —
+   *"the two wait helpers are distinguishable by return type"* — asserts the
+   difference once, so a future change that collapses them is caught here rather
+   than by a check that quietly stops meaning what it says. A sweep of every
+   `tooling/**/*.mjs` found no other occurrence of the class.
 2. `!bundleText.includes('5 procedure')` was a proxy for "not the repository file",
-   and it started failing once the tenant genuinely had fifteen procedures, because
-   `"5 procedure"` is a substring of `"15 procedure(s)"`. A magic number asserting
-   an accident. The claim is that what serves is what the server published, which is
-   the count the server reported.
+   and it failed once the tenant genuinely had fifteen procedures, because
+   `"5 procedure"` is a substring of `"15 procedure(s)"`. It is now a **parsed
+   integer** compared to the number the server reported, which is also correct in
+   the direction the literal was not: interpolating `1` would have matched
+   `"21 procedure(s)"`. The tenant is at 21 procedures, and the numeric comparison is
+   what proves it.
 3. **The module-level-helper trap, and the reason the run failed three times first.**
-   `evaluate` and `waitFor` are `const` declarations *inside* the harness's `try`
-   block, so any helper declared at module level that closes over them dies with
-   "evaluate is not defined". The helpers belong immediately after `waitFor` closes,
-   inside the block. A stack trace names the line; a bare message does not, so the
-   run's failure report now carries the first three frames.
+   `evaluate` and `waitForCondition` are `const` declarations *inside* the harness's
+   `try` block, so any helper declared at module level that closes over them dies
+   with "evaluate is not defined". The helpers belong immediately after
+   `waitForCondition` closes, inside the block. A stack trace names the line; a bare
+   message does not, so the run's failure report now carries the first three frames.
 
 **Lesson, and it is the same one for the sixth time.** The screen was green in
 typecheck, lint and build throughout. The race, the substring bug and the scope trap
