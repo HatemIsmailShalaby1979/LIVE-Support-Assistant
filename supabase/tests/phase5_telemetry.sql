@@ -382,6 +382,240 @@ select p5_read('ops dashboard', 'ops_manager',
           and new_min_margin = 0.180 $q$,
   1);
 
+-- ============================ ingest throttle ==============================
+-- Phase 9. Both ingest functions accepted unlimited writes from any authenticated
+-- client. Enforcement is a BEFORE INSERT trigger calling app.check_ingest_rate,
+-- so what follows proves the throttle where it actually bites, not just the
+-- helper in isolation.
+--
+-- Every identity in this section is minted at runtime (gen_random_uuid), never
+-- hardcoded. Fixed fixture ids share per-minute counter buckets with the seed,
+-- with other suites, and with previous runs of this suite; exact-count assertions
+-- against shared buckets are testing the weather. A runtime-fresh device starts
+-- every run with a virgin bucket, which makes each boundary deterministic. The
+-- one shared scope left — the tenant bucket on Alpha — is only ever asserted
+-- with headroom in the hundreds, never near a boundary.
+-- The 61-iteration loop asserts R = A + 1 (the refusal immediately follows the
+-- admissions, proving exactness) with A >= 60 and R <= 130 rather than pinning
+-- 61: a minute boundary mid-loop resets the count, and the relative assertion
+-- holds across it while an absolute one would flake.
+
+do $$
+declare
+  v_tenant uuid := '11111111-1111-1111-1111-111111111111';
+  v_agent  uuid;
+  v_enroller uuid;
+  v_dev    uuid := gen_random_uuid();
+  v_other  uuid := gen_random_uuid();
+  v_flood  uuid := gen_random_uuid();
+  v_prune  uuid := gen_random_uuid();
+  v_escdev uuid := gen_random_uuid();
+  v_t9     uuid := gen_random_uuid();
+  v_ok     boolean;
+  v_n      integer;
+  v_admitted integer;
+  v_refused_at integer;
+  v_state  text;
+  v_ev_id  uuid;
+  v_ev_at  timestamptz;
+begin
+  select id into v_agent from auth.users where email = 'agent@alpha.example';
+  if v_agent is null then
+    raise exception 'throttle probes need agent@alpha.example';
+  end if;
+
+  -- The flood and escalation devices are enrolled for Alpha up front: ingest
+  -- rejects writes from unenrolled devices, and enrollment is fixture state the
+  -- section must own rather than borrow. The user is taken from an existing
+  -- enrollment so the foreign key always resolves, and the platforms are ones the
+  -- seed never uses for that user — with a delete-first so a re-run starts clean.
+  -- Sharing the seed's (tenant, user, platform) row would collide on the unique
+  -- key that `on conflict (id)` does not cover, which is exactly how a run failed.
+  select user_id into v_enroller from device_registrations
+   where tenant_id = v_tenant limit 1;
+  delete from device_registrations
+   where tenant_id = v_tenant and user_id = v_enroller and platform in ('mobile', 'desktop');
+  insert into device_registrations (id, tenant_id, user_id, platform, public_key)
+  values (v_flood, v_tenant, v_enroller, 'mobile', 'throttle-probe-flood'),
+         (v_escdev, v_tenant, v_enroller, 'desktop', 'throttle-probe-esc');
+
+  -- 1. The boundary is exact: two admissions, then the refusal, consecutively.
+  -- R = A + 1 proves no early refusal and no silent drop, on a virgin bucket.
+  v_admitted := 0;
+  v_refused_at := 0;
+  for v_n in 1..6 loop
+    begin
+      perform app.check_ingest_rate(v_tenant, v_dev, 2, 120);
+      v_admitted := v_admitted + 1;
+    exception when others then
+      if v_refused_at = 0 then v_refused_at := v_n; end if;
+      if sqlstate != 'P0001' then
+        raise exception 'boundary probe raised %, not P0001', sqlstate;
+      end if;
+    end;
+  end loop;
+  insert into phase5_results (section, role_name, object_name, operation, expected, observed, ok)
+  values ('ingest throttle', 'agent', 'app.check_ingest_rate', 'limit 2 admits exactly two then refuses',
+    'admitted=2 refused_at=3', 'admitted=' || v_admitted || ' refused_at=' || v_refused_at,
+    v_admitted = 2 and v_refused_at = 3);
+
+  -- 2. Isolation: one capped device does not spend another's quota, and a second
+  -- tenant starts with a clean slate entirely. Both tenants here are runtime-fresh
+  -- for the device under test, so no seed row and no other suite can interfere.
+  begin
+    perform app.check_ingest_rate(v_tenant, v_other, 2, 120);
+    v_state := 'ok';
+  exception when others then
+    v_state := sqlstate;
+  end;
+  insert into phase5_results (section, role_name, object_name, operation, expected, observed, ok)
+  values ('ingest throttle', 'agent', 'app.check_ingest_rate', 'a second device is unaffected', 'ok', v_state, v_state = 'ok');
+  begin
+    perform app.check_ingest_rate(v_t9, v_dev, 2, 120);
+    v_state := 'ok';
+  exception when others then
+    v_state := sqlstate;
+  end;
+  insert into phase5_results (section, role_name, object_name, operation, expected, observed, ok)
+  values ('ingest throttle', 'agent', 'app.check_ingest_rate', 'a fresh tenant starts with a clean slate', 'ok', v_state, v_state = 'ok');
+
+  -- 3. Deviceless events count against the per-tenant bucket, not nobody's. The
+  -- tenant is runtime-fresh, so its bucket is virgin by construction: limit 1
+  -- admits one call and refuses the next, with no ambient writes to blur it.
+  begin
+    perform app.check_ingest_rate(v_t9, null, 60, 1);
+    v_state := 'ok';
+  exception when others then
+    v_state := sqlstate;
+  end;
+  insert into phase5_results (section, role_name, object_name, operation, expected, observed, ok)
+  values ('ingest throttle', 'agent', 'app.check_ingest_rate', 'one deviceless event is admitted', 'ok', v_state, v_state = 'ok');
+  begin
+    perform app.check_ingest_rate(v_t9, null, 60, 1);
+    v_state := 'admitted';
+  exception when others then
+    v_state := sqlstate;
+  end;
+  insert into phase5_results (section, role_name, object_name, operation, expected, observed, ok)
+  values ('ingest throttle', 'agent', 'app.check_ingest_rate', 'the second is refused', 'P0001', v_state, v_state = 'P0001');
+
+  -- 4. A limit below 1 admits nothing, which is a misconfiguration rather than a
+  -- limit, so it is refused instead of silently dropping every write.
+  begin
+    perform app.check_ingest_rate(v_tenant, v_other, 0, 120);
+    v_state := 'admitted';
+  exception when others then
+    v_state := sqlstate;
+  end;
+  insert into phase5_results (section, role_name, object_name, operation, expected, observed, ok)
+  values ('ingest throttle', 'agent', 'app.check_ingest_rate', 'a zero limit is refused, not obeyed', '22023', v_state, v_state = '22023');
+
+  -- 5. Old windows prune themselves: a row ten minutes old cannot be current, so
+  -- the next check must delete it. Without this the table grows a row per device
+  -- per minute forever, and no scheduler exists yet to clean it.
+  insert into ingest_rate_windows (tenant_id, bucket, window_start, event_count)
+  values (v_tenant, 'device:' || v_prune::text, now() - interval '10 minutes', 999);
+  perform app.check_ingest_rate(v_tenant, v_prune, 60, 120);
+  select count(*) into v_n from ingest_rate_windows
+   where window_start < date_trunc('minute', now()) - interval '5 minutes';
+  insert into phase5_results (section, role_name, object_name, operation, expected, observed, ok)
+  values ('ingest throttle', 'agent', 'ingest_rate_windows', 'stale windows are pruned by the check itself', '0', v_n::text, v_n = 0);
+
+  -- 6. End to end through the real ingest path, at production defaults. The loop
+  -- runs until the first refusal and asserts the refusal immediately follows the
+  -- admissions (R = A + 1, proving exactness: no early refusal, no silent drop)
+  -- with at least a full window's worth admitted. Pinning exactly 61 would flake
+  -- if a minute boundary crossed mid-loop and reset the count; the relative
+  -- assertion holds across it. This is the probe that catches a check the
+  -- migration forgot to wire to a trigger.
+  perform p5_claims('agent', v_tenant, v_agent);
+  execute 'set local role authenticated';
+  v_admitted := 0;
+  v_refused_at := 0;
+  for v_n in 1..130 loop
+    begin
+      v_ok := app.ingest_telemetry_event(
+        gen_random_uuid(), v_flood, 'throttle-probe', 'query', 1, now(),
+        jsonb_build_object(
+          'outcome', 'answered', 'sopId', '1', 'score', 0.8, 'margin', 0.2,
+          'gateReason', null, 'thresholdAccept', 0, 'minMargin', 0.18,
+          'topCandidates', jsonb_build_array(
+            jsonb_build_object('sopId', '1', 'score', 0.8, 'passage', 'throttle probe'))
+        ));
+      if not v_ok then
+        raise exception 'ingest returned false rather than raising';
+      end if;
+      v_admitted := v_admitted + 1;
+    exception when others then
+      if v_refused_at = 0 then v_refused_at := v_n; end if;
+      if sqlstate != 'P0001' then
+        raise exception 'flood probe raised %, not P0001', sqlstate;
+      end if;
+      exit;
+    end;
+  end loop;
+  execute 'reset role';
+  insert into phase5_results (section, role_name, object_name, operation, expected, observed, ok)
+  values ('ingest throttle', 'agent', 'app.ingest_telemetry_event', 'a full window admitted then the next refused',
+    'admitted>=60 and refused_at=admitted+1',
+    'admitted=' || v_admitted || ' refused_at=' || v_refused_at,
+    v_admitted >= 60 and v_refused_at = v_admitted + 1);
+
+  -- 7. The escalation trigger exists and does not break the normal path. An
+  -- escalation names a real event and its evidence must match that event, so this
+  -- ingests a proper escalated event first and then the escalation that names it.
+  -- The event goes through the enrolled v_escdev: ingest rejects unenrolled
+  -- devices, and borrowing a seed device would share its bucket. Wrapped, so any
+  -- failure here lands on this named row rather than the outer backstop.
+  perform p5_claims('agent', v_tenant, v_agent);
+  execute 'set local role authenticated';
+  v_ev_id := gen_random_uuid();
+  v_ev_at := now();
+  begin
+    perform app.ingest_telemetry_event(
+      v_ev_id, v_escdev, 'throttle-probe', 'query', 1, v_ev_at,
+      jsonb_build_object(
+        'outcome', 'escalated', 'sopId', null, 'score', null, 'margin', null,
+        'gateReason', 'insufficient_margin', 'thresholdAccept', 0, 'minMargin', 0.18,
+        'topCandidates', jsonb_build_array(
+          jsonb_build_object('sopId', '1', 'score', 0.8, 'passage', 'throttle probe'))
+      ));
+    v_ok := app.ingest_escalation(
+      gen_random_uuid(), v_ev_id, v_ev_at,
+      jsonb_build_object(
+        'queryText', 'throttle probe escalation', 'reason', 'insufficient_margin',
+        'thresholdAccept', 0, 'minMargin', 0.18, 'bundleVersion', 1,
+        'modelId', 'throttle-probe', 'modelRevision', 'throttle-probe',
+        'candidates', jsonb_build_array(
+          jsonb_build_object('sopId', '1', 'score', 0.8, 'passage', 'throttle probe'))
+      ));
+    v_state := 'event+escalation ok=' || v_ok::text;
+  exception when others then
+    v_state := sqlstate || ' ' || sqlerrm;
+  end;
+  execute 'reset role';
+  insert into phase5_results (section, role_name, object_name, operation, expected, observed, ok)
+  values ('ingest throttle', 'agent', 'app.ingest_escalation', 'an escalation still ingests under the limit',
+    'event+escalation ok=true', v_state, v_state = 'event+escalation ok=true');
+exception when others then
+  begin
+    execute 'reset role';
+  exception when others then null;
+  end;
+
+  insert into phase5_results (section, role_name, object_name, operation, expected, observed, ok)
+  values ('ingest throttle', 'agent', 'ingest_rate_windows', 'probe', 'ok', 'failure:' || sqlstate || ' ' || sqlerrm, false);
+end $$;
+
+-- 8. The helper is closed to direct calls: it is only meaningful inside the
+-- ingest path, and the exposed `app` schema would otherwise offer it to anyone
+-- holding a key.
+select p5_probe('ingest throttle', 'agent',
+  '11111111-1111-1111-1111-111111111111', :'alpha_agent',
+  'app.check_ingest_rate', 'direct call refused',
+  $q$ select app.check_ingest_rate('11111111-1111-1111-1111-111111111111', 'd0000000-0000-0000-0000-000000000093', 60, 120) $q$,
+  'blocked', 'denied:privilege');
+
 -- =================================== report ================================
 
 \o

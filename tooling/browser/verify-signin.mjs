@@ -699,6 +699,35 @@ try {
   // for it would be the initialization-order trap by another name.
   const publisher = await provisionPublisher();
   const retireEditor = await provisionEditor();
+
+  // The run authors what it publishes. Depending on leftover tenant state broke
+  // this run twice in opposite directions: twenty-one accumulated procedures one
+  // day, and exactly one zero-byte seed placeholder the next, after a hosted
+  // re-seed wiped everything else. A run that brings its own corpus is immune to
+  // both — and the served-count check below already compares against what the
+  // server reports, so leftovers change nothing either way.
+  const runCorpus = [`Harness procedure ${Math.random().toString(36).slice(2, 8)} one`, `Harness procedure ${Math.random().toString(36).slice(2, 8)} two`];
+  for (const title of runCorpus) {
+    const authored = await fetch(`${supabaseUrl}/functions/v1/upsert-sop`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${retireEditor.token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title,
+        status: 'published',
+        category: 'probe',
+        summary: 'A procedure this run authored so it never depends on leftover tenant state.',
+        suggestedReply: 'No action.',
+        escalationRequired: false,
+        triggerKeywords: ['harness'],
+      }),
+    });
+    check(
+      'the run authors its own published procedure first',
+      authored.ok,
+      authored.ok ? title : await authored.text(),
+    );
+  }
+
   const { response: publishResponse, result: published } = await publishBundleAs(
     publisher.token,
     retireEditor.token,

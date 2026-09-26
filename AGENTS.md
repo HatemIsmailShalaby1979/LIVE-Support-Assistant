@@ -1640,3 +1640,65 @@ that phase next.
 **Verified.** Wire-level allow and deny, browser 52/52 twice, `probe:corpus` 12/12,
 `verify` 6/6, audit 0 new and 0 escalated. `publish-bundle` carries platform-default
 CORS and returns no plaintext bodies, so it is out of scope and untouched.
+
+
+## Ingest throttle: the last open audit item — 2026-09-25
+
+**Executed and verified.** Both ingest functions accepted unlimited writes from any
+authenticated client: a compromised token, a buggy client in a retry loop, or one
+bad actor could grow the telemetry tables and the plaintext query text inside them
+without bound. Nothing limited it. Local DB, hosted DB, JS suites, browser, audit —
+all green, both environments.
+
+**The design, kept deliberately small.** Fixed one-minute windows (aligned, with the
+2x-across-a-boundary property stated rather than hidden — a sliding log would store
+every timestamp and this table's whole job is to stay tiny). Per-device buckets, so
+one device cannot spend another's quota; deviceless events fall into a per-tenant
+bucket because the pseudonym is client-supplied and forgeable. The counter update is
+a single upsert with RETURNING, so concurrent increments serialize on the row lock
+and the limit is exact rather than advisory. Old windows prune opportunistically
+inside the check — indexed, usually zero rows — so the table stays tiny with no
+scheduler. A rejection flows through the error path the telemetry queue already has:
+failed items back off and retry, so throttled records are delayed, never lost, and
+no client change was needed. Limits are parameters with defaults (60/min per
+device, 120/min tenant), starting points in the same spirit as the 90-day retention
+default.
+
+**Enforcement is triggers, not edited functions.** Duplicating both 150-line ingest
+bodies into the new migration just to add one call would be the larger diff and the
+weaker guarantee. A `BEFORE INSERT` trigger fires for every write path into the
+table — including future ones — and parent-table row triggers cover every
+partition. The check runs at insert time, so invalid requests still fail contract
+validation first without consuming quota. One accepted gap, stated in the migration:
+replays hit the dedup ledger and return before any event row is written, which is
+correct — punishing retries would break the queue's backoff contract.
+
+**`phase5_telemetry.sql` grows an `ingest throttle` section — 10/10, both
+environments.** Exact boundary (limit 2 admits two, third raises P0001), device and
+tenant isolation, deviceless tenant bucket, zero-limit refused as misconfiguration,
+self-pruning, end-to-end 60-admit-then-refuse through the real ingest path (the
+probe that catches a check the migration forgot to wire), escalation path
+unaffected, and direct RPC calls denied to every role. Fixture devices are minted
+per run and enrollments are owned by the section, because exact-count assertions
+against shared per-minute counters would be testing the weather. The browser run
+also authors its own corpus before publishing now, after depending on leftover
+tenant state broke it twice in opposite directions in one day.
+
+**The debugging that earned its place in the ledger.** The first version failed with
+a tenant-bucket refusal and zero rows from its own block, and the cause was never
+one thing — it was four, found in order: a duplicated variable declaration that
+killed the whole block at parse time; `on conflict (id)` not covering the
+`(tenant_id, user_id, platform)` key the seed already holds; the escalation probe
+using an unenrolled device (ingest validates enrollment, which the suite now also
+proves); and hardcoded fixture devices shared with the seed and other suites. Each
+fix was verified to change the failure before moving on. The standing lesson holds:
+when the failure shape contradicts the code, stop theorizing and reproduce
+minimally — the isolated-tenant repro proved the helper logic in one run, which is
+what redirected the search from the function to the fixtures.
+
+**Two things this slice does not do.** Per-tenant configurable limits (constants
+with documented rationale instead), and a schedule for anything (the prune is
+opportunistic precisely so none is needed).
+
+**Still open: nothing from the audit.** Both P0s, the CORS pinning, and the throttle
+are now closed and committed. Remaining work is product surface, not audit findings.
