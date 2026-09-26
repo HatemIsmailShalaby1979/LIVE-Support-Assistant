@@ -155,6 +155,93 @@ async function readBack(
   }
 }
 
+/**
+ * Change a procedure's status without touching its content.
+ *
+ * Copies the latest ciphertext and its hash verbatim into a new version. The key
+ * is never used here, which is what makes this safe to call on the rows nothing
+ * else can read: for a corrupt body it copies corrupt bytes into a version nobody
+ * will publish or read, and the row stops blocking the tenant.
+ */
+async function statusOnly(
+  client: ReturnType<typeof createClient>,
+  tenantId: string,
+  userId: string | null,
+  payload: Record<string, unknown>,
+): Promise<Response> {
+  const sopId = payload.sopId as string;
+  const status = typeof payload.status === 'string' ? payload.status : 'draft';
+  if (!ALLOWED_STATUS.has(status)) {
+    return json({ error: `status must be one of ${[...ALLOWED_STATUS].join(', ')}` }, 400);
+  }
+  const changeNote =
+    typeof payload.changeNote === 'string' && payload.changeNote !== ''
+      ? payload.changeNote
+      : `Status set to ${status} without reading the body.`;
+
+  const { data: sop, error: sopError } = await client
+    .from('sops')
+    .select('id, title, status')
+    .eq('id', sopId)
+    .eq('tenant_id', tenantId)
+    .maybeSingle();
+
+  if (sopError) return json({ error: `could not read the procedure: ${sopError.message}` }, 502);
+  if (sop === null || sop === undefined) {
+    return json({ error: 'no such procedure on this tenant' }, 404);
+  }
+
+  const { data: latest, error: versionError } = await client
+    .from('sop_versions')
+    .select('version, body_ciphertext, body_hash')
+    .eq('sop_id', sopId)
+    .order('version', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (versionError) {
+    return json({ error: `could not read the current version: ${versionError.message}` }, 502);
+  }
+  if (latest === null || latest === undefined) {
+    return json({ error: 'the procedure has no version to carry forward' }, 400);
+  }
+
+  const title =
+    typeof payload.title === 'string' && payload.title.trim() !== ''
+      ? payload.title.trim()
+      : (sop.title as string);
+
+  const { error: updateError } = await client
+    .from('sops')
+    .update({ title, status })
+    .eq('id', sopId)
+    .eq('tenant_id', tenantId);
+
+  if (updateError) {
+    return json({ error: `could not update the procedure: ${updateError.message}` }, 502);
+  }
+
+  const { data: written, error: writeError } = await client
+    .from('sop_versions')
+    .insert({
+      sop_id: sopId,
+      tenant_id: tenantId,
+      version: (latest.version as number) + 1,
+      body_ciphertext: latest.body_ciphertext,
+      body_hash: latest.body_hash,
+      change_note: changeNote,
+      created_by: userId,
+    })
+    .select('id')
+    .single();
+
+  if (writeError) {
+    return json({ error: `could not write the version: ${writeError.message}` }, 502);
+  }
+
+  return json({ sopId, version: (latest.version as number) + 1, status, versionId: written?.id });
+}
+
 Deno.serve(async (request) => {
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: CORS_HEADERS });
@@ -234,6 +321,40 @@ Deno.serve(async (request) => {
     const sopId = typeof payload.sopId === 'string' ? payload.sopId : '';
     if (sopId === '') return json({ error: 'a read needs a sopId' }, 400);
     return readBack(client, tenant as string, key, sopId);
+  }
+
+  // A change that carries no body fields is a status change, not a revision.
+  // The latest ciphertext is copied verbatim into the new version, and nothing is
+  // decrypted — which is the whole point, because this path exists for the rows
+  // that cannot be decrypted.
+  //
+  // Without it, one corrupt published row bricks the tenant: publish-bundle refuses
+  // the whole publish naming it, and every UI control that reads the body first
+  // fails on the same bytes, so there is no way to retire the row that blocks
+  // everything. A status change needs no content — retirement least of all — so it
+  // must not require reading any.
+  //
+  // Two deliberate limits. The title may be set (it is a cleartext column and the
+  // same role gate already passed), but no body field may appear: a call carrying
+  // `summary` takes the normal path below and encrypts it. And "no body" means the
+  // existing bytes are kept, never blanked — there is no input on which this path
+  // writes an empty procedure.
+  const BODY_FIELDS = [
+    'category',
+    'summary',
+    'suggestedReply',
+    'escalationRequired',
+    'escalationReason',
+    'triggerKeywords',
+  ] as const;
+  const carriesBody = BODY_FIELDS.some((field) => payload[field] !== undefined);
+
+  if (
+    typeof payload.sopId === 'string' &&
+    payload.sopId !== '' &&
+    !carriesBody
+  ) {
+    return statusOnly(client, tenant as string, claims.sub ?? null, payload);
   }
 
   const title = typeof payload.title === 'string' ? payload.title.trim() : '';

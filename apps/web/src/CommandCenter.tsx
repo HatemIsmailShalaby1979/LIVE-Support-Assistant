@@ -27,6 +27,7 @@ import {
   publishBundle,
   readProcedure,
   saveProcedure,
+  setProcedureStatus,
   type ProcedureDraft,
   type ProcedureStatus,
   type ProcedureSummary,
@@ -53,6 +54,15 @@ export function CommandCenter({ onPublished }: { onPublished: () => void }) {
   const [busy, setBusy] = useState<'save' | 'publish' | null>(null);
   const [notice, setNotice] = useState('');
   const [failure, setFailure] = useState('');
+  // A status change whose read failed, waiting on the person to decide. The read is
+  // what carries content forward, so without it the change cannot proceed the normal
+  // way — but a status change needs no content, so the screen offers to apply it
+  // without reading rather than leaving the row stuck.
+  const [stuckChange, setStuckChange] = useState<{
+    sopId: string;
+    title: string;
+    status: ProcedureStatus;
+  } | null>(null);
 
   // The load itself, with no leading setState. Called straight from the effect
   // below, where a synchronous state update would cascade a render before the
@@ -165,6 +175,43 @@ export function CommandCenter({ onPublished }: { onPublished: () => void }) {
           {failure}
         </p>
       )}
+      {stuckChange !== null && (
+        <p data-testid="cc-stuck" className="text-sm text-amber-900 bg-amber-50 border border-amber-200 rounded px-3 py-2">
+          &ldquo;{stuckChange.title}&rdquo; could not be read, so its text cannot be
+          carried forward. Its stored bytes stay exactly as they are — this only
+          changes the status.{' '}
+          <button
+            type="button"
+            data-testid={`cc-force-${stuckChange.sopId}`}
+            disabled={busy !== null}
+            onClick={() => {
+              const change = stuckChange;
+              setBusy('save');
+              setFailure('');
+              setNotice('');
+              void setProcedureStatus(
+                change.sopId,
+                change.status,
+                `Status set to ${change.status} without reading the body.`,
+              )
+                .then((result) => {
+                  setStuckChange(null);
+                  setNotice(
+                    `${change.title} is now ${result.status} — version ${result.version}.`,
+                  );
+                  return refresh();
+                })
+                .catch((error: unknown) =>
+                  setFailure(error instanceof Error ? error.message : String(error)),
+                )
+                .finally(() => setBusy(null));
+            }}
+            className="underline font-medium disabled:opacity-50"
+          >
+            Set it to {stuckChange.status} without reading the body
+          </button>
+        </p>
+      )}
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         {status === 'loading' && <p className="p-4 text-sm text-gray-500">Loading procedures…</p>}
@@ -228,6 +275,7 @@ export function CommandCenter({ onPublished }: { onPublished: () => void }) {
                         setBusy('save');
                         setFailure('');
                         setNotice('');
+                        setStuckChange(null);
                         // The content is loaded first, because changing a status is
                         // also a new version and a version has to carry the body
                         // forward. The earlier version of this control sent a
@@ -247,9 +295,17 @@ export function CommandCenter({ onPublished }: { onPublished: () => void }) {
                             );
                             return refresh();
                           })
-                          .catch((error: unknown) =>
-                            setFailure(error instanceof Error ? error.message : String(error)),
-                          )
+                          .catch((error: unknown) => {
+                            setFailure(error instanceof Error ? error.message : String(error));
+                            // The read is what failed, not the decision. Remember
+                            // the requested change so the screen can offer to apply
+                            // it without reading, instead of leaving the row stuck.
+                            setStuckChange({
+                              sopId: procedure.id,
+                              title: procedure.title,
+                              status: next,
+                            });
+                          })
                           .finally(() => setBusy(null));
                       }}
                       className="text-xs border border-gray-300 rounded px-2 py-1 bg-white"

@@ -860,6 +860,33 @@ try {
   );
   check('the editor is signed in, and the server says so', editorRole.trim() === 'sop_editor', editorRole.trim());
 
+  // Plant an unreadable published row before the editor opens the Command Center,
+  // the way a legacy import or a bad migration would leave one: a version whose
+  // bytes this server did not write. Planting first means the list loads with it
+  // already present, exactly like the authored procedure gets in. The service key
+  // writes it because no legitimate path can produce these bytes — that is the
+  // definition of the row under test.
+  const corruptTitle = `UNREADABLE-${Math.random().toString(36).slice(2, 8)}`;
+  const corruptId = randomUUID();
+  const usersList = await (
+    await fetch(`${supabaseUrl}/auth/v1/admin/users?page=1&per_page=1000`, { headers: adminHeaders })
+  ).json();
+  const corruptAuthor = (usersList?.users ?? []).find((u) => u?.email === 'signin-editor@alpha.example')?.id;
+  check('the corrupt row has an author to attribute it to', typeof corruptAuthor === 'string', corruptAuthor ?? 'none');
+  await fetch(`${supabaseUrl}/rest/v1/sops`, {
+    method: 'POST',
+    headers: { ...adminHeaders, Prefer: 'return=representation' },
+    body: JSON.stringify({ id: corruptId, tenant_id: TENANT, title: corruptTitle, status: 'published', created_by: corruptAuthor }),
+  });
+  await fetch(`${supabaseUrl}/rest/v1/sop_versions`, {
+    method: 'POST',
+    headers: { ...adminHeaders, Prefer: 'return=representation' },
+    body: JSON.stringify({
+      sop_id: corruptId, tenant_id: TENANT, version: 1,
+      body_ciphertext: '\\x00', body_hash: 'not-a-real-hash', created_by: corruptAuthor,
+    }),
+  });
+
   await evaluate(`[...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Command Center')?.click()`);
   const commandCentre = await waitForCondition(
     `document.querySelector('[data-testid="command-center"]')`,
@@ -1005,6 +1032,88 @@ try {
       String(readBack?.body?.summary ?? '').startsWith(editMarker) &&
       !String(readBack?.body?.summary ?? '').includes(marker),
     JSON.stringify(readBack?.body?.summary ?? readBack?.error ?? '').slice(0, 70),
+  );
+
+  // --------------------------------- repairing what cannot be read --
+  //
+  // The deadlock this slice closes: one corrupt published row bricks the whole
+  // publish, and until now nothing offered a way back. The editor changes the bad
+  // row's status, the read fails as it must, and the screen offers to apply the
+  // status without reading instead of leaving the row stuck.
+  const corruptRow = `[...document.querySelectorAll('[data-testid="cc-row"]')].find((r) => r.textContent.includes(${JSON.stringify(corruptTitle)}))`;
+  const corruptSeen = await waitForCondition(
+    `${corruptRow} !== undefined`,
+    'the unreadable row to appear in the list',
+    30_000,
+  );
+  check('the unreadable row is listed like any other', corruptSeen);
+
+  await evaluate(`
+    (() => {
+      const row = ${corruptRow};
+      const select = row.querySelector('select');
+      select.value = 'retired';
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      return true;
+    })()
+  `);
+  const stuck = await waitForCondition(
+    `document.querySelector('[data-testid="cc-stuck"]')`,
+    'the screen to offer the repair instead of a dead end',
+    30_000,
+  );
+  check('a status change on an unreadable row offers the repair, not a dead end', stuck);
+  const stuckText = await evaluate(
+    `document.querySelector('[data-testid="cc-stuck"]')?.innerText ?? ''`,
+  );
+  check(
+    'and it says plainly that the stored bytes stay untouched',
+    /stay exactly as they are/i.test(stuckText),
+    stuckText.slice(0, 80),
+  );
+
+  await evaluate(`document.querySelector('[data-testid="cc-force-${corruptId}"]')?.click()`);
+  const repaired = await waitForCondition(
+    `[...document.querySelectorAll('[data-testid="cc-notice"]')].some((n) => /is now retired — version 2/.test(n.textContent))`,
+    'the retire-without-reading to land as version 2',
+    30_000,
+  );
+  check('retiring without reading lands as a new version', repaired);
+
+  // The decisive assertions, against the database rather than the screen: the row
+  // is retired, there are exactly two versions, and the second carries the first's
+  // bytes verbatim. A repair that rewrote the content would pass every check above.
+  const versionRows = await (
+    await fetch(
+      `${supabaseUrl}/rest/v1/sop_versions?select=version,body_ciphertext&sop_id=eq.${corruptId}&order=version`,
+      { headers: adminHeaders },
+    )
+  ).json();
+  const sopRow = await (
+    await fetch(`${supabaseUrl}/rest/v1/sops?select=status&id=eq.${corruptId}`, {
+      headers: adminHeaders,
+    })
+  ).json();
+  check(
+    'and the new version carries the old bytes verbatim',
+    sopRow?.[0]?.status === 'retired' &&
+      versionRows?.length === 2 &&
+      versionRows[1]?.body_ciphertext === versionRows[0]?.body_ciphertext,
+    `status=${sopRow?.[0]?.status} versions=${versionRows?.length}`,
+  );
+
+  // And the loop this deadlock broke is closed: the tenant publishes again, and the
+  // server no longer names the repaired row.
+  const republish = await fetch(`${supabaseUrl}/functions/v1/publish-bundle`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${publisher.token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({}),
+  });
+  const republished = await republish.json();
+  check(
+    'and the tenant can publish again afterwards',
+    republish.ok,
+    republish.ok ? `bundle ${republished.bundleVersion}` : republished.error,
   );
 
   // ---------------------------------------------- 4. the escalation console --

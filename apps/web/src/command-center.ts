@@ -228,3 +228,28 @@ export async function saveProcedure(
 export async function publishBundle(): Promise<PublishResult> {
   return callFunction<PublishResult>('publish-bundle', {}, await accessToken(), SUPABASE_URL);
 }
+
+/**
+ * Change a procedure's status without reading or rewriting its content.
+ *
+ * Sends no body fields, so the server carries the existing ciphertext forward
+ * untouched. This is the repair path for the rows nothing else can read: a status
+ * change needs no content, and retirement least of all. The response names the new
+ * version, because a status change is still a version and the screen should say so.
+ */
+export async function setProcedureStatus(
+  sopId: string,
+  status: ProcedureStatus,
+  changeNote?: string,
+): Promise<SaveResult> {
+  return callFunction<SaveResult>(
+    'upsert-sop',
+    {
+      sopId,
+      status,
+      ...(changeNote === undefined ? {} : { changeNote }),
+    },
+    await accessToken(),
+    SUPABASE_URL,
+  );
+}

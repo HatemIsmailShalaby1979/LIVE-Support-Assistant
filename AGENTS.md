@@ -1554,3 +1554,51 @@ closed *structurally*, not just where they were first hit.
 typecheck, lint and build throughout. The race, the substring bug and the scope trap
 all passed all three. A real browser and a real database, asked the question in the
 order a person meets them, found every one.
+
+
+## A status change needs no content - closing the publish deadlock - 2026-09-25
+
+**Executed and verified. `pnpm run verify:signin` - 52/52, twice, in real headless
+Chrome.**
+
+**The deadlock, stated exactly.** One corrupt published row bricked the whole tenant:
+`publish-bundle` refuses the entire publish naming the row (correct fail-closed),
+and every UI control read the body first, so the read 502d on the same bytes and the
+row could never be retired. Fail-closed on publish plus no repair path equals a
+tenant stuck forever - and the seed's own placeholder proved it, by bricking the
+browser gate the morning after a hosted re-seed restored it.
+
+**The fix, in three layers.**
+
+1. **Server.** `upsert-sop` accepts a call carrying `sopId` + `status` and *no body
+   fields*, and copies the latest ciphertext and its hash verbatim into a new
+   version. The key is never used, which is what makes it safe on the rows nothing
+   else can read: for a corrupt body it copies corrupt bytes into a version nobody
+   will publish or read, and the row stops blocking the tenant. Two deliberate
+   limits: the title may be set (cleartext column, same role gate already passed),
+   and "no body" means the existing bytes are kept, never blanked - there is no
+   input on which this path writes an empty procedure. The normal path is untouched:
+   any body field present takes the encrypt-and-write route as before.
+2. **Client.** `setProcedureStatus(sopId, status)` sends only the two fields, so the
+   branch is taken by construction rather than by convention.
+3. **Screen.** When a status change's read fails, the failure is still shown - but
+   the requested change is remembered, and the screen offers to apply it without
+   reading: *"could not be read, so its text cannot be carried forward. Its stored
+   bytes stay exactly as they are - this only changes the status."* A control that
+   rewrote content it could not read would be worse than a dead end; this one names
+   what it does not do.
+
+**Proven end-to-end, not with a fixture row but with a planted corrupt one.** The
+harness writes a published zero-byte version through the service key - the one shape
+no legitimate path can produce - then, as the editor: the row lists normally, the
+status change fails as it must, the repair is offered and names untouched bytes,
+retiring lands as version 2, and the database confirms the row retired with exactly
+two versions whose ciphertexts are byte-identical. Then the tenant publishes again
+and the server no longer names the row. A repair that rewrote the content would pass
+every screen check; the byte-equality assertion is what it cannot pass.
+
+**Verified.** `verify` 6/6, `probe:corpus` 12/12 (it retires its own bad rows through
+the full-body path, unaffected), browser 52/52 twice, typecheck, lint and build
+green, audit 0 new and 0 escalated. The Part 1 harness retry that retired the seed
+placeholder stays: it is what a person does, and it is now backed by a product path
+rather than standing in for one.
