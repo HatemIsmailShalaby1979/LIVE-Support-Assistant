@@ -24,6 +24,7 @@
     "probe:publish": "node tooling/transport/probe-publish.mjs",
     "probe:corpus": "node tooling/transport/probe-corpus.mjs",
     "verify:signin": "node tooling/browser/verify-signin.mjs",
+    "verify:deployed": "node tooling/browser/verify-deployed.mjs",
     "audit": "node tooling/audit-gate.mjs",
     "audit:update": "node tooling/audit-gate.mjs --update"
   },
