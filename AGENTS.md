@@ -48,7 +48,7 @@ Source: `docs/SYSTEM_DESIGN.md` §8, §10, §11, §12.
 | 4 | Confidence Gate UI + escalation flow | **complete** (2026-09-25) — 10 gate checks, 0 failures; manual-review SOPs content-free; full browser model/query/retry path verified |
 | 5 | Telemetry + threshold-failure dashboard | **complete** (2026-09-25) — 17-probe DB matrix, 0 failures; client queue built + wired; transport + Supabase runtime still unbuilt |
 | 6 | Tauri + Expo packaging | **complete** (2026-09-25) — debug and release desktop binaries linked; persistence adapters 19/0; mobile typechecked (Metro/native packaging still blocked) |
-| 7 | Hardening and audit | **complete** (2026-09-25) — rotation 13/0; DB write-boundary + RLS suites 99/0, 17/0, 40/0; queue 30/0 |
+| 7 | Hardening and audit | **complete** (2026-09-25; re-verified 2026-09-27) — rotation 13/0; DB write-boundary + RLS suites 99/0, 27/0, 40/0; queue 35/0; retention 16/0 |
 
 ## Phase 0 record — 2026-09-25
 
@@ -492,9 +492,9 @@ another build runs concurrently — serialise builds on this machine.
    upgrade; v1 replay refused; signing rotation proven a pure distribution
    event. The limitation rotation cannot fix is asserted, not hidden: the
    revoked device still reads the pre-rotation bundle.
-2. `bash tooling/db/verify-phase7.sh` — all three suites OK: RBAC matrix (99/0),
-   Phase 5 telemetry (17/0), and the bypass suite (**40/0**).
-3. `node tooling/telemetry/verify-queue.mjs` — **30 checks, 0 failures**.
+2. `bash tooling/db/verify-phase7.sh` — all four suites OK: RBAC matrix (99/0),
+   Phase 5 telemetry (27/0), RLS bypass (**40/0**), retention (**16/0**).
+3. `node tooling/telemetry/verify-queue.mjs` — **35 checks, 0 failures**.
 4. `pnpm -r run build` green across the workspace.
 
 **A real vulnerability, found by the bypass suite and fixed.** The Phase 5
@@ -579,8 +579,8 @@ criterion still fails its 25/50 requirement; the escalation path remains the
 primary product experience.
 
 **Verification.** Full workspace typecheck, lint, and build are green; the
-optimized Tauri binary links. Sync 31/0, persistence 19/0, rotation 13/0, legacy
-parity 25/0, queue 30/0, gate 10/0, and database 99/17/40 all pass. Headless
+optimized Tauri binary links. Sync 31/0, persistence 33/0, rotation 13/0, legacy
+parity 25/0, queue 35/0, gate 10/0, and database 99/27/40 all pass. Headless
 Chrome observed zero model requests before activation, then loaded the real
 stack, rendered an audited answer, invalidated it on edit, and rendered a
 manual-review escalation with no title, passage, or suggested reply. A blocked
@@ -649,7 +649,7 @@ blocker list and the roadmap live in the audit report, not here.
 **Verified on this host, 2026-09-25.**
 
 1. `pnpm run verify` — **6 of 6 suites pass**: parity 25/0, sync 31/0,
-   persistence 19/0, rotation 13/0, gate 10/0, queue 30/0.
+   persistence 33/0, rotation 13/0, gate 10/0, queue 35/0.
 2. `pnpm run verify:db` — **exit 0**: `RBAC MATRIX OK`, `PHASE5 OK`,
    `RLS BYPASS SUITE OK` (7 sections, 40/40, zero failures).
 3. `pnpm run verify:all` — exit 0. The single local command that runs both
@@ -725,7 +725,7 @@ visible in a container:
    the one place psql expands nothing.
 
 **Verified on the hosted project, twice in a row, 156 probes and 0 failures:**
-RBAC 99/0, Phase 5 17/0, RLS bypass 40/0. `tenant isolation` 12/12 and
+RBAC 99/0, Phase 5 27/0, RLS bypass 40/0. `tenant isolation` 12/12 and
 `privilege audit` 34/34 — the two hardest guarantees — hold unchanged against
 GoTrue's real auth. A `db push` creates the seven principals; the suites then
 assert claims directly, so nothing ever authenticates as them.
@@ -1702,3 +1702,73 @@ opportunistic precisely so none is needed).
 
 **Still open: nothing from the audit.** Both P0s, the CORS pinning, and the throttle
 are now closed and committed. Remaining work is product surface, not audit findings.
+
+## Production slice — the first hosted SaaS path — 2026-09-26
+
+**Executed.** No product code changed: the mission's missing piece was never a
+feature, it was a URL. The prebuilt `apps/web/dist` bundle (built with the hosted
+`VITE_` config; scanned afterwards — the full secret value is absent, the one
+`sb_secret_` hit is supabase-js's own key-prefix check) was deployed as a static
+production deployment to Vercel under the owner's logged-in account. New files:
+`docs/PRODUCTION_STATUS.md` (the one status page) and
+`tooling/browser/verify-deployed.mjs` + a `verify:deployed` script (the
+rerunnable stranger-path gate). The temporary `apps/web/.env.local` used for the
+build was deleted; `git status` shows only the new files.
+
+**Live URL:** `https://dist-omega-black-31.vercel.app/` (alias; the deployment URL
+`https://dist-bzqki1hio-teamo-38a8.vercel.app/` answers 200 with a Vercel login
+page — deployment protection guards the deployment URL, the alias is public).
+Project `teamo-38a8/dist`; GitHub auto-link failed (no Login Connection) and was
+left unlinked — deploys are CLI-driven, which is all this slice needs.
+
+**Auth flow:** email/password sign-in with a pre-provisioned demo agent
+(`demo@alpha.example`, tenant Alpha, role `agent` from the server). No sign-up UI
+was built — that is a stated limitation, not an oversight.
+
+**Verified, real browser + real hosted project, 2026-09-26.**
+
+1. `pnpm run probe:auth` — **7/7**: real sign-in, server attributes tenant and
+   role, unauthenticated caller refused.
+2. `pnpm run probe:telemetry` — **11/11**: event + escalation round-trip,
+   idempotent replay, agent reads 0 rows, foreign-tenant claim filed under the
+   caller.
+3. Throwaway cross-tenant proof (temp dir, cleaned up) — **7/7**: Beta
+   ops_manager reads 0 of Alpha's escalations/telemetry; Beta escalation naming
+   Alpha's event refused (`source query event does not exist in tenant 2222…`).
+4. `TARGET_URL=… DEMO_EMAIL=… DEMO_PASSWORD=… pnpm run verify:deployed` —
+   **19/19, twice** (second run from the committed path): signed-out stranger sees
+   only the sign-in form; wrong password refused; demo sign-in shows the
+   server-reported tenant/role; fresh device is honestly told no bundle is
+   serving; bundle published through the edge function is served with the
+   server's count; one query yields a content-free escalation carrying no
+   procedure text; that escalation is polled present in the hosted database;
+   sign-out returns to the form; **zero console errors**. Timestamps in the run
+   output (final green run 2026-09-26T06:22:30Z).
+5. The full SQL matrix (`verify-hosted.sh`) could **not** run: Docker Desktop's
+   daemon is down on this host (WSL has no Docker integration; Git Bash sees the
+   client but no daemon). The REST proofs above are the equivalent hosted
+   evidence; the matrix itself is unchanged and was last green per the earlier
+   record.
+
+**Three observations worth keeping.**
+
+1. A fresh device that fetches a bundle wrapped for another device's key says
+   `No bundle is serving: the server's bundle was refused: key_unwrap_failed`
+   and serves nothing. That is the protocol working — a device that cannot
+   unwrap serves no procedures — reported in words rather than failing silently.
+2. The `auth/v1/logout?scope=global` request aborts in headless Chrome on every
+   run. The property that matters was proven instead of assumed: the
+   pre-sign-out refresh token is dead afterwards (refresh refused — revoked on
+   the server). Local sign-out + device wipe + server revocation all hold; the
+   abort is a client-reporting artifact, recorded here so nobody re-discovers it.
+3. `upsert-sop` answers the deployed origin's preflight with **no ACAO header**
+   (measured at the wire): the Command Center authoring path is not enabled from
+   the public URL. Localhost dev remains the allowlisted origin. The stranger
+   journey never touches that function, so this is a boundary, not a break.
+
+**Still unbuilt / limits (carried into the status page).** No public sign-up
+(demo credentials via the owner); a device enrolled after a publish gets no
+bundle until the next publish; no Command Center from the deployed origin; the
+URL is an auto-generated deployment name; the hosted project remains a
+development database — no customer data, no retention schedule running
+(`app.run_retention` is a function, still nothing calls it).
