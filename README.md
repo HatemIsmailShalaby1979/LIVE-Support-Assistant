@@ -114,11 +114,14 @@ Supabase sign-in and procedures are served from a tenant bundle on the hosted
 backend. A GitHub Pages publish of the raw `dist` without those variables would fail
 at load.
 
-**Live hosted demo (sign-in required, backed by Supabase):**
-https://dist-omega-black-31.vercel.app/ — verified reachable; unauthenticated access
-is rejected and presents the sign-in form. To run your own instance, supply the
-Supabase variables at build time and point at a project with the migrations applied
-and a demo user provisioned.
+**Live and functioning (sign-in required):** https://dist-omega-black-31.vercel.app/
+— confirmed from a clean, signed-out browser session on 2026-09-27: a genuine sign-in
+form renders and unauthenticated access is rejected. There is no guest or public
+account a stranger can use to pass the gate, so this is **not** an open "try it" demo.
+The artifact a reviewer without an account should watch is a screen recording or GIF
+walkthrough of the verified signed-in path; capture one before linking. To run your
+own instance, supply the Supabase variables at build time and point at a project with
+the migrations applied and a provisioned user.
 
 ## Stack
 

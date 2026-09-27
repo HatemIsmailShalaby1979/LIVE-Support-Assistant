@@ -46,8 +46,8 @@ Source: `docs/SYSTEM_DESIGN.md` §8, §10, §11, §12.
 | 2 | Command Center: schema, RLS, SOP lifecycle, RBAC matrix | **complete** (2026-09-25) — 99 probes, 0 failures |
 | 3 | Encrypted sync engine | **complete** (2026-09-25) — 31 checks, 0 failures; no transport or device persistence |
 | 4 | Confidence Gate UI + escalation flow | **complete** (2026-09-25) — 10 gate checks, 0 failures; manual-review SOPs content-free; full browser model/query/retry path verified |
-| 5 | Telemetry + threshold-failure dashboard | **complete** (2026-09-25) — 17-probe DB matrix, 0 failures; client queue built + wired; transport + Supabase runtime still unbuilt |
-| 6 | Tauri + Expo packaging | **complete** (2026-09-25) — debug and release desktop binaries linked; persistence adapters 19/0; mobile typechecked (Metro/native packaging still blocked) |
+| 5 | Telemetry + threshold-failure dashboard | **complete** (2026-09-25) — 27-probe DB matrix, 0 failures; client queue built + wired; transport + Supabase runtime still unbuilt |
+| 6 | Tauri + Expo packaging | **complete** (2026-09-25) — debug and release desktop binaries linked; persistence adapters 33/0; mobile typechecked (Metro/native packaging still blocked) |
 | 7 | Hardening and audit | **complete** (2026-09-25; re-verified 2026-09-27) — rotation 13/0; DB write-boundary + RLS suites 99/0, 27/0, 40/0; queue 35/0; retention 16/0 |
 
 ## Phase 0 record — 2026-09-25
@@ -568,7 +568,7 @@ as explicitly labelled placeholder-corpus history.
    `search_path`, revokes default `PUBLIC` execute, restricts escalation UPDATE
    to workflow columns, excludes agents from raw escalation evidence, and sets
    the new-tenant margin default to 0.18. The database regression is **99 RBAC,
-   17 Phase 5, 40 bypass probes, 0 failures**.
+   27 Phase 5, 40 bypass probes, 0 failures**.
 
 **Current measured result on the completed corpus.** MiniLM recall@1 is 78%,
 recall@5 is 100%, and the precision-qualified auto-answer rate is **8/50 (16%)**
@@ -636,7 +636,7 @@ blocker list and the roadmap live in the audit report, not here.
    reaches zero and the gate becomes strict with no code change.
 3. **`.github/workflows/ci.yml`** — four required jobs: `workspace`
    (lint, typecheck, build, the gate, model cache keyed on the pinned revision
-   sha), `database` (`verify-phase7.sh`: 99 + 17 + 40 probes), `desktop` (Rust
+   sha), `database` (`verify-phase7.sh`: 99 + 27 + 40 + 16 probes), `desktop` (Rust
    link with Tauri's documented Linux system libraries, which are a real
    prerequisite, not ceremony), `audit`. No deploy job and no release artifact:
    there is no transport to deploy, so that stage would be decoration.
@@ -724,7 +724,7 @@ visible in a container:
    inside plpgsql bodies became email lookups, because a dollar-quoted body is
    the one place psql expands nothing.
 
-**Verified on the hosted project, twice in a row, 156 probes and 0 failures:**
+**Verified on the hosted project, twice in a row, 182 probes and 0 failures:**
 RBAC 99/0, Phase 5 27/0, RLS bypass 40/0. `tenant isolation` 12/12 and
 `privilege audit` 34/34 — the two hardest guarantees — hold unchanged against
 GoTrue's real auth. A `db push` creates the seven principals; the suites then
@@ -944,7 +944,7 @@ is refused 403; a caller with no session gets 401; the response carries only
 3. `erasableSyntaxOnly` in the package tsconfig rejects constructor parameter
    properties, so `IdbIdentityStore`'s factory is a declared field.
 
-**Verified.** `pnpm run verify` 6/6. Hosted SQL suites 156/156. `probe:bundle` 16/16,
+**Verified.** `pnpm run verify` 6/6. Hosted SQL suites 182/182. `probe:bundle` 16/16,
 `probe:publish` 8/8, `probe:auth` 7/7, `probe:telemetry` 11/11. Typecheck, lint and
 build green. Audit gate 0 new, 0 escalated.
 
@@ -1004,7 +1004,7 @@ adding a browser-automation package to that gate.
    reporting OK on 79 of 99 probes, and worth naming in both places.
 
 **Verified.** `verify` 6/6, browser sign-in 10/10, typecheck, lint, build and the
-audit gate all green. Hosted SQL suites unchanged at 156/156.
+audit gate all green. Hosted SQL suites unchanged at 182/182.
 
 **Not a CI job, and honestly so.** `verify:signin` needs a live project, a real
 auth principal and the Vite server, so it cannot be a required check until the
@@ -1072,7 +1072,7 @@ serving something.
 
 **Verified.** `verify` 6/6, browser sign-in and bundle 16/16, typecheck, lint and
 build green, audit gate 0 new and 0 escalated. Hosted SQL suites unchanged at
-156/156.
+182/182.
 
 **Still unbuilt.** An automatic flush scheduler, so telemetry goes out on a timer
 rather than per decision. The Command Center, which is the only place a tenant's
@@ -1191,7 +1191,7 @@ check fails, find out whether the check is right before changing the code.
 
 **Verified.** `verify` 6/6, `probe:corpus` 12/12, browser 20/20, typecheck, lint and
 build green, audit gate 0 new and 0 escalated. Hosted SQL suites unchanged at
-156/156.
+182/182.
 
 **Still unbuilt, in the order the product needs them.** A read-back path so an
 editor can revise a procedure's text. The escalation console, which is the other
