@@ -77,6 +77,16 @@ one is ever added, is labelled correctly rather than counted as a failure. The
 full before/after and per-technique tables are in
 [`phase5-label-fix-margin-017.md`](tooling/eval/simulated-tenant/phase5-label-fix-margin-017.md).
 
+The 138 false escalations are analysed separately, read-only, in
+[`false-escalation-analysis.md`](tooling/eval/simulated-tenant/false-escalation-analysis.md):
+split by language, chaos type and expected procedure, with the gate margin behind
+each one. Two measured findings from it bear on any reading of the numbers above.
+Every false escalation was blocked for insufficient margin — retrieval returned a
+candidate every time — and in 96 of 138 the expected procedure was already ranked
+first. And the 500 tickets carry only **47 distinct messages**, the 138 false
+escalations only **17**, so those counts are not independent observations; the
+per-language and per-chaos-type rates are the meaningful figures.
+
 ## The one unsafe answer, and its measured margin
 
 The deployed path differed from the local run on exactly one ticket:
