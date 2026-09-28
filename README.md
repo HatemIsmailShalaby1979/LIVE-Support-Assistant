@@ -79,6 +79,30 @@ SQL ingest contracts. No generative model in query, gate, answer, or escalation.
 > [!WARNING]
 > This is a prototype, not a production deployment. **Validated on 500 simulated tickets (47 distinct messages, 7 procedures, four languages) through the deployed path with tenant isolation audited; one unsafe answer found and documented.** The on-device retrieval + confidence gate flow was re-verified on current HEAD on 2026-09-27. The backend verification suites (RBAC, RLS, telemetry, retention, encrypted sync, key rotation, telemetry queue, conflicting-procedure lint) pass independently, but the hosted transport that would connect them to the running client is not wired into the standalone demo — a query's telemetry or escalation is not actually delivered there. No external security audit, no certified data isolation, no signed installer. No revenue and no paying users. The latest tagged release is **v1.0.1** (2026-08-29); it predates the current HEAD. In-sample prototype results (e.g. the 0.18 margin auto-answers 8 of 50 in-scope queries) are not a production SLA; threshold calibration remains a per-tenant onboarding task. There is no design partner.
 
+### Evaluation evidence
+
+The headline claim is the simulated batch above. Two smaller sets are reported separately, each
+with its own sample size; neither is a production accuracy measure.
+
+| Set | Sample | Result |
+| --- | ---: | --- |
+| Real-phrased set (owner-labelled public wording) | 72 messages | Refusal-focused: 6 of 52 refusal rows were auto-answered at margin 0.18. In-scope accuracy is not claimed. `tooling/eval/simulated-tenant/real-phrased-label-results.md` |
+| Author-written floor set | 29 messages | 0 refusal false accepts at 0.18 and 0.17; 16 of 21 in-scope rows false-escalated at 0.18. `tooling/eval/simulated-tenant/floor-queries-results.md` |
+
+### Tried and rejected
+
+Two changes were measured and **not** merged. Do not repeat them (see `AGENTS.md`).
+
+- **Procedure-wording edit** — branch `exp/procedure-distinctness`. Renaming each procedure's
+  topic and dropping a cross-reference moved only two `wc-gifts` templates, emptied the
+  [0.17, 0.18) margin band, and made the riskiest procedure pair slightly worse. The benefit was
+  threshold-dependent, so it was rejected.
+- **Cross-encoder reranker** — branch `exp/reranker-measurement`. It raised headline accuracy only
+  by answering more, adding 14 new unsafe answers on one batch and 15 on another, at 862 ms per
+  query and roughly double the model download. Rejected.
+
+Evidence: the branch commits and the matching `AGENTS.md` ledger records.
+
 ## Run it
 
 ```bash

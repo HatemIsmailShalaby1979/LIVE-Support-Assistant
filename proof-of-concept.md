@@ -164,6 +164,36 @@ awaiting a decision.
 - The backend is the development Supabase project, with demo and probe accounts;
   the live URL requires sign-in and has no guest account.
 
+## Tried and rejected
+
+Two changes were measured and not merged. They are recorded so they are not retried (see
+`AGENTS.md`, "Do not repeat these experiments").
+
+- **Procedure-wording edit** — branch `exp/procedure-distinctness`. Naming each procedure's topic
+  and dropping a cross-reference moved only two `wc-gifts` templates, emptied the [0.17, 0.18)
+  margin band, and made the riskiest procedure pair slightly worse. Threshold-dependent benefit:
+  rejected.
+- **Cross-encoder reranker** — branch `exp/reranker-measurement`. Raised headline accuracy only by
+  answering more: +14 unsafe answers on one batch, +15 on another, at 862 ms per query and roughly
+  double the model download. Rejected.
+
+## Known limits and next steps
+
+- **Corpus size is untested at scale.** Every measurement in this document is on a 7-procedure
+  corpus. A 40–70-procedure tenant is the next experiment (`exp/scale-rung`); whether the
+  top-1/top-2 margin separates better or worse as the corpus grows is not yet measured.
+- **Threshold calibration is per-tenant onboarding, not a shipped constant.**
+  `DEFAULT_GATE_CONFIG` (`packages/core/src/types.ts`) states the shipped 0.18 default is a starting
+  point; the 0.17 value used in these evaluations is harness-only.
+- **The hosted transport is not wired into the standalone demo.** The backend suites (RBAC, RLS,
+  telemetry, retention, encrypted sync, key rotation, telemetry queue) pass independently, but a
+  query's telemetry or escalation is not actually delivered by the demo.
+- **No real customer data.** Every ticket, procedure and label is synthetic or author-written. There
+  is no design partner and no production-customer evidence.
+- **The conflict lint reads English number words only.** A corpus whose only numeric statement is in
+  Spanish, Portuguese or French is not checked (`tooling/conflicts/conflict-core.mjs`; behaviour
+  locked by `verify-publish-conflict-block.mjs` case (e)).
+
 ## Data and evidence boundaries
 
 - **SIMULATED DATA only.** Run-specific tenants, users, SOP version notes,

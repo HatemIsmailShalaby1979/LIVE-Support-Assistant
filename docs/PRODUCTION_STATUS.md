@@ -61,6 +61,17 @@ in shipped code uses it yet — the two candidate fixes are awaiting a decision 
 `docs/decisions/conflicting-procedures.md`. There is no design partner, and none
 is referenced.
 
+**SIMULATED DATA — real-phrased and floor sets, 2026-09-28.** Two owner-labelled
+sets were scored on the same browser-local path. The **real-phrased set** (72
+public help-centre / public-forum questions; labels from two independent agent
+passes plus an owner audit) is used mainly to test refusal: at margin 0.18 the
+refusal set (52 rows) produced **6 false accepts**. The **author-written floor
+set** (29 messages) produced **0 refusal false accepts at 0.18 and 0.17** and
+false-escalated 16 of 21 in-scope rows at 0.18. Both samples are small and are
+not production-accuracy measures. Reports:
+`tooling/eval/simulated-tenant/real-phrased-label-results.md` and
+`tooling/eval/simulated-tenant/floor-queries-results.md`.
+
 **Limits.** There is no public sign-up, a new device only receives procedures
 after a fresh bundle is published, the authoring screen is not enabled from this
 address, and the address itself is an auto-generated deployment name.

@@ -171,8 +171,17 @@ may separate far better. That experiment requires a realistic corpus and is Phas
    fallback. At a third deflection with zero measured errors, the handover is the
    product.
 
-**Do not repeat these experiments.** Model swapping and cross-encoder reranking
-have both been measured and rejected on this corpus.
+**Do not repeat these experiments.** They have all been measured and rejected on
+this corpus, each recorded on its own branch:
+- **Model swapping** (for example `bge-small-en-v1.5`).
+- **Cross-encoder reranking** — branch `exp/reranker-measurement`: raised headline
+  accuracy only by answering more, adding 14 unsafe answers on `chaos-500.json`
+  and 15 on the holdout, at 862 ms per query and roughly double the model
+  download.
+- **Procedure-wording edits** — branch `exp/procedure-distinctness`: renaming each
+  procedure's topic and dropping a cross-reference moved only two `wc-gifts`
+  templates and emptied the [0.17, 0.18) margin band; the benefit was
+  threshold-dependent and the riskiest procedure pair got slightly worse.
 
 ## Phase 2 record — 2026-09-25
 
@@ -2142,3 +2151,46 @@ is impossible. They are labelled as such in the report.
 candidate scores, so its margin distribution is not reported rather than
 estimated. The only recorded deployed margin remains the safety counterexample
 (`SIM-TICKET-00272`, 0.180757).
+
+## Real-phrased and floor-query evaluation, and proving-pass close-out — 2026-09-28
+
+**Real-phrased set (72 public queries).** Two independent agent passes labelled the
+72 public help-centre/forum questions — each pass saw only the query text and the
+7 procedures; neither saw the other's labels, the gate, or the batch. The passes
+agreed on 63/72 labels and 22/22 procedures; the owner resolved the 9 disagreements
+and spot-checked 15 agreed rows (8/15 exact, 12/15 coarse, first pass 5/15). Scored
+on the browser-local path at margin 0.18: 60/72 scored (12 ambiguous excluded),
+61.7% accuracy, 17 false escalations, 6 unsafe answers. The refusal set (52 rows)
+produced **6 false accepts** at 0.18 (7 at 0.17). `label_source`: 24
+`human-resolved`, 48 `agent-agreed, unconfirmed`; the model invented no label.
+Report: `tooling/eval/simulated-tenant/real-phrased-label-results.md`.
+
+**Floor set (29 author-written messages).** `label_source: "author-written,
+author-labeled"`. Scored at 0.18 and 0.17: **0 refusal false accepts at both
+margins**; in-scope (21 answerable) 5/21 correct, 0 wrong procedure, 16 false
+escalations at 0.18 (6/21 correct, 15 at 0.17). Messy rows (Arabizi/typos) 0/6;
+clean 5/15. Report: `tooling/eval/simulated-tenant/floor-queries-results.md`.
+
+**Scorer change (no gate change).** `tooling/eval/score-real-phrased.mjs` now
+requires the six expected columns as the *leading* columns and allows trailing
+provenance columns (the floor file carries `label_source`); its provenance string
+is source-agnostic. Scoring, gate and threshold logic are unchanged.
+
+**Tried and rejected.** See "Do not repeat these experiments" above:
+`exp/reranker-measurement` (+14/+15 unsafe answers, 862 ms/query, doubled download)
+and `exp/procedure-distinctness` (threshold-dependent; riskiest pair worse). Both
+are summarised in `proof-of-concept.md` and `README.md`.
+
+**Branches (nothing merged without owner approval).**
+
+| Branch | Status |
+| --- | --- |
+| `feat/publish-conflict-block` | pending review — publish-path conflict block (option a), verified |
+| `tool/labeling-tool` | pending review — offline SOP labeling tool |
+| `feat/real-phrased-dual-pass-labels` | content landed on main (`1f39138`, `ef9dd7a`); branch now redundant |
+| `exp/procedure-distinctness` | rejected — procedure-wording experiment |
+| `exp/reranker-measurement` | rejected — cross-encoder reranker |
+| `exp/scale-rung` | created this session — 40–70-procedure scale experiment |
+
+**Verification.** `pnpm run verify` **7/7** suites; `eslint` (apps/web) clean; the
+500-ticket validator passes.

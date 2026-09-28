@@ -37,7 +37,9 @@ banners, and reports created during the deployed-path run carry the same tag.
 | `corpus.json` | The seven-procedure fictional policy corpus |
 | `phase5-label-fix-margin-017.json` / `.md` | Local rescore with the `expectedOutcome` label fix, before and after |
 | `phase5-deployed-run-0aec9773442c4282.json` / `.md` | Deployed-path run against the development Supabase project |
-| `real-phrased-queries.csv` | Real support questions quoted from public sources, labels pending |
+| `real-phrased-queries.csv` | Real support questions quoted from public sources; owner-labelled (two agent passes + owner audit) |
+| `my-floor-queries.csv` | The author's own 29 frontline patterns, `label_source: "author-written, author-labeled"` |
+| `floor-queries-results.md` | Local scoring of the floor set at margins 0.18 and 0.17 |
 | `my-floor-queries.template.csv` | Template for the operator's own frontline patterns |
 
 The deployed path targets the **development Supabase project**, not a customer
