@@ -120,10 +120,14 @@ publication: `tooling/conflicts/lint-procedure-conflicts.mjs` scans a corpus for
 same-category procedure pairs whose numeric policy values are disjoint. On the
 clean simulated corpus it reports 0 conflicts; with the injected conflicting
 procedure it reports 1 (`Creator payouts / window_days`: 2–5 business days versus
-1 business day) and exits non-zero. **Nothing in shipped code uses it yet** — the
-two possible fixes and their trade-offs are in
-[`docs/decisions/conflicting-procedures.md`](docs/decisions/conflicting-procedures.md),
-awaiting a decision.
+1 business day) and exits non-zero. **The fix is shipped:** `feat/publish-conflict-block`
+(merged 2026-09-28) wires this lint into publishing via
+`supabase/functions/publish-bundle/index.ts` — a contradictory corpus is refused
+before signing with **HTTP 422** ("publication blocked: the tenant corpus contains
+contradictory procedures"), so the failure class is removed at the source. Dev smoke
+test passed (clean → 200, conflict → 422, three borderline → 200, no false positive).
+The two fix options and their trade-offs remain in
+[`docs/decisions/conflicting-procedures.md`](docs/decisions/conflicting-procedures.md).
 
 ## What this proves
 
@@ -149,7 +153,7 @@ awaiting a decision.
   (75.8%) with 121 false escalations at 0.17, 359/500 (71.8%) with 141 at 0.18
   ([phase5-holdout-seed-20260929-margin-017.md](tooling/eval/simulated-tenant/phase5-holdout-seed-20260929-margin-017.md)).
 - The same safety result holds when the corpus grows **from 7 procedures to 48**
-  (branch `exp/scale-rung`): 0 unsafe answers at 0.18 (196/414, 47.3%, 218 false
+  (tag `evidence/scale-rung (e5a7d9baf4f6)`): 0 unsafe answers at 0.18 (196/414, 47.3%, 218 false
   escalations). At 0.17 that corpus produced **1** unsafe answer (`SCALE-0328`),
   so 0.17 is not safe at 48 procedures
   ([scale-rung-results.md](tooling/eval/simulated-tenant/scale-rung-results.md) on
@@ -182,14 +186,14 @@ awaiting a decision.
 Three changes were measured and not merged. They are recorded so they are not retried (see
 `AGENTS.md`, "Do not repeat these experiments").
 
-- **Procedure-wording edit** — branch `exp/procedure-distinctness`. Naming each procedure's topic
+- **Procedure-wording edit** — tag `evidence/procedure-wording (bd6db511a0ca)`. Naming each procedure's topic
   and dropping a cross-reference moved only two `wc-gifts` templates, emptied the [0.17, 0.18)
   margin band, and made the riskiest procedure pair slightly worse. Threshold-dependent benefit:
   rejected.
-- **Cross-encoder reranker** — branch `exp/reranker-measurement`. Raised headline accuracy only by
+- **Cross-encoder reranker** — tag `evidence/reranker (495b52f6399b)`. Raised headline accuracy only by
   answering more: +14 unsafe answers on one batch, +15 on another, at 862 ms per query and roughly
   double the model download. Rejected.
-- **Multilingual embedders** — branch `exp/multilingual-embedder`. A multilingual MiniLM moved
+- **Multilingual embedders** — tag `evidence/multilingual-embedder (65b76aef103f)`. A multilingual MiniLM moved
   in-scope accuracy by **+0.3 pp** overall at **5.1× the download** (21.91 → 112.83 MB). It is a
   language trade, not a gain: English −9.7 pp, Spanish +9.6 pp, Portuguese +12.2 pp. Rejected on
   the product metric. A retrieval-trained candidate (`multilingual-e5-small`) answered 1 of 302

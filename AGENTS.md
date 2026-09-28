@@ -174,11 +174,11 @@ may separate far better. That experiment requires a realistic corpus and is Phas
 **Do not repeat these experiments.** They have all been measured and rejected on
 this corpus, each recorded on its own branch:
 - **Model swapping** (for example `bge-small-en-v1.5`).
-- **Cross-encoder reranking** — branch `exp/reranker-measurement`: raised headline
+- **Cross-encoder reranking** — tag `evidence/reranker (495b52f6399b)`: raised headline
   accuracy only by answering more, adding 14 unsafe answers on `chaos-500.json`
   and 15 on the holdout, at 862 ms per query and roughly double the model
   download.
-- **Procedure-wording edits** — branch `exp/procedure-distinctness`: renaming each
+- **Procedure-wording edits** — tag `evidence/procedure-wording (bd6db511a0ca)`: renaming each
   procedure's topic and dropping a cross-reference moved only two `wc-gifts`
   templates and emptied the [0.17, 0.18) margin band; the benefit was
   threshold-dependent and the riskiest procedure pair got slightly worse.
@@ -2177,8 +2177,8 @@ provenance columns (the floor file carries `label_source`); its provenance strin
 is source-agnostic. Scoring, gate and threshold logic are unchanged.
 
 **Tried and rejected.** See "Do not repeat these experiments" above:
-`exp/reranker-measurement` (+14/+15 unsafe answers, 862 ms/query, doubled download)
-and `exp/procedure-distinctness` (threshold-dependent; riskiest pair worse). Both
+`evidence/reranker (495b52f6399b)` (+14/+15 unsafe answers, 862 ms/query, doubled download)
+and `evidence/procedure-wording (bd6db511a0ca)` (threshold-dependent; riskiest pair worse). Both
 are summarised in `proof-of-concept.md` and `README.md`.
 
 **Branches (nothing merged without owner approval).**
@@ -2188,10 +2188,10 @@ are summarised in `proof-of-concept.md` and `README.md`.
 | `feat/publish-conflict-block` | **merged 2026-09-28** — publish-path conflict block (option a). Dev smoke test **run and passed**: clean 7-procedure corpus → 200 (bundle created), conflict corpus → 422 (no bundle row), three borderline corpora → 200 with no false positive; `publish-bundle` deployed at VERSION 9. |
 | `tool/labeling-tool` | pending review — offline SOP labeling tool |
 | `feat/real-phrased-dual-pass-labels` | content landed on main (`1f39138`, `ef9dd7a`); branch now redundant |
-| `exp/procedure-distinctness` | rejected — procedure-wording experiment |
-| `exp/reranker-measurement` | rejected — cross-encoder reranker |
-| `exp/scale-rung` | evidence branch — 48-procedure corpus, 414 distinct messages; **not merged**, cited as evidence from `main` |
-| `exp/multilingual-embedder` | rejected — multilingual embedders (+0.3 pp overall at 5.1× download) |
+| `evidence/procedure-wording (bd6db511a0ca)` | rejected — procedure-wording experiment |
+| `evidence/reranker (495b52f6399b)` | rejected — cross-encoder reranker |
+| `evidence/scale-rung (e5a7d9baf4f6)` | evidence branch — 48-procedure corpus, 414 distinct messages; **not merged**, cited as evidence from `main` |
+| `evidence/multilingual-embedder (65b76aef103f)` | rejected — multilingual embedders (+0.3 pp overall at 5.1× download) |
 
 **Verification.** `pnpm run verify` **7/7** suites; `eslint` (apps/web) clean; the
 500-ticket validator passes.
@@ -2216,7 +2216,7 @@ questions that were answered.
 | Same settings, repeated | identical decisions on all 500 tickets | same file |
 | Safety, independent holdout seed, 0.17 | 379/500 (75.8%), 121 false escalations, **0 unsafe** | `.../phase5-holdout-seed-20260929-margin-017.md` |
 | Safety, independent holdout seed, 0.18 | 359/500 (71.8%), 141 false escalations, **0 unsafe** | `.../phase5-holdout-seed-20260929-margin-018.md` |
-| Safety, 48 procedures, 0.18 | 196/414 (47.3%), 218 false escalations, **0 unsafe** | branch `exp/scale-rung`, `.../scale-rung-results.md` |
+| Safety, 48 procedures, 0.18 | 196/414 (47.3%), 218 false escalations, **0 unsafe** | tag `evidence/scale-rung (e5a7d9baf4f6)`, `.../scale-rung-results.md` |
 | Same corpus, 0.17 | 205/414 (49.5%), 208 false escalations, **1 unsafe** (`SCALE-0328`) | same file |
 | Deployed path end to end | 361/500 (72.2%), 138 false escalations, 1 unsafe, 0 runtime errors | `.../phase5-deployed-run-0aec9773442c4282.md` |
 | Tenant isolation audit | 500/500 query events, 261/261 escalations, 15 SOP versions, 4 profiles, 2 devices tagged; **0 untagged** | same file |
@@ -2227,13 +2227,13 @@ questions that were answered.
 
 | Limit | Measured | Source |
 | --- | --- | --- |
-| In-scope recall at 48 procedures, escalation-by-construction rows excluded | 84/302 (27.8%) at 0.18; 93/302 (30.8%) at 0.17 | branch `exp/multilingual-embedder`, `.../multilingual-embedder-results.md` |
-| Non-English gap | English 62.1% vs Spanish 32.0%, Portuguese 31.0% at 0.18 | branch `exp/scale-rung`, `.../scale-rung-results.md` |
+| In-scope recall at 48 procedures, escalation-by-construction rows excluded | 84/302 (27.8%) at 0.18; 93/302 (30.8%) at 0.17 | tag `evidence/multilingual-embedder (65b76aef103f)`, `.../multilingual-embedder-results.md` |
+| Non-English gap | English 62.1% vs Spanish 32.0%, Portuguese 31.0% at 0.18 | tag `evidence/scale-rung (e5a7d9baf4f6)`, `.../scale-rung-results.md` |
 | Floor set, in-scope | 5/21 (23.8%) at 0.18 | `.../floor-queries-results.md` |
 | Real-phrased refusal set | 6 of 52 false accepts at 0.18 (7 at 0.17) | `.../real-phrased-label-results.md` |
-| Rejected — procedure wording | two `wc-gifts` templates moved; [0.17, 0.18) band emptied | branch `exp/procedure-distinctness` |
-| Rejected — cross-encoder reranker | +14 / +15 new unsafe answers; 862 ms per query; ~2× download | branch `exp/reranker-measurement` |
-| Rejected — multilingual embedders | +0.3 pp overall at 5.1× download (21.91 → 112.83 MB) | branch `exp/multilingual-embedder` |
+| Rejected — procedure wording | two `wc-gifts` templates moved; [0.17, 0.18) band emptied | tag `evidence/procedure-wording (bd6db511a0ca)` |
+| Rejected — cross-encoder reranker | +14 / +15 new unsafe answers; 862 ms per query; ~2× download | tag `evidence/reranker (495b52f6399b)` |
+| Rejected — multilingual embedders | +0.3 pp overall at 5.1× download (21.91 → 112.83 MB) | tag `evidence/multilingual-embedder (65b76aef103f)` |
 
 *Tier 3 — NOT PROVEN.* Real customer traffic (none exists); recall at production
 corpus sizes (48 procedures is the largest measured, against the 5,000-procedure

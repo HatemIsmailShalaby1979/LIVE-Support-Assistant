@@ -38,7 +38,7 @@ top-1 minus top-2 margin separated the same queries, so both signals are require
   (`tooling/eval/simulated-tenant/phase5-holdout-seed-20260929-margin-017.md`).
 - A **48-procedure corpus** to test whether the margin survives scale: 196/414 (47.3%) with 218
   false escalations and 0 unsafe at 0.18; 205/414 (49.5%) with 208 false escalations and **1
-  unsafe** at 0.17 (`tooling/eval/simulated-tenant/scale-rung-results.md`, branch `exp/scale-rung`).
+  unsafe** at 0.17 (`tooling/eval/simulated-tenant/scale-rung-results.md`, tag `evidence/scale-rung (e5a7d9baf4f6)`).
 - A **deployed-path** run against a development Supabase project with an isolated signed bundle:
   361/500 (72.2%), one unsafe answer, zero runtime errors
   (`tooling/eval/simulated-tenant/phase5-deployed-run-0aec9773442c4282.md`).
@@ -80,7 +80,8 @@ top-1 minus top-2 margin separated the same queries, so both signals are require
   conflict is refused before signing (`tooling/conflicts/conflict-core.mjs`, branch
   `feat/publish-conflict-block`). Dev smoke test passed: clean corpus → 200, conflict corpus → 422,
   three borderline corpora → 200 with no false positive. This removes the failure class at the
-  source with no change to gate behaviour. It is not merged.
+  source with no change to gate behaviour. **Merged 2026-09-28** (`feat/publish-conflict-block`,
+  live in the development Supabase project).
 - **Reject the three tempting upgrades.** A procedure-wording edit, a cross-encoder reranker
   (+14/+15 new unsafe answers, 862 ms per query) and multilingual embedders (+0.3 pp overall at
   5.1× the download) were all measured and rejected (`AGENTS.md`).

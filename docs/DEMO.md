@@ -94,17 +94,22 @@ latency 20.02 ms.
    for audit). Nothing scores clearly, margin 0.0495, and the gate escalates without showing any
    procedure text.
 4. **Contradiction.** Two procedures in the same category give different payout windows
-   (`wc-payout`, and `wc-payout-conflict` injected by the ticket). The gate escalates here because
-   the two are close — but that is not a guarantee, and this is the case that broke in the
-   deployed run. See `docs/decisions/conflicting-procedures.md`.
+   (`wc-payout`, and `wc-payout-conflict` injected by the ticket). On this local harness the gate
+   escalates here because the two are close (margin 0.1677). **On the deployed path this ticket can
+   no longer be replayed:** publishing a bundle containing the contradictory procedure is refused
+   with **HTTP 422** ("publication blocked: the tenant corpus contains contradictory procedures").
+   The earlier deployed unsafe answer (margin 0.180757) predates that block. See
+   `docs/decisions/conflicting-procedures.md` and `README.md` (Deployed-vs-local parity).
 
 ## Known rough edges
 
-- **The contradiction case is not reliably safe.** In this local run the margin is 0.1677 and the
-  gate escalates. In the recorded deployed-path run the same ticket was **answered**, at a margin
-  of 0.180757 — above both the applied 0.17 and the shipped 0.18. The gate measures how decisive a
-  match is, not whether the matched policy agrees with itself. The local harness does not
-  reproduce that unsafe answer.
+- **The contradiction case is now blocked at publish, not answered.** In this local run the margin
+  is 0.1677 and the gate escalates. The historical deployed-path run **answered** the same ticket at
+  margin 0.180757 — above both the applied 0.17 and the shipped 0.18 — but that was before the
+  publish-conflict block. Now the deployed publish path **refuses** any bundle containing the
+  contradictory procedure with **HTTP 422**, so the dangerous corpus never reaches the gate. The
+  local harness still escalates it (0.1677). The gate measures how decisive a match is, not whether
+  the matched policy agrees with itself.
 - **Chrome is a hard requirement** for the report-writing path. Without it, use the no-Chrome
   alternative above.
 - **`pnpm build` will fail** on this host; use `pnpm -r run build`.

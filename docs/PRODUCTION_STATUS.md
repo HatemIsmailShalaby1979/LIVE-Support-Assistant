@@ -78,13 +78,13 @@ not production-accuracy measures. Reports:
 **SIMULATED DATA — holdout and scale, 2026-09-28.** The 500-ticket safety result was repeated on
 an **independent holdout seed** (`20260929`) and on a **larger corpus**. Holdout: **0 unsafe
 answers** at both margins — 379/500 (75.8%) with 121 false escalations at 0.17, 359/500 (71.8%)
-with 141 at 0.18. Scale: a 48-procedure corpus (branch `exp/scale-rung`, 414 distinct messages)
+with 141 at 0.18. Scale: a 48-procedure corpus (tag `evidence/scale-rung (e5a7d9baf4f6)`, 414 distinct messages)
 gave 196/414 (47.3%) with 218 false escalations and **0 unsafe** at 0.18, but **1 unsafe** at 0.17
 (`SCALE-0328`) — so 0.17 is not safe at that corpus size. The same run showed the non-English gap
 plainly: English 62.1% against Spanish 32.0% and Portuguese 31.0%. The scale change is confounded
 (different corpus *and* larger), so it is not attributable to size alone. Reports:
 `tooling/eval/simulated-tenant/phase5-holdout-seed-20260929-margin-017.md` (and `-018`) and
-`tooling/eval/simulated-tenant/scale-rung-results.md` on branch `exp/scale-rung`.
+`tooling/eval/simulated-tenant/scale-rung-results.md` on tag `evidence/scale-rung (e5a7d9baf4f6)`.
 
 **Limits.** There is no public sign-up, a new device only receives procedures
 after a fresh bundle is published, the authoring screen is not enabled from this
