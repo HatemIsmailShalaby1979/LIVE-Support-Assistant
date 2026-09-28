@@ -1,0 +1,1687 @@
+{
+  "data_mode": "simulated",
+  "generatedBy": "build-parity-batch.mjs — every ticket copied verbatim from chaos-500.json or real-phrased-queries.csv; no label authored here",
+  "seed": 20260928,
+  "ticketCount": 40,
+  "chaosRateConfigured": 0.55,
+  "chaosRateActual": 0.55,
+  "client": "WaveCast Creator Care (fictional)",
+  "corpusSource": "Fictional simulated SOPs in corpus.json",
+  "productInputField": "message",
+  "datasetSourcePolicy": "Public dataset schemas only; no external ticket rows or message text used.",
+  "sopCount": 7,
+  "chaosSummary": {
+    "chaosTicketCount": 22
+  },
+  "chaosTypeDistribution": {
+    "contradicting_sops": 1,
+    "baseline": 18,
+    "mixed_language_typos_sarcasm": 7,
+    "no_correct_answer": 7,
+    "near_duplicate": 7
+  },
+  "parityClassDistribution": {
+    "contradiction": 1,
+    "clean": 12,
+    "messy": 7,
+    "escalation": 7,
+    "near-duplicate": 7,
+    "real-phrased-false-accept": 6
+  },
+  "tickets": [
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00272",
+      "customerRef": "SIM-CREATOR-4097",
+      "createdAt": "2026-09-26T20:27:00.000Z",
+      "channel": "callback_request",
+      "language": "en",
+      "category": "Creator payouts",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "Processed payout not received",
+      "message": "My payout says processed, but I do not see it in the bank account yet. It was marked processed three business days ago.",
+      "status": "pending_internal",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "creator_payouts"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "conflicting_procedure_guidance",
+        "sopId": null
+      },
+      "chaosTags": [
+        "contradicting_sops"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "contradicting_sops",
+        "details": {
+          "sourceTicketId": "SIM-TICKET-00137",
+          "conflictSopId": "wc-payout-conflict",
+          "expectedHandling": "escalate until a human resolves the policy conflict"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "escalate",
+          "reason": "specialist_review_required",
+          "sopId": "wc-security"
+        },
+        "category": "Account security",
+        "queue": "account-security",
+        "language": "es",
+        "channel": "callback_request",
+        "priority": "P1",
+        "status": "pending_internal",
+        "message": "No reconozco el inicio de sesión reciente y cambió el correo de recuperación. Necesito ayuda para proteger la cuenta."
+      },
+      "testEnvironment": {
+        "data_mode": "simulated",
+        "additionalSops": [
+          {
+            "data_mode": "simulated",
+            "id": "wc-payout-conflict",
+            "title": "Creator Payout Timing — Conflicting Legacy Guide",
+            "category": "Creator payouts",
+            "triggerKeywords": [
+              "payout",
+              "deposit",
+              "withdraw",
+              "balance"
+            ],
+            "summary": "A creator payout marked processed arrives in one business day. Do not use the two-to-five-business-day estimate; this guide conflicts with the standard payout procedure and requires a lead to determine which rule is current.",
+            "suggestedReply": "The published payout guidance conflicts. I am escalating this question for a lead to confirm the current timing.",
+            "escalationRequired": true,
+            "escalationReason": "Two active simulated procedures give contradictory payout deadlines."
+          }
+        ]
+      },
+      "parityClass": "contradiction",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00164",
+      "customerRef": "SIM-CREATOR-1355",
+      "createdAt": "2026-09-24T23:02:14.000Z",
+      "channel": "social_dm",
+      "language": "en",
+      "category": "Creator payouts",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "When should the payout arrive?",
+      "message": "Could you check the normal payout timing? The status changed to processed earlier this week.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "creator_payouts"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "clean",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00002",
+      "customerRef": "SIM-CREATOR-8715",
+      "createdAt": "2026-09-21T23:28:02.000Z",
+      "channel": "in_app_chat",
+      "language": "en",
+      "category": "Gifts and purchases",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "Question about a Coin charge",
+      "message": "There are two charges for one Coin purchase on my statement. I can provide the receipt reference if needed.",
+      "status": "pending_customer",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "gifts_purchases"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "clean",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00359",
+      "customerRef": "SIM-CREATOR-3546",
+      "createdAt": "2026-09-28T08:09:19.000Z",
+      "channel": "social_dm",
+      "language": "en",
+      "category": "LIVE technical support",
+      "queue": "live-support",
+      "priority": "P2",
+      "subject": "Audio drops during broadcast",
+      "message": "The stream starts, then viewers say the audio cuts out. It happened twice during tonight’s broadcast.",
+      "status": "resolved",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "live_technical"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-live"
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "clean",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00443",
+      "customerRef": "SIM-CREATOR-2568",
+      "createdAt": "2026-09-29T22:08:18.000Z",
+      "channel": "email_web_form",
+      "language": "en",
+      "category": "Creator eligibility",
+      "queue": "creator-support",
+      "priority": "P3",
+      "subject": "LIVE access not appearing",
+      "message": "I meet the age and follower requirements shown in the help page, but the LIVE control is still missing.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "creator_eligibility"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-eligibility"
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "clean",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00100",
+      "customerRef": "SIM-CREATOR-8470",
+      "createdAt": "2026-09-23T20:12:56.000Z",
+      "channel": "in_app_chat",
+      "language": "en",
+      "category": "Gifts and purchases",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "Coin purchase completed but balance not updated",
+      "message": "I bought Coins last night to send a Gift. Receipt says completed, but my balance still looks the same.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "gifts_purchases"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "clean",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00196",
+      "customerRef": "SIM-CREATOR-6587",
+      "createdAt": "2026-09-24T19:10:53.000Z",
+      "channel": "in_app_chat",
+      "language": "en",
+      "category": "Creator payouts",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "Processed payout not received",
+      "message": "My payout says processed, but I do not see it in the bank account yet. It was marked processed three business days ago.",
+      "status": "pending_internal",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "creator_payouts"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "clean",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00266",
+      "customerRef": "SIM-CREATOR-4263",
+      "createdAt": "2026-09-26T22:42:14.000Z",
+      "channel": "in_app_chat",
+      "language": "en",
+      "category": "Account access",
+      "queue": "account",
+      "priority": "P2",
+      "subject": "Recovery code not arriving",
+      "message": "Changed phones and now the recovery code is not arriving. I tried the reset once and checked the inbox.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "routine_account_access"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "clean",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00102",
+      "customerRef": "SIM-CREATOR-7913",
+      "createdAt": "2026-09-23T23:37:11.000Z",
+      "channel": "in_app_chat",
+      "language": "en",
+      "category": "Gifts and purchases",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "Coin purchase completed but balance not updated",
+      "message": "I bought Coins last night to send a Gift. Receipt says completed, but my balance still looks the same.",
+      "status": "pending_customer",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "gifts_purchases"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "clean",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00025",
+      "customerRef": "SIM-CREATOR-1648",
+      "createdAt": "2026-09-21T11:41:49.000Z",
+      "channel": "in_app_chat",
+      "language": "en",
+      "category": "Gifts and purchases",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "Coin purchase completed but balance not updated",
+      "message": "I bought Coins last night to send a Gift. Receipt says completed, but my balance still looks the same.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "gifts_purchases"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "clean",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00251",
+      "customerRef": "SIM-CREATOR-8648",
+      "createdAt": "2026-09-26T21:37:38.000Z",
+      "channel": "social_dm",
+      "language": "en",
+      "category": "Account access",
+      "queue": "account",
+      "priority": "P2",
+      "subject": "Password reset loop",
+      "message": "The app keeps sending me back to sign in after I reset the password. Can you point me to the right recovery step?",
+      "status": "resolved",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "routine_account_access"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "clean",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00059",
+      "customerRef": "SIM-CREATOR-7462",
+      "createdAt": "2026-09-22T23:25:37.000Z",
+      "channel": "in_app_chat",
+      "language": "en",
+      "category": "Gifts and purchases",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "Question about a Coin charge",
+      "message": "There are two charges for one Coin purchase on my statement. I can provide the receipt reference if needed.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "gifts_purchases"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "clean",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00431",
+      "customerRef": "SIM-CREATOR-6069",
+      "createdAt": "2026-09-29T22:24:33.000Z",
+      "channel": "in_app_chat",
+      "language": "en",
+      "category": "Creator eligibility",
+      "queue": "creator-support",
+      "priority": "P3",
+      "subject": "LIVE access not appearing",
+      "message": "I meet the age and follower requirements shown in the help page, but the LIVE control is still missing.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "creator_eligibility"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-eligibility"
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "clean",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00123",
+      "customerRef": "SIM-CREATOR-4956",
+      "createdAt": "2026-09-23T21:24:00.000Z",
+      "channel": "social_dm",
+      "language": "en",
+      "category": "Creator payouts",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "When should the payout arrive?",
+      "message": "I already tried twice, gracias — this is getting ridiculous. Could you check the normal payuot timing? The status changed to processed earlier this week.",
+      "status": "pending_customer",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "creator_payouts"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "chaosTags": [
+        "mixed_language_typos_sarcasm"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "mixed_language_typos_sarcasm",
+        "details": {
+          "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+          "typosInjected": true,
+          "languageFieldMayDisagree": true
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "category": "Creator payouts",
+        "queue": "payments",
+        "language": "en",
+        "channel": "social_dm",
+        "priority": "P2",
+        "status": "pending_customer",
+        "message": "Could you check the normal payout timing? The status changed to processed earlier this week."
+      },
+      "parityClass": "messy",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00161",
+      "customerRef": "SIM-CREATOR-8905",
+      "createdAt": "2026-09-24T20:47:35.000Z",
+      "channel": "in_app_chat",
+      "language": "es",
+      "category": "Creator payouts",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "No recibí el pago",
+      "message": "Sure, because waiting another week is just brilliant 🙃. El pago figura como procesado, pero todavía no aparece en mi cuenta. Han pasado tres días hábiles.",
+      "status": "pending_customer",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "creator_payouts"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "chaosTags": [
+        "mixed_language_typos_sarcasm"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "mixed_language_typos_sarcasm",
+        "details": {
+          "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+          "typosInjected": true,
+          "languageFieldMayDisagree": true
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "category": "Creator payouts",
+        "queue": "payments",
+        "language": "es",
+        "channel": "in_app_chat",
+        "priority": "P2",
+        "status": "pending_customer",
+        "message": "El pago figura como procesado, pero todavía no aparece en mi cuenta. Han pasado tres días hábiles."
+      },
+      "parityClass": "messy",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00477",
+      "customerRef": "SIM-CREATOR-6583",
+      "createdAt": "2026-09-30T19:08:08.000Z",
+      "channel": "callback_request",
+      "language": "es",
+      "category": "Other / ambiguous",
+      "queue": "triage",
+      "priority": "P3",
+      "subject": "Transfer balance between accounts?",
+      "message": "Super, encore une réponse automatique… anyway, I need help. Can I move a creator balance between two acounts after I closed one of them? I cannot find this in the help pages.",
+      "status": "pending_customer",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "other"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "chaosTags": [
+        "mixed_language_typos_sarcasm"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "mixed_language_typos_sarcasm",
+        "details": {
+          "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+          "typosInjected": true,
+          "languageFieldMayDisagree": true
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "escalate",
+          "reason": "no_supported_procedure",
+          "sopId": null
+        },
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "language": "en",
+        "channel": "callback_request",
+        "priority": "P3",
+        "status": "pending_customer",
+        "message": "Can I move a creator balance between two accounts after I closed one of them? I cannot find this in the help pages."
+      },
+      "parityClass": "messy",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00393",
+      "customerRef": "SIM-CREATOR-8966",
+      "createdAt": "2026-09-28T16:22:21.000Z",
+      "channel": "email_web_form",
+      "language": "pt-BR",
+      "category": "Content and restrictions",
+      "queue": "trust-safety",
+      "priority": "P2",
+      "subject": "Appeal a LIVE restriction",
+      "message": "Sure, because waiting another week is just brilliant 🙃. My broadcast was removed and LIVE is now restricted. The in-app notice says it is a guideline action; I would like to appeal.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "content_restrictions"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "specialist_review_required",
+        "sopId": "wc-appeal"
+      },
+      "chaosTags": [
+        "mixed_language_typos_sarcasm"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "mixed_language_typos_sarcasm",
+        "details": {
+          "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+          "typosInjected": true,
+          "languageFieldMayDisagree": true
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "escalate",
+          "reason": "specialist_review_required",
+          "sopId": "wc-appeal"
+        },
+        "category": "Content and restrictions",
+        "queue": "trust-safety",
+        "language": "en",
+        "channel": "email_web_form",
+        "priority": "P2",
+        "status": "open",
+        "message": "My broadcast was removed and LIVE is now restricted. The in-app notice says it is a guideline action; I would like to appeal."
+      },
+      "parityClass": "messy",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00239",
+      "customerRef": "SIM-CREATOR-1470",
+      "createdAt": "2026-09-25T19:29:22.000Z",
+      "channel": "email_web_form",
+      "language": "fr",
+      "category": "Account access",
+      "queue": "account",
+      "priority": "P2",
+      "subject": "No llega el código de recuperación",
+      "message": "I already tried twice, gracias — this is getting ridiculous. Cambié de teléfono y no recibo el código para recuperar la cuenta. Ya revisé el correo.",
+      "status": "pending_customer",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "routine_account_access"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "chaosTags": [
+        "mixed_language_typos_sarcasm"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "mixed_language_typos_sarcasm",
+        "details": {
+          "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+          "typosInjected": true,
+          "languageFieldMayDisagree": true
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-login"
+        },
+        "category": "Account access",
+        "queue": "account",
+        "language": "es",
+        "channel": "email_web_form",
+        "priority": "P2",
+        "status": "pending_customer",
+        "message": "Cambié de teléfono y no recibo el código para recuperar la cuenta. Ya revisé el correo."
+      },
+      "parityClass": "messy",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00208",
+      "customerRef": "SIM-CREATOR-8657",
+      "createdAt": "2026-09-25T20:03:23.000Z",
+      "channel": "email_web_form",
+      "language": "en",
+      "category": "Creator payouts",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "When should the payout arrive?",
+      "message": "I already tried twice, gracias — this is getting ridiculous. Could you check the normal payuot timing? The status changed to processed earlier this week.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "creator_payouts"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "chaosTags": [
+        "mixed_language_typos_sarcasm"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "mixed_language_typos_sarcasm",
+        "details": {
+          "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+          "typosInjected": true,
+          "languageFieldMayDisagree": true
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "category": "Creator payouts",
+        "queue": "payments",
+        "language": "en",
+        "channel": "email_web_form",
+        "priority": "P2",
+        "status": "open",
+        "message": "Could you check the normal payout timing? The status changed to processed earlier this week."
+      },
+      "parityClass": "messy",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00108",
+      "customerRef": "SIM-CREATOR-6800",
+      "createdAt": "2026-09-23T08:29:47.000Z",
+      "channel": "in_app_chat",
+      "language": "es",
+      "category": "Gifts and purchases",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "Saldo de moedas não atualizou",
+      "message": "Super, encore une réponse automatique… anyway, I need help. Comprei moedas ontem para enviar um presente. O recibo está concluído, mas o saldo não mudou.",
+      "status": "resolved",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "gifts_purchases"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "chaosTags": [
+        "mixed_language_typos_sarcasm"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "mixed_language_typos_sarcasm",
+        "details": {
+          "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+          "typosInjected": true,
+          "languageFieldMayDisagree": true
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-gifts"
+        },
+        "category": "Gifts and purchases",
+        "queue": "payments",
+        "language": "pt-BR",
+        "channel": "in_app_chat",
+        "priority": "P2",
+        "status": "resolved",
+        "message": "Comprei moedas ontem para enviar um presente. O recibo está concluído, mas o saldo não mudou."
+      },
+      "parityClass": "messy",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00132",
+      "customerRef": "SIM-CREATOR-5449",
+      "createdAt": "2026-09-23T13:04:03.000Z",
+      "channel": "social_dm",
+      "language": "en",
+      "category": "Other / ambiguous",
+      "queue": "triage",
+      "priority": "P2",
+      "subject": "Can a closed account payout be redirected during an audit hold?",
+      "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+      "status": "pending_customer",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "other"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "chaosTags": [
+        "no_correct_answer"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "no_correct_answer",
+        "details": {
+          "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "category": "Creator payouts",
+        "queue": "payments",
+        "language": "en",
+        "channel": "social_dm",
+        "priority": "P2",
+        "status": "pending_customer",
+        "message": "My payout says processed, but I do not see it in the bank account yet. It was marked processed three business days ago."
+      },
+      "parityClass": "escalation",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00205",
+      "customerRef": "SIM-CREATOR-0730",
+      "createdAt": "2026-09-25T08:39:02.000Z",
+      "channel": "in_app_chat",
+      "language": "en",
+      "category": "Other / ambiguous",
+      "queue": "triage",
+      "priority": "P2",
+      "subject": "Can a closed account payout be redirected during an audit hold?",
+      "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "other"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "chaosTags": [
+        "no_correct_answer"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "no_correct_answer",
+        "details": {
+          "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "category": "Creator payouts",
+        "queue": "payments",
+        "language": "en",
+        "channel": "in_app_chat",
+        "priority": "P2",
+        "status": "open",
+        "message": "My payout says processed, but I do not see it in the bank account yet. It was marked processed three business days ago."
+      },
+      "parityClass": "escalation",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00111",
+      "customerRef": "SIM-CREATOR-0551",
+      "createdAt": "2026-09-23T14:25:15.000Z",
+      "channel": "email_web_form",
+      "language": "fr",
+      "category": "Other / ambiguous",
+      "queue": "triage",
+      "priority": "P2",
+      "subject": "Can a closed account payout be redirected during an audit hold?",
+      "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+      "status": "resolved",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "other"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "chaosTags": [
+        "no_correct_answer"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "no_correct_answer",
+        "details": {
+          "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-gifts"
+        },
+        "category": "Gifts and purchases",
+        "queue": "payments",
+        "language": "fr",
+        "channel": "email_web_form",
+        "priority": "P2",
+        "status": "resolved",
+        "message": "J’ai acheté des pièces hier pour envoyer un cadeau. Le reçu indique que le paiement est terminé, mais le solde ne change pas."
+      },
+      "parityClass": "escalation",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00300",
+      "customerRef": "SIM-CREATOR-8351",
+      "createdAt": "2026-09-27T20:23:06.000Z",
+      "channel": "in_app_chat",
+      "language": "en",
+      "category": "Other / ambiguous",
+      "queue": "triage",
+      "priority": "P2",
+      "subject": "Can a closed account payout be redirected during an audit hold?",
+      "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+      "status": "pending_internal",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "other"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "chaosTags": [
+        "no_correct_answer"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "no_correct_answer",
+        "details": {
+          "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-live"
+        },
+        "category": "LIVE technical support",
+        "queue": "live-support",
+        "language": "en",
+        "channel": "in_app_chat",
+        "priority": "P2",
+        "status": "pending_internal",
+        "message": "My scheduled LIVE drops after about thirty seconds. The connection seems steady and the app is up to date."
+      },
+      "parityClass": "escalation",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00381",
+      "customerRef": "SIM-CREATOR-8777",
+      "createdAt": "2026-09-28T09:27:48.000Z",
+      "channel": "email_web_form",
+      "language": "en",
+      "category": "Other / ambiguous",
+      "queue": "triage",
+      "priority": "P2",
+      "subject": "Can a closed account payout be redirected during an audit hold?",
+      "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "other"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "chaosTags": [
+        "no_correct_answer"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "no_correct_answer",
+        "details": {
+          "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "escalate",
+          "reason": "specialist_review_required",
+          "sopId": "wc-appeal"
+        },
+        "category": "Content and restrictions",
+        "queue": "trust-safety",
+        "language": "en",
+        "channel": "email_web_form",
+        "priority": "P2",
+        "status": "open",
+        "message": "My broadcast was removed and LIVE is now restricted. The in-app notice says it is a guideline action; I would like to appeal."
+      },
+      "parityClass": "escalation",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00274",
+      "customerRef": "SIM-CREATOR-8530",
+      "createdAt": "2026-09-26T19:09:55.000Z",
+      "channel": "in_app_chat",
+      "language": "en",
+      "category": "Other / ambiguous",
+      "queue": "triage",
+      "priority": "P1",
+      "subject": "Can a closed account payout be redirected during an audit hold?",
+      "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+      "status": "pending_customer",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "other"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "chaosTags": [
+        "no_correct_answer"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "no_correct_answer",
+        "details": {
+          "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "escalate",
+          "reason": "specialist_review_required",
+          "sopId": "wc-security"
+        },
+        "category": "Account security",
+        "queue": "account-security",
+        "language": "en",
+        "channel": "in_app_chat",
+        "priority": "P1",
+        "status": "pending_customer",
+        "message": "I did not make the recent sign-in and the recovery email changed. Please help secure the account."
+      },
+      "parityClass": "escalation",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00275",
+      "customerRef": "SIM-CREATOR-1490",
+      "createdAt": "2026-09-26T17:32:21.000Z",
+      "channel": "email_web_form",
+      "language": "en",
+      "category": "Other / ambiguous",
+      "queue": "triage",
+      "priority": "P1",
+      "subject": "Can a closed account payout be redirected during an audit hold?",
+      "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "other"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "chaosTags": [
+        "no_correct_answer"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "no_correct_answer",
+        "details": {
+          "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "escalate",
+          "reason": "specialist_review_required",
+          "sopId": "wc-security"
+        },
+        "category": "Account security",
+        "queue": "account-security",
+        "language": "en",
+        "channel": "email_web_form",
+        "priority": "P1",
+        "status": "open",
+        "message": "I did not make the recent sign-in and the recovery email changed. Please help secure the account."
+      },
+      "parityClass": "escalation",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00373",
+      "customerRef": "SIM-CREATOR-8354",
+      "createdAt": "2026-09-28T20:00:51.000Z",
+      "channel": "in_app_chat",
+      "language": "en",
+      "category": "LIVE technical support",
+      "queue": "live-support",
+      "priority": "P2",
+      "subject": "LIVE stream disconnects",
+      "message": "My scheduled LIVE drops after about thirty seconds. The connection seems steady and the app is up to date. Just following up on this — same issue.",
+      "status": "pending_customer",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "live_technical"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-live"
+      },
+      "chaosTags": [
+        "near_duplicate"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "near_duplicate",
+        "details": {
+          "duplicateOf": "SIM-TICKET-00350"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "escalate",
+          "reason": "specialist_review_required",
+          "sopId": "wc-appeal"
+        },
+        "category": "Content and restrictions",
+        "queue": "trust-safety",
+        "language": "fr",
+        "channel": "in_app_chat",
+        "priority": "P2",
+        "status": "pending_customer",
+        "message": "Ma diffusion a été retirée et mon accès au LIVE est limité. Je souhaite faire appel de la décision."
+      },
+      "duplicateOf": "SIM-TICKET-00350",
+      "parityClass": "near-duplicate",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00328",
+      "customerRef": "SIM-CREATOR-7226",
+      "createdAt": "2026-09-27T12:45:52.000Z",
+      "channel": "email_web_form",
+      "language": "en",
+      "category": "Account access",
+      "queue": "account",
+      "priority": "P2",
+      "subject": "Password reset loop",
+      "message": "The app keeps sending me back to sign in after I reset the password. Can you point me to the right recovery step? Just following up on this — same issue.",
+      "status": "pending_internal",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "routine_account_access"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "chaosTags": [
+        "near_duplicate"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "near_duplicate",
+        "details": {
+          "duplicateOf": "SIM-TICKET-00232"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-live"
+        },
+        "category": "LIVE technical support",
+        "queue": "live-support",
+        "language": "en",
+        "channel": "email_web_form",
+        "priority": "P2",
+        "status": "pending_internal",
+        "message": "My scheduled LIVE drops after about thirty seconds. The connection seems steady and the app is up to date."
+      },
+      "duplicateOf": "SIM-TICKET-00232",
+      "parityClass": "near-duplicate",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00016",
+      "customerRef": "SIM-CREATOR-3565",
+      "createdAt": "2026-09-21T23:39:01.000Z",
+      "channel": "social_dm",
+      "language": "en",
+      "category": "Account access",
+      "queue": "account",
+      "priority": "P2",
+      "subject": "Password reset loop",
+      "message": "The app keeps sending me back to sign in after I reset the password. Can you point me to the right recovery step? Just following up on this — same issue.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "routine_account_access"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "chaosTags": [
+        "near_duplicate"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "near_duplicate",
+        "details": {
+          "duplicateOf": "SIM-TICKET-00253"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-gifts"
+        },
+        "category": "Gifts and purchases",
+        "queue": "payments",
+        "language": "es",
+        "channel": "social_dm",
+        "priority": "P2",
+        "status": "open",
+        "message": "Compré monedas para enviar un regalo, pero el saldo no se actualizó. El recibo aparece como completado."
+      },
+      "duplicateOf": "SIM-TICKET-00253",
+      "parityClass": "near-duplicate",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00283",
+      "customerRef": "SIM-CREATOR-0118",
+      "createdAt": "2026-09-26T17:06:46.000Z",
+      "channel": "in_app_chat",
+      "language": "es",
+      "category": "Account access",
+      "queue": "account",
+      "priority": "P2",
+      "subject": "No llega el código de recuperación",
+      "message": "Cambié de teléfono y no recibo el código para recuperar la cuenta. Ya revisé el correo. Just following up on this — same issue.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "routine_account_access"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "chaosTags": [
+        "near_duplicate"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "near_duplicate",
+        "details": {
+          "duplicateOf": "SIM-TICKET-00234"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "escalate",
+          "reason": "specialist_review_required",
+          "sopId": "wc-security"
+        },
+        "category": "Account security",
+        "queue": "account-security",
+        "language": "es",
+        "channel": "in_app_chat",
+        "priority": "P1",
+        "status": "open",
+        "message": "No reconozco el inicio de sesión reciente y cambió el correo de recuperación. Necesito ayuda para proteger la cuenta."
+      },
+      "duplicateOf": "SIM-TICKET-00234",
+      "parityClass": "near-duplicate",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00264",
+      "customerRef": "SIM-CREATOR-2955",
+      "createdAt": "2026-09-26T22:57:26.000Z",
+      "channel": "email_web_form",
+      "language": "en",
+      "category": "Gifts and purchases",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "Question about a Coin charge",
+      "message": "There are two charges for one Coin purchase on my statement. I can provide the receipt reference if needed. Just following up on this — same issue.",
+      "status": "resolved",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "gifts_purchases"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "chaosTags": [
+        "near_duplicate"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "near_duplicate",
+        "details": {
+          "duplicateOf": "SIM-TICKET-00107"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-login"
+        },
+        "category": "Account access",
+        "queue": "account",
+        "language": "es",
+        "channel": "email_web_form",
+        "priority": "P2",
+        "status": "resolved",
+        "message": "Cambié de teléfono y no recibo el código para recuperar la cuenta. Ya revisé el correo."
+      },
+      "duplicateOf": "SIM-TICKET-00107",
+      "parityClass": "near-duplicate",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00148",
+      "customerRef": "SIM-CREATOR-8593",
+      "createdAt": "2026-09-23T19:20:13.000Z",
+      "channel": "social_dm",
+      "language": "en",
+      "category": "Account access",
+      "queue": "account",
+      "priority": "P2",
+      "subject": "Password reset loop",
+      "message": "The app keeps sending me back to sign in after I reset the password. Can you point me to the right recovery step? Just following up on this — same issue.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "routine_account_access"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "chaosTags": [
+        "near_duplicate"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "near_duplicate",
+        "details": {
+          "duplicateOf": "SIM-TICKET-00255"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "category": "Creator payouts",
+        "queue": "payments",
+        "language": "pt-BR",
+        "channel": "social_dm",
+        "priority": "P2",
+        "status": "open",
+        "message": "O status do saque está como processado, mas o valor ainda não apareceu na conta. Faz três dias úteis."
+      },
+      "duplicateOf": "SIM-TICKET-00255",
+      "parityClass": "near-duplicate",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00392",
+      "customerRef": "SIM-CREATOR-4437",
+      "createdAt": "2026-09-28T10:36:58.000Z",
+      "channel": "in_app_chat",
+      "language": "fr",
+      "category": "Creator eligibility",
+      "queue": "creator-support",
+      "priority": "P3",
+      "subject": "Accès au LIVE non disponible",
+      "message": "Je remplis les critères d’âge et d’abonnés indiqués, mais le bouton LIVE n’apparaît pas. Just following up on this — same issue.",
+      "status": "resolved",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "creator_eligibility"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-eligibility"
+      },
+      "chaosTags": [
+        "near_duplicate"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "near_duplicate",
+        "details": {
+          "duplicateOf": "SIM-TICKET-00423"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "escalate",
+          "reason": "specialist_review_required",
+          "sopId": "wc-appeal"
+        },
+        "category": "Content and restrictions",
+        "queue": "trust-safety",
+        "language": "en",
+        "channel": "in_app_chat",
+        "priority": "P2",
+        "status": "resolved",
+        "message": "My broadcast was removed and LIVE is now restricted. The in-app notice says it is a guideline action; I would like to appeal."
+      },
+      "duplicateOf": "SIM-TICKET-00423",
+      "parityClass": "near-duplicate",
+      "paritySource": "chaos-500.json"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-022",
+      "customerRef": "SIM-CREATOR-0000",
+      "createdAt": "2026-09-26T00:00:00.000Z",
+      "channel": "email_web_form",
+      "language": "en",
+      "category": "Other / ambiguous",
+      "queue": "triage",
+      "priority": "P3",
+      "subject": "Livestream on youtube by phone and microphone not enabling t",
+      "message": "Livestream on youtube by phone and microphone not enabling this just started happening",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "other"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_escalate",
+        "sopId": null
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "real-phrased-false-accept",
+      "paritySource": "real-phrased-queries.csv",
+      "parityOwnerLabel": "escalate"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-023",
+      "customerRef": "SIM-CREATOR-0000",
+      "createdAt": "2026-09-26T00:00:00.000Z",
+      "channel": "email_web_form",
+      "language": "en",
+      "category": "Other / ambiguous",
+      "queue": "triage",
+      "priority": "P3",
+      "subject": "How can i Enable Live Streaming?",
+      "message": "How can i Enable Live Streaming?",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "other"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_escalate",
+        "sopId": null
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "real-phrased-false-accept",
+      "paritySource": "real-phrased-queries.csv",
+      "parityOwnerLabel": "escalate"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-025",
+      "customerRef": "SIM-CREATOR-0000",
+      "createdAt": "2026-09-26T00:00:00.000Z",
+      "channel": "email_web_form",
+      "language": "en",
+      "category": "Other / ambiguous",
+      "queue": "triage",
+      "priority": "P3",
+      "subject": "Live stream on mobile",
+      "message": "Live stream on mobile",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "other"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_ambiguous",
+        "sopId": null
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "real-phrased-false-accept",
+      "paritySource": "real-phrased-queries.csv",
+      "parityOwnerLabel": "ambiguous"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-026",
+      "customerRef": "SIM-CREATOR-0000",
+      "createdAt": "2026-09-26T00:00:00.000Z",
+      "channel": "email_web_form",
+      "language": "en",
+      "category": "Other / ambiguous",
+      "queue": "triage",
+      "priority": "P3",
+      "subject": "Live streaming issues",
+      "message": "Live streaming issues",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "other"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_ambiguous",
+        "sopId": null
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "real-phrased-false-accept",
+      "paritySource": "real-phrased-queries.csv",
+      "parityOwnerLabel": "ambiguous"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-040",
+      "customerRef": "SIM-CREATOR-0000",
+      "createdAt": "2026-09-26T00:00:00.000Z",
+      "channel": "email_web_form",
+      "language": "en",
+      "category": "Other / ambiguous",
+      "queue": "triage",
+      "priority": "P3",
+      "subject": "YouTube: We have detected multiple streams using the same st",
+      "message": "YouTube: We have detected multiple streams using the same stream key with auto-start enabled.",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "other"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_ambiguous",
+        "sopId": null
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "real-phrased-false-accept",
+      "paritySource": "real-phrased-queries.csv",
+      "parityOwnerLabel": "ambiguous"
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-060",
+      "customerRef": "SIM-CREATOR-0000",
+      "createdAt": "2026-09-26T00:00:00.000Z",
+      "channel": "email_web_form",
+      "language": "en",
+      "category": "Other / ambiguous",
+      "queue": "triage",
+      "priority": "P3",
+      "subject": "How can creators monetize on TikTok?",
+      "message": "How can creators monetize on TikTok?",
+      "status": "open",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "other"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_escalate",
+        "sopId": null
+      },
+      "chaosTags": [],
+      "isChaos": false,
+      "parityClass": "real-phrased-false-accept",
+      "paritySource": "real-phrased-queries.csv",
+      "parityOwnerLabel": "escalate"
+    }
+  ]
+}

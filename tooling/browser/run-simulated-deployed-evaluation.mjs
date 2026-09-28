@@ -49,20 +49,33 @@ if (publishableKey === '' || secretKey === '') {
   throw new Error('need SUPABASE_PUBLISHABLE_KEY and SUPABASE_SECRET_KEY');
 }
 
-const batchPath = resolve(dataDir, 'chaos-500.json');
+/**
+ * Batch selection.
+ *
+ * `chaos-500.json` is the approved batch and is validated as such. A parity run
+ * needs a smaller, deliberately chosen batch, so `SIMULATION_BATCH` names any
+ * other tagged batch in this directory; the tag discipline is enforced either
+ * way, and the 500/15% constants are enforced only for the approved batch.
+ */
+const batchName = process.env.SIMULATION_BATCH ?? 'chaos-500.json';
+if (!/^[a-z0-9-]+\.json$/.test(batchName)) {
+  throw new Error('SIMULATION_BATCH must be a JSON basename using lowercase letters, digits, and hyphens');
+}
+const batchPath = resolve(dataDir, batchName);
 const corpusPath = resolve(dataDir, 'corpus.json');
 const batch = JSON.parse(readFileSync(batchPath, 'utf8'));
 const corpus = JSON.parse(readFileSync(corpusPath, 'utf8'));
 if (
   batch.data_mode !== 'simulated' ||
-  batch.ticketCount !== 500 ||
-  batch.chaosRateConfigured !== 0.15 ||
-  batch.tickets?.length !== 500 ||
+  batch.tickets?.length !== batch.ticketCount ||
   batch.tickets.some((ticket) => ticket.data_mode !== 'simulated') ||
   corpus.data_mode !== 'simulated' ||
   corpus.sops?.some((sop) => sop.data_mode !== 'simulated')
 ) {
   throw new Error('refusing untagged or unapproved simulation inputs');
+}
+if (batchName === 'chaos-500.json' && (batch.ticketCount !== 500 || batch.chaosRateConfigured !== 0.15)) {
+  throw new Error('the approved 500-ticket batch must be 500 tickets at a 15% configured chaos rate');
 }
 
 const ticketIdSelection = process.env.SIMULATION_TICKET_ID;
@@ -800,7 +813,7 @@ const tenantRows = (await Promise.all(tenantResults.map((result) => {
   return adminRequest(`rest/v1/tenants?${query.toString()}`);
 }))).flat();
 const bundleRows = (await Promise.all(tenantResults.map((result) =>
-  queryTenantRows('policy_bundles', result.tenantId, 'id,bundle_version'),
+  queryTenantRows('policy_bundles', result.tenantId, 'id,bundle_version,model_id,model_revision,quantization'),
 ))).flat();
 const deviceRows = (await Promise.all(tenantResults.map((result) =>
   queryTenantRows('device_registrations', result.tenantId, 'id,tenant_id,user_id,platform,status'),
@@ -877,9 +890,13 @@ if (allRows.length !== selectedTickets.length || allRows.some((row) => row.data_
 }
 
 const aggregate = summarize(allRows);
-const baseline = JSON.parse(readFileSync(resolve(dataDir, 'phase5-stability-margin-017.json'), 'utf8'));
-const baselineByTicket = new Map(baseline.perTicket.map((row) => [row.ticket.ticketId, row]));
-const deployedVsLocalMismatches = allRows.flatMap((row) => {
+// The local baseline comparison is meaningful only for the approved batch, whose
+// per-ticket decisions that baseline actually contains.
+const baselinePath = resolve(dataDir, 'phase5-stability-margin-017.json');
+const baselineApplies = batchName === 'chaos-500.json' && existsSync(baselinePath);
+const baseline = baselineApplies ? JSON.parse(readFileSync(baselinePath, 'utf8')) : null;
+const baselineByTicket = new Map(baseline === null ? [] : baseline.perTicket.map((row) => [row.ticket.ticketId, row]));
+const deployedVsLocalMismatches = baselineApplies ? allRows.flatMap((row) => {
   const local = baselineByTicket.get(row.ticket.ticketId);
   if (local === undefined) return [{ ticketId: row.ticket.ticketId, issue: 'missing from local baseline' }];
   const sameDecision = local.actual.decision === row.actual.decision;
@@ -892,7 +909,76 @@ const deployedVsLocalMismatches = allRows.flatMap((row) => {
         local: local.actual,
         deployed: row.actual,
       }];
+}) : [];
+
+/**
+ * Map the deployed database's SOP ids back to the corpus slugs.
+ *
+ * A published procedure gets a database-generated UUID, and that UUID is what the
+ * telemetry payload records as the candidate's `sopId`. The corpus slug is what
+ * the local harness records. Without this map the two paths look like they
+ * disagree on every ticket when in fact they agree on every score.
+ */
+const sopRows = (await Promise.all(tenantResults.map((result) =>
+  queryTenantRows('sops', result.tenantId, 'id,title'),
+))).flat();
+const slugByTitle = new Map(corpus.sops.map((sop) => [sop.title, sop.id]));
+if (conflictSop !== null) slugByTitle.set(conflictSop.title, conflictSop.id);
+const slugByDbId = new Map(sopRows.map((row) => [row.id, slugByTitle.get(row.title) ?? `unmapped:${row.title}`]));
+
+/**
+ * Per-ticket candidate evidence, for the deployed-vs-local parity comparison.
+ *
+ * The app persists `topCandidates` (sopId, score, passage) in the telemetry
+ * payload for every query — answered or escalated — so the deployed gate's own
+ * top-1/top-2/margin can be read back from the tagged row rather than inferred
+ * from the DOM, which deliberately shows no scores. The bundle row carries the
+ * model identity the client was required to match, and the runtime is the
+ * browser's, not Node's.
+ */
+const deployedCandidateEvidence = allRows.map((row) => {
+  const payload = eventRows.find((event) => event.payload?.simulated_ticket_id === row.ticket.ticketId)?.payload;
+  if (payload === undefined) throw new Error(`missing tagged gate evidence for ${row.ticket.ticketId}`);
+  const candidates = Array.isArray(payload.topCandidates)
+    ? [...payload.topCandidates].sort((left, right) => right.score - left.score)
+    : [];
+  const mapCandidate = (candidate) => candidate === undefined
+    ? null
+    : { sopId: slugByDbId.get(candidate.sopId) ?? candidate.sopId, deployedSopId: candidate.sopId, score: candidate.score };
+  const top1 = mapCandidate(candidates[0]);
+  const top2 = mapCandidate(candidates[1]);
+  return {
+    data_mode: modeTag,
+    ticketId: row.ticket.ticketId,
+    expected: row.expected,
+    actual: row.actual,
+    correct: row.correct,
+    failureCategory: row.failureCategory,
+    latencyMs: row.latencyMs,
+    outcome: payload.outcome,
+    gateReason: payload.gateReason,
+    appliedMinMargin: payload.minMargin,
+    thresholdAccept: payload.thresholdAccept,
+    payloadScore: payload.score,
+    payloadMargin: payload.margin,
+    candidateCount: candidates.length,
+    top1,
+    top2,
+    recomputedMargin: top1 === null ? null : top1.score - (top2?.score ?? 0),
+  };
 });
+const bundleIdentity = bundleRows.map((bundle) => ({
+  bundleId: bundle.id,
+  bundleVersion: bundle.bundle_version,
+  modelId: bundle.model_id,
+  modelRevision: bundle.model_revision,
+  quantization: bundle.quantization,
+}));
+const runtime = {
+  path: 'deployed public Vercel bundle, headless Chrome over CDP',
+  executionProvider: 'browser (onnxruntime-web), not the Node native runtime',
+  note: 'the local harness runs the same browser engine and the same pinned model; runtime is therefore not a differentiator between the two paths',
+};
 const batchSha256 = createHash('sha256').update(readFileSync(batchPath)).digest('hex');
 const corpusSha256 = createHash('sha256').update(readFileSync(corpusPath)).digest('hex');
 const safetyCounterexamples = allRows
@@ -920,7 +1006,7 @@ const report = {
   backendProject: projectRef,
   evaluatedAt: new Date().toISOString(),
   runStartedAt,
-  sourceBatch: 'tooling/eval/simulated-tenant/chaos-500.json',
+  sourceBatch: `tooling/eval/simulated-tenant/${batchName}`,
   sourceCorpus: 'tooling/eval/simulated-tenant/corpus.json',
   batchSha256,
   corpusSha256,
@@ -943,7 +1029,7 @@ const report = {
     path: 'deployed React app → tenant-signed encrypted policy bundle → pinned on-device MiniLM → Confidence Gate → Supabase ingest functions',
     thresholdAccept: 0,
     minMargin,
-    baselineMinMargin: baseline.implementation.minMargin,
+    baselineMinMargin: baseline === null ? null : baseline.implementation.minMargin,
     browserMarginVerifiedForEveryTenant: tenantResults.every((result) => result.confirmedMinMargin === minMargin),
     latencyMeasurement: 'browser-side time from Find Answer click to rendered disposition and ready controls',
   },
@@ -981,13 +1067,17 @@ const report = {
     },
   },
   safetyCounterexamples,
+  candidateEvidence: deployedCandidateEvidence,
+  bundleIdentity,
+  runtime,
   comparison: {
     sameBatch: selectedTickets.length === batch.ticketCount,
-    sameInputBatchSha256AsBaseline: batchSha256 === baseline.batchSha256,
-    sameCorpusSha256AsBaseline: corpusSha256 === baseline.corpusSha256,
-    identicalPerTicketDecisionsToLocalBaseline: deployedVsLocalMismatches.length === 0,
+    localBaselineApplies: baselineApplies,
+    sameInputBatchSha256AsBaseline: baseline === null ? null : batchSha256 === baseline.batchSha256,
+    sameCorpusSha256AsBaseline: baseline === null ? null : corpusSha256 === baseline.corpusSha256,
+    identicalPerTicketDecisionsToLocalBaseline: baselineApplies ? deployedVsLocalMismatches.length === 0 : null,
     decisionMismatchesVsLocalBaseline: deployedVsLocalMismatches,
-    localBaseline: {
+    localBaseline: baseline === null ? null : {
       accuracy: baseline.totals.accuracy,
       failures: baseline.totals.failures,
       failureRate: baseline.totals.failureRate,
@@ -1041,9 +1131,24 @@ const markdown = [
   '',
   `Hosted tag audit: ${eventRows.length}/${selectedTickets.length} query events, ${escalationRows.length}/${expectedEscalations} escalations, ${sopVersionRows.length} SOP versions, ${profileRows.length} user profiles, and ${deviceRows.length} enrolled web devices are scoped to SIMULATED DATA tenants; untagged rows: ${wrongEventTags.length + wrongEscalationTags.length + wrongSopTags.length + wrongProfileTags.length + wrongTenantTags.length}.`,
   '',
-  `Local comparison at margin ${baseline.implementation.minMargin.toFixed(2)}: batch input hash ${report.comparison.sameInputBatchSha256AsBaseline ? 'matches' : 'DIFFERS'}, corpus hash ${report.comparison.sameCorpusSha256AsBaseline ? 'matches' : 'DIFFERS'}, selected per-ticket outcomes ${deployedVsLocalMismatches.length === 0 ? 'identical' : `differ on ${deployedVsLocalMismatches.length} ticket(s)`}.`,
+  ...(baseline === null
+    ? ['This run used a parity batch rather than the approved 500-ticket batch, so the local stability baseline does not apply and is not reported. Per-ticket deployed gate evidence is in the `candidateEvidence` block.']
+    : [
+      `Local comparison at margin ${baseline.implementation.minMargin.toFixed(2)}: batch input hash ${report.comparison.sameInputBatchSha256AsBaseline ? 'matches' : 'DIFFERS'}, corpus hash ${report.comparison.sameCorpusSha256AsBaseline ? 'matches' : 'DIFFERS'}, selected per-ticket outcomes ${deployedVsLocalMismatches.length === 0 ? 'identical' : `differ on ${deployedVsLocalMismatches.length} ticket(s)`}.`,
+      '',
+      `Local same-batch baseline at margin ${baseline.implementation.minMargin.toFixed(2)}: ${(baseline.totals.accuracy * 100).toFixed(1)}% (${baseline.totals.correct}/500), ${baseline.totals.failures} failures, ${baseline.totals.unsafeAnswers} unsafe answers. This deployed path is a separate environment comparison, not a paired app-code fix.`,
+    ]),
   '',
-  `Local same-batch baseline at margin ${baseline.implementation.minMargin.toFixed(2)}: ${(baseline.totals.accuracy * 100).toFixed(1)}% (${baseline.totals.correct}/500), ${baseline.totals.failures} failures, ${baseline.totals.unsafeAnswers} unsafe answers. This deployed path is a separate environment comparison, not a paired app-code fix.`,
+  '## Deployed gate evidence — per candidate',
+  '',
+  `Model identity from the published bundle manifest: \`${bundleIdentity[0]?.modelId ?? '(none)'}\` @ \`${bundleIdentity[0]?.modelRevision ?? '(none)'}\`, quantization \`${bundleIdentity[0]?.quantization ?? 'n/a'}\`, bundle version ${bundleIdentity[0]?.bundleVersion ?? 'n/a'}. Runtime: ${runtime.executionProvider}.`,
+  '',
+  'Top-1 and top-2 are read back from the tagged telemetry payload the app itself persisted, not inferred from the UI, which deliberately shows no scores on an escalation.',
+  '',
+  '| Ticket | Outcome | Top-1 (score) | Top-2 (score) | Margin | Applied |',
+  '| --- | --- | --- | --- | ---: | ---: |',
+  ...deployedCandidateEvidence.map((row) =>
+    `| ${row.ticketId} | ${row.outcome} | ${row.top1 === null ? '—' : `${row.top1.sopId} (${row.top1.score.toFixed(4)})`} | ${row.top2 === null ? '—' : `${row.top2.sopId} (${row.top2.score.toFixed(4)})`} | ${row.recomputedMargin === null ? '—' : row.recomputedMargin.toFixed(4)} | ${row.appliedMinMargin} |`),
   '',
   '## Failure categories',
   '',
