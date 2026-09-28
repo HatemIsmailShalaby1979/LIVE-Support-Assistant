@@ -143,6 +143,76 @@ check(
   `(e) English window extraction no longer reads 2-5 days, so the contrast is meaningless`,
 );
 
+// (f)(g)(h) — the three borderline corpora exercised against the live dev project
+// by tooling/transport/probe-publish-conflict.mjs. They lock the negative space
+// so a future lint change cannot start blocking benign corpora (false positives):
+//
+//   f  two procedures in one category stating the SAME window agree -> publish
+//   g  a procedure whose routing text says "more than seven business days"
+//      (same category) agrees with the standard procedure's own 7-day routing
+//      claim, so it must not block
+//   h  two procedures in one category with numbers on DIFFERENT fact keys
+//      (payout_minimum vs window_days) are not compared -> publish
+//
+// These assert only the absence of a conflict; they do not change detection.
+
+const sameWindowTwice = lintCorpusForPublish([
+  {
+    id: 'f-a', title: 'Payout A', category: 'Creator payouts', triggerKeywords: [],
+    summary: 'A payout arrives in two to five business days.',
+    suggestedReply: 'Two to five business days.',
+    escalationRequired: false, escalationReason: '',
+  },
+  {
+    id: 'f-b', title: 'Payout B', category: 'Creator payouts', triggerKeywords: [],
+    summary: 'A payout takes two to five business days to process.',
+    suggestedReply: 'Two to five business days.',
+    escalationRequired: false, escalationReason: '',
+  },
+]);
+check(
+  sameWindowTwice.ok === true,
+  `(f) two procedures stating the same window were blocked — false positive`,
+);
+
+const routingText = lintCorpusForPublish([
+  {
+    id: 'g-a', title: 'Payout A', category: 'Creator payouts', triggerKeywords: [],
+    summary: 'A payout arrives in two to five business days. If it has been more than seven business days, route to Payments.',
+    suggestedReply: 'Two to five business days.',
+    escalationRequired: false, escalationReason: '',
+  },
+  {
+    id: 'g-b', title: 'Payout B', category: 'Creator payouts', triggerKeywords: [],
+    summary: 'If a payout is more than seven business days late, route it to Payments.',
+    suggestedReply: 'Route late payouts to Payments.',
+    escalationRequired: true, escalationReason: 'late payout',
+  },
+]);
+check(
+  routingText.ok === true,
+  `(g) a routing text saying "more than seven business days" was blocked — false positive`,
+);
+
+const unrelatedNumbers = lintCorpusForPublish([
+  {
+    id: 'h-a', title: 'Payout Minimum', category: 'Creator payouts', triggerKeywords: [],
+    summary: 'The minimum creator payout is fifty dollars.',
+    suggestedReply: 'Minimum payout is $50.',
+    escalationRequired: false, escalationReason: '',
+  },
+  {
+    id: 'h-b', title: 'Payout Timing', category: 'Creator payouts', triggerKeywords: [],
+    summary: 'A processed payout arrives within three business days.',
+    suggestedReply: 'Three business days.',
+    escalationRequired: false, escalationReason: '',
+  },
+]);
+check(
+  unrelatedNumbers.ok === true,
+  `(h) two same-category procedures with unrelated numbers were blocked — false positive`,
+);
+
 if (failures.length > 0) {
   process.stderr.write(`PUBLISH CONFLICT BLOCK FAILED: ${failures.join('; ')}\n`);
   process.exit(1);
@@ -157,4 +227,7 @@ process.stdout.write(`${JSON.stringify({
   simTicket00272Blocked: payoutConflict !== undefined,
   sameValueNotFlagged: agreeing.ok === true,
   englishOnlyLimitationLocked: spanishResult.ok === true && englishResult.ok === false,
+  sameWindowTwiceNotFlagged: sameWindowTwice.ok === true,
+  routingTextNotFlagged: routingText.ok === true,
+  unrelatedNumbersNotFlagged: unrelatedNumbers.ok === true,
 }, null, 2)}\n`);
