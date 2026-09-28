@@ -121,8 +121,13 @@ function readSource(path) {
   if (header === undefined) return { path, header: [], rows: [], problems: [`${basename(path)} is empty`] };
   const normalised = header.map((column) => column.trim().toLowerCase());
   const problems = [];
-  if (normalised.join(',') !== EXPECTED_COLUMNS.join(',')) {
-    problems.push(`${basename(path)} header must be ${EXPECTED_COLUMNS.join(',')}, found ${normalised.join(',')}`);
+  // The six required columns must appear, in order, as the leading columns.
+  // Trailing provenance columns (for example `label_source`) are allowed and are
+  // ignored by the scorer, so a hand-authored set can carry its own provenance
+  // without being reshaped to fit the harness.
+  const requiredPrefix = normalised.slice(0, EXPECTED_COLUMNS.length);
+  if (requiredPrefix.join(',') !== EXPECTED_COLUMNS.join(',')) {
+    problems.push(`${basename(path)} header must start with ${EXPECTED_COLUMNS.join(',')}, found ${normalised.join(',')}`);
   }
   return { path, header: normalised, rows: body, problems };
 }
@@ -207,7 +212,7 @@ const bySourceType = Object.fromEntries(
 
 writeFileSync(tempInputPath, `${JSON.stringify({
   data_mode: DATA_MODE,
-  provenance: `Real-phrased wording collected from public sources; ${sourcePaths.map((path) => basename(path)).join(', ')}`,
+  provenance: `Query wording as supplied in the input CSV(s): ${sourcePaths.map((path) => basename(path)).join(', ')}. Per-set provenance (public help-centre/forum wording vs author-written floor queries) is stated in the results document.`,
   queries,
 }, null, 2)}\n`);
 
