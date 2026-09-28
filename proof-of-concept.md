@@ -136,6 +136,11 @@ awaiting a decision.
 - Corpus changes moved measured accuracy on this batch from 48.4% to 72.4% with
   no application code change — the failure mode was retrieval and corpus coverage,
   not the gate.
+- On the author-written floor set (29 messages, 21 in-scope), the gate auto-answered
+  **no** refusal row (0 of 5 escalate + 3 ambiguous) at either margin, and produced
+  no wrong-procedure answer — the safety behaviour held. The cost is false
+  escalation: 16 of 21 in-scope rows at 0.18 and 15 at 0.17
+  ([floor-queries-results.md](tooling/eval/simulated-tenant/floor-queries-results.md)).
 
 ## What this does not prove
 
@@ -150,6 +155,12 @@ awaiting a decision.
   claimed.
 - One unsafe answer remains measured and unfixed in shipped code.
 - The 0.17 margin is an evaluation-harness value, not a tenant setting.
+- The floor set is 29 messages written by one author who knows the procedure
+  topics; it is a small sample, not customer traffic, and likely easier than real
+  traffic, so it is not a substitute for real-partner evidence. Its in-scope
+  accuracy is low (23.8% at 0.18) and is dominated by false escalations, so it
+  supports no accuracy claim
+  ([floor-queries-results.md](tooling/eval/simulated-tenant/floor-queries-results.md)).
 - The backend is the development Supabase project, with demo and probe accounts;
   the live URL requires sign-in and has no guest account.
 
@@ -167,8 +178,12 @@ awaiting a decision.
 - The real-phrased query set in
   [`real-phrased-queries.csv`](tooling/eval/simulated-tenant/real-phrased-queries.csv)
   quotes public help-centre and public-forum question wording only. No usernames
-  or personal details are recorded, and the operator's labels for those rows are
-  pending.
+  or personal details are recorded. Its labels come from the owner — two
+  independent agent passes plus an owner audit — not from the model. The
+  author-written floor set
+  [`my-floor-queries.csv`](tooling/eval/simulated-tenant/my-floor-queries.csv) is
+  29 messages (`label_source: "author-written, author-labeled"`), scored in
+  [`floor-queries-results.md`](tooling/eval/simulated-tenant/floor-queries-results.md).
 
 ## Reproduction and recording
 
