@@ -2185,12 +2185,120 @@ are summarised in `proof-of-concept.md` and `README.md`.
 
 | Branch | Status |
 | --- | --- |
-| `feat/publish-conflict-block` | pending review — publish-path conflict block (option a), verified |
+| `feat/publish-conflict-block` | **pending review** — publish-path conflict block (option a). Dev smoke test **run and passed**: clean 7-procedure corpus → 200 (bundle created), conflict corpus → 422 (no bundle row), three borderline corpora → 200 with no false positive; `publish-bundle` deployed at VERSION 9. Not merged. |
 | `tool/labeling-tool` | pending review — offline SOP labeling tool |
 | `feat/real-phrased-dual-pass-labels` | content landed on main (`1f39138`, `ef9dd7a`); branch now redundant |
 | `exp/procedure-distinctness` | rejected — procedure-wording experiment |
 | `exp/reranker-measurement` | rejected — cross-encoder reranker |
-| `exp/scale-rung` | created this session — 40–70-procedure scale experiment |
+| `exp/scale-rung` | evidence branch — 48-procedure corpus, 414 distinct messages; **not merged**, cited as evidence from `main` |
+| `exp/multilingual-embedder` | rejected — multilingual embedders (+0.3 pp overall at 5.1× download) |
 
 **Verification.** `pnpm run verify` **7/7** suites; `eslint` (apps/web) clean; the
 500-ticket validator passes.
+
+## Demo and documentation close-out — 2026-09-28
+
+Docs-only pass on `main`. No product code, gate, threshold, model or experiment
+branch was changed or merged.
+
+**Claims table — the three tiers.** The same table is on `README.md`; this is the
+ledger's copy, with the source path for every number.
+
+*Tier 1 — PROVEN ON SIMULATED DATA.*
+
+| Claim | Measured | Source |
+| --- | --- | --- |
+| Safety, 500-ticket batch, 0.17 | 362/500 (72.4%), 138 false escalations, **0 unsafe**, 0 runtime errors | `tooling/eval/simulated-tenant/phase5-label-fix-margin-017.md` |
+| Same settings, repeated | identical decisions on all 500 tickets | same file |
+| Safety, independent holdout seed, 0.17 | 379/500 (75.8%), 121 false escalations, **0 unsafe** | `.../phase5-holdout-seed-20260929-margin-017.md` |
+| Safety, independent holdout seed, 0.18 | 359/500 (71.8%), 141 false escalations, **0 unsafe** | `.../phase5-holdout-seed-20260929-margin-018.md` |
+| Safety, 48 procedures, 0.18 | 196/414 (47.3%), 218 false escalations, **0 unsafe** | branch `exp/scale-rung`, `.../scale-rung-results.md` |
+| Same corpus, 0.17 | 205/414 (49.5%), 208 false escalations, **1 unsafe** (`SCALE-0328`) | same file |
+| Deployed path end to end | 361/500 (72.2%), 138 false escalations, 1 unsafe, 0 runtime errors | `.../phase5-deployed-run-0aec9773442c4282.md` |
+| Tenant isolation audit | 500/500 query events, 261/261 escalations, 15 SOP versions, 4 profiles, 2 devices tagged; **0 untagged** | same file |
+| Refusal behaviour, floor set | **0 of 8** refusal rows auto-answered at 0.18 and 0.17 | `.../floor-queries-results.md` |
+| Gate never leaks procedure text on escalation | 10/10 checks | `tooling/gate/verify-gate.mjs` |
+
+*Tier 2 — MEASURED LIMITS.*
+
+| Limit | Measured | Source |
+| --- | --- | --- |
+| In-scope recall at 48 procedures, escalation-by-construction rows excluded | 84/302 (27.8%) at 0.18; 93/302 (30.8%) at 0.17 | branch `exp/multilingual-embedder`, `.../multilingual-embedder-results.md` |
+| Non-English gap | English 62.1% vs Spanish 32.0%, Portuguese 31.0% at 0.18 | branch `exp/scale-rung`, `.../scale-rung-results.md` |
+| Floor set, in-scope | 5/21 (23.8%) at 0.18 | `.../floor-queries-results.md` |
+| Real-phrased refusal set | 6 of 52 false accepts at 0.18 (7 at 0.17) | `.../real-phrased-label-results.md` |
+| Rejected — procedure wording | two `wc-gifts` templates moved; [0.17, 0.18) band emptied | branch `exp/procedure-distinctness` |
+| Rejected — cross-encoder reranker | +14 / +15 new unsafe answers; 862 ms per query; ~2× download | branch `exp/reranker-measurement` |
+| Rejected — multilingual embedders | +0.3 pp overall at 5.1× download (21.91 → 112.83 MB) | branch `exp/multilingual-embedder` |
+
+*Tier 3 — NOT PROVEN.* Real customer traffic (none exists); recall at production
+corpus sizes (48 procedures is the largest measured, against the 5,000-procedure
+question); per-tenant calibration (no tenant has been calibrated).
+
+**Unsafe-answer reconciliation — the two paths disagree.** Verified from the files,
+not restated from prose:
+
+| Path | Margin applied | `SIM-TICKET-00272` top-1 / top-2 | Margin | Outcome |
+| --- | ---: | --- | ---: | --- |
+| Local, 500-batch, 0.17 | 0.17 | `wc-payout` 0.71972 / `wc-payout-conflict` 0.55201 | **0.167715** | escalates — correct |
+| Local, 500-batch, 0.18 | 0.18 | same | **0.167715** | escalates — correct |
+| Local, 4-ticket demo, 0.18 | 0.18 | same | **0.167715** | escalates — correct |
+| **Deployed, 500-ticket** | 0.17 | not recorded | **0.180757** (documented) | **answers `wc-payout` — unsafe** |
+
+So the local harness **does not reproduce** the one unsafe answer: it escalates
+that ticket in every local run. The deployed counterexample stands, and it is the
+only record of it; the deployed report carries no candidate scores, so its margin
+is a recorded value and not recomputable. The shipped **0.18 would not have stopped
+it** (0.180757 ≥ 0.18) but **would have stopped the local case** (0.167715 < 0.18).
+The local unsafe counts are **0 at 0.17 and 0 at 0.18** on chaos-500 and the
+holdout, and **1 at 0.17 / 0 at 0.18** on the 48-procedure corpus — a different
+corpus, ticket `SCALE-0328`.
+
+**Mitigation, and its limits.** `tooling/conflicts/conflict-core.mjs` +
+`lint-procedure-conflicts.mjs` detect a same-category numeric conflict (0 conflicts
+on the clean corpus; 1 with the injected payout conflict). Branch
+`feat/publish-conflict-block` wires that into publishing, so a conflicting bundle is
+refused before signing — dev smoke test passed (clean → 200, conflict → 422, three
+borderline corpora → 200 with no false positive). **Limits:** it reads English
+number words only, so a conflict stated only in Spanish, Portuguese or French is not
+caught; it parses prose and will false-positive on legitimately different regional
+figures; and it is **not merged**, so the `SIM-TICKET-00272` condition remains live
+in shipped code.
+
+**Demo — run end to end.** A four-ticket demo (`tooling/eval/simulated-tenant/demo-tickets.json`,
+extracted verbatim from the pinned batch — no label edited) was run through the
+shipped path at 0.18 and writes `demo-four-tickets.md` / `.json`. Result:
+**3/4 correct, 1 false escalation, 0 unsafe, 0 runtime errors**, mean decision
+latency 20.02 ms. Per ticket: clean `SIM-TICKET-00002` answered `wc-gifts`
+(margin 0.1939); messy `SIM-TICKET-00123` false-escalated (0.1458);
+`SIM-TICKET-00132` escalated correctly (0.0495); contradiction `SIM-TICKET-00272`
+escalated correctly (0.1677).
+
+**What failed, and was corrected.** The first draft of the runbook told the reader
+to use `pnpm dev`. That **fails on this host** — `turbo run dev` exits 1 with `All
+pipe instances are busy. (os error 231)`, the same limitation already recorded for
+`turbo run build`. The working equivalent, verified by probe (harness page and
+assets both HTTP 200), is the direct invocation the driver itself uses:
+`node apps/web/node_modules/vite/bin/vite.js . --config apps/web/vite.config.ts --port 5173 --host 127.0.0.1 --strictPort`.
+A second draft claimed the local driver could record a visible browser; it cannot —
+`run-chaos-evaluation.mjs` always passes `--headless=new` and has no visible or pause
+mode. The recording instructions now use the served page instead.
+
+**Floor and real-phrased sets.** Both were already on `main`
+(`floor-queries-results.md`, `real-phrased-label-results.md`); they were not re-run.
+Provenance and limits are now stated in `README.md`: the floor set is **29
+author-written messages** by one author who knows the topics; the public set is 72
+quoted questions used mainly to test refusal; the owner's 15-row spot-check agreed
+**8/15** exactly and **12/15** coarsely, with a first pass of **5/15**.
+
+**Documents made to agree.** `README.md` (positioning line, claims table,
+shadow-mode pilot checklist, 5-minute demo), `proof-of-concept.md` (positioning,
+holdout, scale rung, multilingual rejection), `docs/PRODUCTION_STATUS.md`
+(positioning, holdout and scale), `docs/CASE_STUDY.md` (rewritten: problem, design,
+tests, what broke including the path disagreement, decisions, what is not proven),
+new `docs/DEMO.md` (the runbook), and
+`tooling/eval/simulated-tenant/screen-recording-instructions.md`.
+
+**Verification.** `pnpm run verify` **7/7** suites; `eslint` (apps/web) exit 0; the
+500-ticket validator passes.
+
