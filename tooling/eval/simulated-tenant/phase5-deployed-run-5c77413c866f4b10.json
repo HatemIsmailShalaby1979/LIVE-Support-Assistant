@@ -1,0 +1,175 @@
+{
+  "data_mode": "simulated",
+  "simulation_run_id": "5c77413c866f4b10",
+  "evaluation": "Deployed public Vercel application path backed by the development Supabase project; not production customer validation.",
+  "target": "https://dist-omega-black-31.vercel.app",
+  "backendProject": "lxlokqtowvaesxjishqz",
+  "evaluatedAt": "2026-09-28T04:41:37.290Z",
+  "runStartedAt": "2026-09-28T04:40:47.262Z",
+  "sourceBatch": "tooling/eval/simulated-tenant/chaos-500.json",
+  "sourceCorpus": "tooling/eval/simulated-tenant/corpus.json",
+  "batchSha256": "717c40dcc7d1f31b51ea32b0b1bfa4bf418699167a5c5c7e2736cbea90191d96",
+  "corpusSha256": "e9e058685d255b24219ed5aab2ede0eaf62542eda9844b9b7b26becec63546fe",
+  "batch": {
+    "tickets": 1,
+    "seed": 20260928,
+    "chaosRateConfigured": 0.15,
+    "chaosRateActual": 1,
+    "chaosTickets": 1,
+    "approvedBatchTickets": 500,
+    "selectedTicketIds": [
+      "SIM-TICKET-00373"
+    ]
+  },
+  "selection": {
+    "data_mode": "simulated",
+    "ticketId": null,
+    "chaosType": "near_duplicate",
+    "visibleBrowser": true
+  },
+  "implementation": {
+    "path": "deployed React app → tenant-signed encrypted policy bundle → pinned on-device MiniLM → Confidence Gate → Supabase ingest functions",
+    "thresholdAccept": 0,
+    "minMargin": 0.17,
+    "baselineMinMargin": 0.17,
+    "browserMarginVerifiedForEveryTenant": true,
+    "latencyMeasurement": "browser-side time from Find Answer click to rendered disposition and ready controls"
+  },
+  "tenants": [
+    {
+      "data_mode": "simulated",
+      "id": "322c6e6c-2bf3-4571-bd1e-9581579406ff",
+      "label": "baseline",
+      "procedures": 7
+    }
+  ],
+  "hostedDataAudit": {
+    "data_mode": "simulated",
+    "taggedQueryEvents": 1,
+    "taggedEscalations": 0,
+    "taggedSopVersions": 7,
+    "taggedAgentProfiles": 2,
+    "taggedTenants": 1,
+    "tenantScopedBundles": 1,
+    "untaggedQueryEvents": 0,
+    "untaggedEscalations": 0,
+    "untaggedSopVersions": 0,
+    "untaggedAgentProfiles": 0,
+    "untaggedTenants": 0,
+    "taggingPreflight": true,
+    "enrolledSimulatedAgentDevices": 1
+  },
+  "totals": {
+    "tickets": 1,
+    "correct": 1,
+    "accuracy": 1,
+    "failures": 0,
+    "failureRate": 0,
+    "failureCategories": {},
+    "falseEscalations": 0,
+    "unsafeAnswers": 0,
+    "runtimeErrors": 0,
+    "latencyMs": {
+      "mean": 25.699999999254942,
+      "median": 25.699999999254942,
+      "p95": 25.699999999254942,
+      "max": 25.699999999254942
+    }
+  },
+  "comparison": {
+    "sameBatch": false,
+    "sameInputBatchSha256AsBaseline": true,
+    "sameCorpusSha256AsBaseline": true,
+    "identicalPerTicketDecisionsToLocalBaseline": true,
+    "decisionMismatchesVsLocalBaseline": [],
+    "localBaseline": {
+      "accuracy": 0.724,
+      "failures": 138,
+      "failureRate": 0.276,
+      "falseEscalations": 138,
+      "unsafeAnswers": 0,
+      "minMargin": 0.17
+    }
+  },
+  "browser": {
+    "consoleErrors": [],
+    "requestInstrumentationErrors": []
+  },
+  "perTicket": [
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "5c77413c866f4b10",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00373",
+        "customerRef": "SIM-CREATOR-8354",
+        "createdAt": "2026-09-28T20:00:51.000Z",
+        "channel": "in_app_chat",
+        "language": "en",
+        "category": "LIVE technical support",
+        "queue": "live-support",
+        "priority": "P2",
+        "subject": "LIVE stream disconnects",
+        "message": "My scheduled LIVE drops after about thirty seconds. The connection seems steady and the app is up to date. Just following up on this — same issue.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "live_technical"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-live"
+        },
+        "chaosTags": [
+          "near_duplicate"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "near_duplicate",
+          "details": {
+            "duplicateOf": "SIM-TICKET-00350"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "escalate",
+            "reason": "specialist_review_required",
+            "sopId": "wc-appeal"
+          },
+          "category": "Content and restrictions",
+          "queue": "trust-safety",
+          "language": "fr",
+          "channel": "in_app_chat",
+          "priority": "P2",
+          "status": "pending_customer",
+          "message": "Ma diffusion a été retirée et mon accès au LIVE est limité. Je souhaite faire appel de la décision."
+        },
+        "duplicateOf": "SIM-TICKET-00350"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-live"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 25.699999999254942
+    }
+  ],
+  "topFailures": [],
+  "failureRateIsLowOrStable": false,
+  "limitations": [
+    "This is a deployed-path validation using the public static Vercel app and the development Supabase project, not a real production customer deployment.",
+    "Both isolated tenants, users, synthetic SOPs, query telemetry, and escalation evidence remain in the development database and are visibly tagged data_mode: simulated.",
+    "The batch uses the approved template-based synthetic messages; the holdout is another seed from the same generator, not independently authored customer language.",
+    "The 0.17 margin is a test-only browser control. The shipped default remains 0.18; at 0.16 the approved batch produced two unsafe answers.",
+    "The low-failure stopping criterion remains unmet. All outcome labels derive from synthetic batch expectations, not human-annotated partner outcomes."
+  ]
+}

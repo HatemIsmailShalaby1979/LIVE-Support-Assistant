@@ -1,0 +1,126 @@
+{
+  "data_mode": "simulated",
+  "source": "Fictional WaveCast procedures authored for this evaluation; not operational policy.",
+  "sops": [
+    {
+      "data_mode": "simulated",
+      "id": "wc-gifts",
+      "title": "Gifts, Coins, and Purchase Refunds",
+      "category": "Gifts and purchases",
+      "triggerKeywords": [
+        "coins",
+        "gift",
+        "purchase",
+        "refund",
+        "charge"
+      ],
+      "summary": "Coins are used to send Gifts inside WaveCast and cannot be transferred between accounts. A completed Coin purchase is normally final. A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review. Gift balances update after the purchase settles. If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a purchase settlement issue. Las monedas se usan para enviar regalos en WaveCast y no se pueden transferir entre cuentas. Una compra completada normalmente es definitiva; el saldo de regalos se actualiza cuando se procesa el pago. Si el recibo confirma la compra pero las monedas aún no aparecen, comprueba el estado del pago y del saldo. Uma compra de Moedas concluída normalmente é definitiva; o saldo de Presentes é atualizado depois que o pagamento é processado. Se o recibo confirma a compra, mas as Moedas ainda não aparecem, verifique o status do pagamento e do saldo. Un achat de pièces terminé est normalement définitif ; le solde des cadeaux est mis à jour une fois le paiement traité. Si le reçu confirme l’achat mais que les pièces ne sont pas encore créditées, vérifiez l’état du paiement et du solde. WaveCast Coins and Gifts remain an in-app purchase balance; they are not a creator payout, bank withdrawal, or deposit. Las Monedas y los Regalos de WaveCast permanecen como saldo de compras dentro de la aplicación; no son un pago al creador ni un depósito bancario. As Moedas e os Presentes do WaveCast são um saldo de compra dentro do aplicativo; não são um saque do criador nem um depósito bancário. Les pièces et les cadeaux WaveCast restent un solde d’achat dans l’application ; ce n’est ni un versement au créateur ni un dépôt bancaire.",
+      "suggestedReply": "Please check the purchase receipt and confirm whether the charge is duplicated or unauthorized. Completed Coin purchases are normally final; Payments reviews duplicate or unauthorized charges before a refund decision.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "wc-payout",
+      "title": "Creator Payout Timing and Missing Deposits",
+      "category": "Creator payouts",
+      "triggerKeywords": [
+        "payout",
+        "deposit",
+        "withdraw",
+        "balance",
+        "bank"
+      ],
+      "summary": "A standard creator payout can take two to five business days after it is marked processed. Ask the creator to confirm the payout date and masked destination details; never request full bank credentials. If more than seven business days have passed, route the case to Payments with the payout reference and status. A payout marked processed but not yet visible in the creator’s bank account is a payout timing question; check how many business days have passed. Un pago marcado como procesado que aún no aparece en la cuenta bancaria es una consulta sobre el plazo del pago; comprueba cuántos días hábiles han pasado. Um saque marcado como processado que ainda não aparece na conta bancária é uma dúvida sobre o prazo do pagamento; confira quantos dias úteis se passaram. Un versement indiqué comme traité mais qui n’apparaît pas encore sur le compte bancaire concerne le délai de versement ; vérifiez le nombre de jours ouvrés écoulés. Un pago estándar al creador puede tardar de dos a cinco días hábiles después de figurar como procesado. Si han pasado más de siete días hábiles, remite el caso a Pagos. Um pagamento padrão ao criador pode levar de dois a cinco dias úteis depois de aparecer como processado. Se já passaram mais de sete dias úteis, encaminhe o caso para Pagamentos. Un versement standard au créateur peut prendre deux à cinq jours ouvrés après son passage au statut traité. Après plus de sept jours ouvrés, transmettez le dossier à l’équipe Paiements. A creator payout is a bank transfer to the masked destination, not Coins, Gifts, or another in-app purchase balance. Un pago al creador es una transferencia bancaria al destino enmascarado, no un saldo de Monedas, Regalos ni otra compra dentro de la aplicación. Um pagamento ao criador é uma transferência bancária para o destino mascarado, não um saldo de Moedas, Presentes ou outra compra no aplicativo. Un versement au créateur est un transfert bancaire vers le compte de destination masqué, et non un solde de pièces, de cadeaux ou un achat dans l’application.",
+      "suggestedReply": "A processed payout usually arrives within two to five business days. If it has been more than seven business days, share the payout reference and we can route it to Payments for a trace.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "wc-login",
+      "title": "Routine Account Login Recovery",
+      "category": "Account access",
+      "triggerKeywords": [
+        "login",
+        "password",
+        "reset",
+        "code",
+        "access"
+      ],
+      "summary": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code. Check that the recovery email or phone is still available and install the current app version. Never ask a customer to send a password, one-time code, or recovery link to support. A recovery code that does not arrive after a phone change, or a password reset loop, is a routine account login issue unless the recovery contact itself has been changed without permission. Para un problema habitual de inicio de sesión, usa «Olvidé mi contraseña» y solicita un código de recuperación nuevo. Comprueba que todavía tienes acceso al correo o teléfono de recuperación. Nunca pidas la contraseña ni el código. Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso. Para um problema comum de acesso à conta, use «Esqueci minha senha» e solicite um novo código de recuperação. Confirme se ainda tem acesso ao e-mail ou telefone de recuperação. Nunca peça a senha nem o código. Se o código não chega após a troca de telefone, trata-se de recuperação de acesso, a menos que alguém tenha alterado o contato sem autorização. Pour un problème de connexion courant, utilisez « Mot de passe oublié » et demandez un nouveau code de récupération. Vérifiez que l’adresse e-mail ou le numéro de récupération est toujours accessible. Ne demandez jamais le mot de passe ni le code. Un code qui n’arrive pas après un changement de téléphone relève de la récupération de compte, sauf si le contact de récupération a été modifié sans autorisation.",
+      "suggestedReply": "Use Forgot password to request a fresh recovery code, and do not share that code with anyone. If the recovery contact is unavailable or the reset still fails, we can route the case for account verification.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "wc-security",
+      "title": "Suspected Account Takeover",
+      "category": "Account security",
+      "triggerKeywords": [
+        "hacked",
+        "takeover",
+        "unauthorized",
+        "security",
+        "stolen"
+      ],
+      "summary": "A suspected account takeover requires specialist Account Security review. Do not disclose account changes or ask the customer to share credentials or codes. Direct the customer to secure the recovery email from a trusted device and create an urgent specialist handoff. Un posible acceso no autorizado requiere una revisión especializada de Seguridad de la cuenta. No reveles cambios ni solicites credenciales o códigos. Indica a la persona que proteja el correo de recuperación desde un dispositivo de confianza y remite el caso urgentemente. Uma possível invasão da conta exige análise especializada de Segurança da conta. Não revele alterações nem peça credenciais ou códigos. Oriente a pessoa a proteger o e-mail de recuperação usando um dispositivo confiável e encaminhe o caso com urgência. Une suspicion de piratage du compte nécessite l’examen d’un spécialiste Sécurité des comptes. Ne révélez aucune modification et ne demandez aucun identifiant ni code. Demandez à la personne de sécuriser son adresse de récupération depuis un appareil de confiance et transmettez le dossier en urgence.",
+      "suggestedReply": "I am routing this to Account Security for urgent review. Please secure the recovery email from a trusted device, and do not share passwords or verification codes in chat.",
+      "escalationRequired": true,
+      "escalationReason": "Suspected account takeover requires specialist identity verification."
+    },
+    {
+      "data_mode": "simulated",
+      "id": "wc-live",
+      "title": "LIVE Connection and Stream Stability",
+      "category": "LIVE technical support",
+      "triggerKeywords": [
+        "live",
+        "stream",
+        "buffer",
+        "connection",
+        "disconnect",
+        "broadcast"
+      ],
+      "summary": "For an isolated LIVE connection problem, confirm app version and network stability, then retry once after reconnecting. Do not ask the creator to repeatedly restart a scheduled broadcast. If several creators report the same regional failure, route it as a possible service incident rather than treating each report as an individual device fault. A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue. Para un problema aislado de conexión durante una transmisión LIVE, confirma la versión de la aplicación y la estabilidad de la red; después, vuelve a conectarte una vez. Si varias personas de la misma región notifican el problema, remítelo como posible incidente del servicio. Si una transmisión LIVE se corta a los pocos segundos o pierde el audio aunque la conexión sea estable, es un problema técnico de transmisión. Para um problema isolado de conexão durante uma transmissão LIVE, confirme a versão do aplicativo e a estabilidade da rede; depois, tente reconectar uma vez. Se várias pessoas da mesma região relatarem a falha, encaminhe como possível incidente do serviço. Se a transmissão LIVE cai após alguns segundos ou perde o áudio apesar de a conexão estar estável, é um problema técnico de transmissão. Pour un problème de connexion isolé pendant un LIVE, vérifiez la version de l’application et la stabilité du réseau, puis réessayez une fois après reconnexion. Si plusieurs créateurs de la même région signalent la panne, transmettez-la comme incident potentiel du service. Un LIVE qui se déconnecte après quelques secondes ou perd le son malgré une connexion stable relève d’un problème technique de diffusion.",
+      "suggestedReply": "Please confirm the app is current and try one reconnect on a stable network. If other creators in your area are seeing the same failure, tell us the approximate start time so we can check for a service incident.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "wc-appeal",
+      "title": "Content Action and LIVE Restriction Appeals",
+      "category": "Content and restrictions",
+      "triggerKeywords": [
+        "appeal",
+        "removed",
+        "restriction",
+        "strike",
+        "guidelines"
+      ],
+      "summary": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice. Trust & Safety reviews the original content and decision; frontline support must not promise that an appeal will succeed or manually reverse a restriction. Si un creador no está de acuerdo con una medida sobre el contenido o una restricción de LIVE, debe abrir el aviso en la aplicación y presentar la apelación desde allí. Confianza y Seguridad revisa el contenido y la decisión originales; soporte no debe prometer que la apelación tendrá éxito. Se um criador contestar uma medida de conteúdo ou restrição de LIVE, deve abrir o aviso no aplicativo e enviar a contestação por ele. Confiança e Segurança analisa o conteúdo e a decisão originais; o suporte não deve prometer que a contestação será aceita. Si un créateur conteste une mesure concernant son contenu ou une restriction LIVE, il doit ouvrir la notification dans l’application et envoyer son appel depuis celle-ci. L’équipe Confiance et sécurité examine le contenu et la décision d’origine ; le support ne doit pas promettre l’acceptation de l’appel.",
+      "suggestedReply": "Open the in-app notice and use its appeal option. Trust & Safety reviews the original decision, so I cannot promise an outcome; I am routing this for the required review.",
+      "escalationRequired": true,
+      "escalationReason": "Content and LIVE restriction appeals require Trust & Safety review."
+    },
+    {
+      "data_mode": "simulated",
+      "id": "wc-eligibility",
+      "title": "LIVE Eligibility Requirements",
+      "category": "Creator eligibility",
+      "triggerKeywords": [
+        "eligible",
+        "followers",
+        "age",
+        "region",
+        "access"
+      ],
+      "summary": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing. Region availability can change. If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access. En esta simulación ficticia, para acceder a LIVE la persona debe tener al menos dieciocho años, 750 seguidores, estar en una región admitida y mantener la cuenta en buen estado. Si cumple todos los requisitos pero no aparece el botón LIVE, remite el caso a revisión de elegibilidad; no prometas el acceso. Nesta simulação fictícia, para acessar o LIVE a pessoa precisa ter pelo menos dezoito anos, 750 seguidores, estar em uma região compatível e manter a conta em situação regular. Se todos os requisitos forem atendidos, mas o botão LIVE não aparecer, encaminhe o caso para análise de elegibilidade; não prometa o acesso. Dans cette simulation fictive, l’accès au LIVE exige d’avoir au moins dix-huit ans, 750 abonnés, de se trouver dans une région prise en charge et d’avoir un compte en règle. Si toutes les conditions semblent réunies mais que le bouton LIVE est absent, transmettez le dossier pour examen de l’éligibilité sans promettre l’accès.",
+      "suggestedReply": "The simulated eligibility checks are age eighteen or older, 750 followers, a supported region, and an account in good standing. If those apply and the control is still missing, we can request an eligibility review.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    }
+  ]
+}

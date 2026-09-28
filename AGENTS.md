@@ -1772,3 +1772,240 @@ bundle until the next publish; no Command Center from the deployed origin; the
 URL is an auto-generated deployment name; the hosted project remains a
 development database — no customer data, no retention schedule running
 (`app.run_retention` is a function, still nothing calls it).
+
+## Live deployment aggregate snapshot — 2026-09-28
+
+Read-only counts queried from the Supabase project that the public Vercel bundle
+currently targets (`lxlokqtowvaesxjishqz`), measured 2026-09-28 02:27 UTC.
+`data_mode: "simulated"` — this is the prototype's development database, with
+demo/probe principals and fixture content; these are not production customer or
+adoption metrics.
+
+| Measure | Observed |
+|---|---:|
+| Auth accounts | 29 |
+| Accounts with a sign-in in the last 30 days | 22 |
+| App-mapped users | 26 |
+| Query telemetry rows currently stored | 11 |
+| Tenants | 2 |
+| Procedures (all statuses) | 20 |
+| Published procedures | 16 |
+| Retired procedures | 4 |
+
+The 11 query rows are all the rows currently stored (earliest timestamp
+2026-09-20); the result is a database count, not a validated lifetime usage
+metric. No billing/subscription/invoice/payment/revenue tables are present.
+The last documented paying-user and revenue figures remain 0 and $0, but the
+database cannot independently verify commercial activity.
+
+## Simulated ticket exercise — Phase 1 — 2026-09-28
+
+Created `tooling/eval/simulated-tenant/client-brief.md` for fictional WaveCast
+Creator Care. It is tagged `data_mode: "simulated"` and explicitly separates
+ticket metadata from the product's actual plain-text query input. No synthetic
+ticket corpus or product change has been generated in this phase. Continue only
+after the brief is reviewed; dataset/schema grounding and the batch gates remain
+ahead.
+
+**Phase 1 approved; Phase 2 structure and 50-ticket sample generated.** Dataset
+metadata and published schemas are documented in
+`tooling/eval/simulated-tenant/dataset-sources.md`; no external ticket rows or
+message text were fetched. No dataset with both a verifiable anonymization claim
+and appropriate provenance was established, so the agent correctly stopped
+short of calling any source “verified anonymized.” One inspected dataset
+explicitly labels itself synthetic; another includes conversation fields and
+does not establish anonymization. Both were schema-only references. All
+generator content is newly written synthetic text.
+
+The generator outputs fields patterned after the public schemas plus simulated
+`channel`, `status`, `reopenCount`, `handoffCount`, and expected decision labels.
+`verify-tickets.mjs` checks the input contract, per-record `data_mode`, synthetic
+IDs, and obvious email/phone patterns (not an anonymization certification).
+`sample-50.json` is 50 records, seed 20260928, baseline chaos rate 0, and passed
+the validator. A representative sample has been shown to the owner, who approved
+the 500-ticket, 15% chaos batch. Full-batch evaluation remains gated on review
+and approval of the flagged-ticket preview.
+
+## Simulated ticket exercise — Phase 3 batch candidate — 2026-09-28
+
+Extended the generator with ten annotated chaos mutations: near-duplicates,
+missing/wrong fields, mixed language/typos/frustration, an off-hours spike,
+reopens, agent handoffs, wrong category/tags, conflicting SOPs, and cases with
+no supported answer. Every generated record remains tagged
+`data_mode: "simulated"`.
+
+Generated `chaos-500.json` with seed 20260928 at the approved 15% rate. The
+validator confirms 500 tickets, exactly 75 flagged records, all ten mutation
+types, seven explicit missing-field cases, and zero email-/phone-like pattern
+findings. SOP-conflict cases are constrained to payout questions and inject one
+explicitly simulated conflicting procedure. The 50-ticket baseline was
+regenerated and revalidated with the finalized generator.
+
+The syntax checks and both batch validations pass. Twenty flagged examples,
+including two of each chaos type, were shown to the owner and approved. That
+approval unlocked the Phase 4 run recorded below.
+
+## Simulated ticket exercise — Phase 4 evaluation — 2026-09-28
+
+**data_mode: "simulated".** Evaluated the approved, fixed-seed
+`chaos-500.json` in a local headless browser using the shipped decision modules:
+MiniLM `embedQuery` → passage `searchTopK` → `evaluateGate` → `buildAgentView`.
+The fictional SOP corpus and ticket text stayed in the local browser. No
+Supabase session, tenant data, database write, or telemetry transport was used.
+The pinned model files were loaded from Hugging Face; only the synthetic query
+text was passed to the local ONNX model.
+
+**Measured result:** 242/500 expected dispositions correct (**48.4%**), 258
+false escalations (all `insufficient_margin`), **0 unsafe/wrong-SOP answers**,
+and **0 runtime errors**. Chaos subset: 41/75 correct (54.7%); baseline:
+201/425 correct (47.3%). Per-query decision latency: mean 17.02 ms, median
+16.30 ms, p95 24.20 ms, max 37.90 ms; model load was 25.87 s and index build
+0.90 s, reported separately.
+
+All 258 failures were false escalations. By ticket type, 224 were baseline,
+6 off-hours-spike, 6 missing-field, 5 mixed-language/typo/tone, 4 wrong-category,
+4 handoff, 3 wrong-field, 3 reopened, and 3 near-duplicate cases. The report
+contains per-ticket scores and the ten worst failures with their simulated
+ticket content.
+
+Artifacts: `phase4-report.json` (all 500 fully tagged results) and
+`phase4-report.md` (summary and ten failure examples), alongside the pinned
+input batch. This is a measured local decision-path evaluation, not a live
+production/adoption metric or a test of authenticated UI/transport behavior.
+The original Phase 4 per-ticket report was later overwritten by the first
+Phase 5 run when the report runner reused these filenames; its aggregate
+baseline figures above are preserved, but its original per-ticket results are
+not.
+
+## Simulated ticket exercise — Phase 5 hardening — 2026-09-28
+
+**data_mode: "simulated".** Re-ran the same approved 500-ticket batch through
+the browser-local shipped decision path while iterating on synthetic test
+corpus coverage. No app source, production gate default, live tenant, backend,
+or transport was changed.
+
+| Run | Test setup | Correct | False escalations | Unsafe answers | Runtime errors |
+|---|---|---:|---:|---:|---:|
+| Phase 4 baseline | Original English-only fictional SOPs, margin 0.18 | 242/500 (48.4%) | 258 (51.6%) | 0 | 0 |
+| Phase 5 round 1 | Localized fictional SOP summaries, margin 0.18 | 269/500 (53.8%) | 231 (46.2%) | 0 | 0 |
+| Phase 5 round 2 | Localized and symptom-specific fictional summaries, margin 0.18 | 335/500 (67.0%) | 165 (33.0%) | 0 | 0 |
+| Phase 5 round 3 | Same round-2 corpus, evaluation-only margin 0.17 | 362/500 (72.4%) | 138 (27.6%) | 0 | 0 |
+| Stability repeat | Exact round-3 settings and same batch | 362/500 (72.4%) | 138 (27.6%) | 0 | 0 |
+
+The input batch SHA-256 remained
+`717c40dcc7d1f31b51ea32b0b1bfa4bf418699167a5c5c7e2736cbea90191d96`;
+the round-3 and stability corpus hashes also match
+(`e9e058685d255b24219ed5aab2ede0eaf62542eda9844b9b7b26becec63546fe`).
+Comparing all 500 per-ticket decisions across the two 0.17 runs found zero
+disagreements. All 500 result rows in each report are tagged
+`data_mode: "simulated"`.
+
+The latest repeat measured decision latency mean 18.68 ms, median 18.30 ms,
+p95 25.50 ms, max 33.60 ms. All 138 failures are false escalations caused by
+`insufficient_margin`; there were no wrong-SOP answers or runtime errors. The
+0.17 margin is only an evaluation-harness override, not the product default.
+The recorded sweep found that going below 0.17 admitted wrong answers on
+conflicting-SOP examples, so further relaxation is not a safe fix.
+
+**Outcome: accuracy is repeatable on this fixed synthetic batch, but the
+27.6% failure rate is not low.** The requested low-and-stable stopping
+criterion is therefore unmet. Further corpus tuning risks fitting the
+synthetic examples, and lowering the gate further has a measured safety cost;
+no claim of production accuracy or readiness is supported. See
+`tooling/eval/simulated-tenant/phase5-comparison.md` and the round-1, round-2,
+round-3, and stability JSON/Markdown reports. The subsequent deployed-path
+validation and Phase 6 package are recorded below. Phase 7 remains pending
+partner examples; publication of these changes has not yet been performed.
+
+## Phase 5 margin safety probe — 2026-10-02
+
+**data_mode: "simulated".** Re-ran the unchanged approved 500-ticket batch and
+corpus in the local shipped decision path at a test-only margin of 0.16. It
+raised measured accuracy by one disposition (363/500, 72.6%) over margin 0.17,
+but answered two payout cases whose expected handling is escalation because
+the simulated policy set contains contradictory guidance. The run therefore
+has 135 false escalations, 2 unsafe answers and a 27.4% failure rate. This is
+not an acceptable hardening change; the shipped default remains 0.18 and the
+evaluation baseline remains 0.17.
+
+The results, including the two synthetic examples, are in
+`tooling/eval/simulated-tenant/phase5-original-margin-016.json` and `.md`.
+The 0.17 baseline also remains unchanged. No real customer or design-partner
+data is used.
+
+## Deployed-path simulation and Phase 6 package — 2026-10-02
+
+**data_mode: "simulated".** The approved 500-ticket batch was exercised through
+the public Vercel app, isolated signed policy bundles, browser MiniLM and gate,
+and the development Supabase ingest path. This is deployed-path validation, not
+production-customer evidence.
+
+**Valid full run:** `0aec9773442c4282`, seed `20260928`, same batch SHA-256
+`717c40dcc7d1f31b51ea32b0b1bfa4bf418699167a5c5c7e2736cbea90191d96` and
+corpus SHA-256 `e9e058685d255b24219ed5aab2ede0eaf62542eda9844b9b7b26becec63546fe`.
+With the evaluation-only margin 0.17 verified through real keyboard input and
+the displayed React state, results were **361/500 correct (72.2%)**, 138 false
+escalations, **1 unsafe answer**, and 0 runtime errors. Browser click-to-render
+latency: mean 22.38 ms, median 21.70 ms, p95 32.70 ms, max 47.30 ms. The
+database audit confirmed 500/500 tagged query events, 261/261 escalation
+records, 15 tagged SOP versions, 4 tagged user profiles, 2 tagged tenants, 2
+active agent web devices, and 0 untagged audited rows.
+
+The sole unsafe answer was synthetic contradictory payout ticket
+`SIM-TICKET-00272`. Its tagged event records a 0.1807574329 top-one/top-two
+margin, `minMargin: 0.17`, and an answer to `wc-payout`. Since `gate.ts`
+accepts when `margin >= minMargin`, this measured score is also above the
+shipped 0.18 default. The local 0.17 repeat was 362/500 with no unsafe answers;
+the one deployed/local mismatch proves the local repeat is not a sufficient
+safety claim. No product code or shipped default was changed. Failure is 27.8%
+in this deployed run and 27.6% locally; the low-and-stable criterion remains
+unmet.
+
+**Harness defects found and corrected while proving the path.**
+
+1. Run `e301cb5b45444040` delivered all 500 tickets but failed while constructing
+   its report because the report object referred to itself during initialization.
+   The report serialization was fixed before the valid run; this attempt has no
+   report artifact.
+2. Run `c1de47a173764e5f` changed the range element's DOM value without
+   confirming React state, and its output contained 1 unsafe answer. The report
+   is retained and marked invalid for threshold comparison; do not use its
+   stated margin as applied.
+3. Run `5209afa44d814f7f` completed and delivered the 493 non-conflict tickets,
+   then exposed a race: bundle publication occurred before the conflict tenant's
+   web device had enrolled. The run stopped before publishing that tenant's
+   bundle. The harness now waits for that exact agent's active web device and
+   audits the resulting device rows.
+4. The corrected one-ticket conflict smoke (`f2c81013086d4327`) and the valid
+   full run both confirmed the React margin and completed the enrollment audit.
+
+All test-created tenants, profiles, SOP version notes, device rows, bundles,
+events, escalations, visible browser output, and reports are associated with
+`data_mode: "simulated"` or an explicitly named SIMULATED DATA tenant. Failed
+attempts are retained only as clearly tagged development-project test data; no
+cleanup or deletion was performed.
+
+**Phase 6 deliverables.** Added root `proof-of-concept.md`, which records the
+fictional profile, local before/after results, deployed-path results, limitations,
+and the unsafe counterexample without presenting it as production accuracy.
+Added `tooling/eval/simulated-tenant/screen-recording-instructions.md` with a
+visible one-ticket workflow and credential/privacy precautions. Its two Enter
+checkpoints were exercised in a visible-browser near-duplicate smoke
+(`5c77413c866f4b10`); this was not counted as batch accuracy evidence.
+
+**Phase 7 is blocked on the owner.** No anonymized design-partner examples have
+been supplied. No partner data was created, stored, logged, or transmitted.
+Request redacted examples before doing the comparison; retain only abstract
+patterns and create synthetic analogues. The proof document explicitly marks
+this comparison pending.
+
+Reproduce the batch validator with:
+
+```powershell
+node tooling/eval/simulated-tenant/verify-tickets.mjs tooling/eval/simulated-tenant/chaos-500.json
+```
+
+The valid deployed run report and detailed comparison are in
+`tooling/eval/simulated-tenant/phase5-deployed-run-0aec9773442c4282.json`,
+`.md`, and `phase5-comparison.md`. The public-app backend remains the development
+Supabase project; do not describe these results as production-customer usage.

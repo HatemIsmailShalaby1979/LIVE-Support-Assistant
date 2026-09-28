@@ -1,0 +1,197 @@
+{
+  "data_mode": "simulated",
+  "simulation_run_id": "f2c81013086d4327",
+  "evaluation": "Deployed public Vercel application path backed by the development Supabase project; not production customer validation.",
+  "target": "https://dist-omega-black-31.vercel.app",
+  "backendProject": "lxlokqtowvaesxjishqz",
+  "evaluatedAt": "2026-09-28T04:27:36.260Z",
+  "runStartedAt": "2026-09-28T04:26:51.052Z",
+  "sourceBatch": "tooling/eval/simulated-tenant/chaos-500.json",
+  "sourceCorpus": "tooling/eval/simulated-tenant/corpus.json",
+  "batchSha256": "717c40dcc7d1f31b51ea32b0b1bfa4bf418699167a5c5c7e2736cbea90191d96",
+  "corpusSha256": "e9e058685d255b24219ed5aab2ede0eaf62542eda9844b9b7b26becec63546fe",
+  "batch": {
+    "tickets": 1,
+    "seed": 20260928,
+    "chaosRateConfigured": 0.15,
+    "chaosRateActual": 1,
+    "chaosTickets": 1,
+    "approvedBatchTickets": 500,
+    "selectedTicketIds": [
+      "SIM-TICKET-00482"
+    ]
+  },
+  "selection": {
+    "data_mode": "simulated",
+    "ticketId": null,
+    "chaosType": "contradicting_sops",
+    "visibleBrowser": false
+  },
+  "implementation": {
+    "path": "deployed React app → tenant-signed encrypted policy bundle → pinned on-device MiniLM → Confidence Gate → Supabase ingest functions",
+    "thresholdAccept": 0,
+    "minMargin": 0.17,
+    "baselineMinMargin": 0.17,
+    "browserMarginVerifiedForEveryTenant": true,
+    "latencyMeasurement": "browser-side time from Find Answer click to rendered disposition and ready controls"
+  },
+  "tenants": [
+    {
+      "data_mode": "simulated",
+      "id": "af49ae88-6a6b-403d-9452-7c20886883a3",
+      "label": "conflict-policy",
+      "procedures": 8
+    }
+  ],
+  "hostedDataAudit": {
+    "data_mode": "simulated",
+    "taggedQueryEvents": 1,
+    "taggedEscalations": 1,
+    "taggedSopVersions": 8,
+    "taggedAgentProfiles": 2,
+    "taggedTenants": 1,
+    "tenantScopedBundles": 1,
+    "untaggedQueryEvents": 0,
+    "untaggedEscalations": 0,
+    "untaggedSopVersions": 0,
+    "untaggedAgentProfiles": 0,
+    "untaggedTenants": 0,
+    "taggingPreflight": true,
+    "enrolledSimulatedAgentDevices": 1
+  },
+  "totals": {
+    "tickets": 1,
+    "correct": 1,
+    "accuracy": 1,
+    "failures": 0,
+    "failureRate": 0,
+    "failureCategories": {},
+    "falseEscalations": 0,
+    "unsafeAnswers": 0,
+    "runtimeErrors": 0,
+    "latencyMs": {
+      "mean": 30.100000001490116,
+      "median": 30.100000001490116,
+      "p95": 30.100000001490116,
+      "max": 30.100000001490116
+    }
+  },
+  "comparison": {
+    "sameBatch": false,
+    "sameInputBatchSha256AsBaseline": true,
+    "sameCorpusSha256AsBaseline": true,
+    "identicalPerTicketDecisionsToLocalBaseline": true,
+    "decisionMismatchesVsLocalBaseline": [],
+    "localBaseline": {
+      "accuracy": 0.724,
+      "failures": 138,
+      "failureRate": 0.276,
+      "falseEscalations": 138,
+      "unsafeAnswers": 0,
+      "minMargin": 0.17
+    }
+  },
+  "browser": {
+    "consoleErrors": [],
+    "requestInstrumentationErrors": []
+  },
+  "perTicket": [
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "f2c81013086d4327",
+      "tenant_label": "conflict-policy",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00482",
+        "customerRef": "SIM-CREATOR-6877",
+        "createdAt": "2026-09-30T22:20:34.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Creator payouts",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "When should the payout arrive?",
+        "message": "Could you check the normal payout timing? The status changed to processed earlier this week.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "creator_payouts"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "conflicting_procedure_guidance",
+          "sopId": null
+        },
+        "chaosTags": [
+          "contradicting_sops"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "contradicting_sops",
+          "details": {
+            "sourceTicketId": "SIM-TICKET-00180",
+            "conflictSopId": "wc-payout-conflict",
+            "expectedHandling": "escalate until a human resolves the policy conflict"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "escalate",
+            "reason": "no_supported_procedure",
+            "sopId": null
+          },
+          "category": "Other / ambiguous",
+          "queue": "triage",
+          "language": "en",
+          "channel": "email_web_form",
+          "priority": "P3",
+          "status": "open",
+          "message": "Can I move a creator balance between two accounts after I closed one of them? I cannot find this in the help pages."
+        },
+        "testEnvironment": {
+          "data_mode": "simulated",
+          "additionalSops": [
+            {
+              "data_mode": "simulated",
+              "id": "wc-payout-conflict",
+              "title": "Creator Payout Timing — Conflicting Legacy Guide",
+              "category": "Creator payouts",
+              "triggerKeywords": [
+                "payout",
+                "deposit",
+                "withdraw",
+                "balance"
+              ],
+              "summary": "A creator payout marked processed arrives in one business day. Do not use the two-to-five-business-day estimate; this guide conflicts with the standard payout procedure and requires a lead to determine which rule is current.",
+              "suggestedReply": "The published payout guidance conflicts. I am escalating this question for a lead to confirm the current timing.",
+              "escalationRequired": true,
+              "escalationReason": "Two active simulated procedures give contradictory payout deadlines."
+            }
+          ]
+        }
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "conflicting_procedure_guidance",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 30.100000001490116
+    }
+  ],
+  "topFailures": [],
+  "failureRateIsLowOrStable": false,
+  "limitations": [
+    "This is a deployed-path validation using the public static Vercel app and the development Supabase project, not a real production customer deployment.",
+    "Both isolated tenants, users, synthetic SOPs, query telemetry, and escalation evidence remain in the development database and are visibly tagged data_mode: simulated.",
+    "The batch uses the approved template-based synthetic messages; the holdout is another seed from the same generator, not independently authored customer language.",
+    "The 0.17 margin is a test-only browser control. The shipped default remains 0.18; at 0.16 the approved batch produced two unsafe answers.",
+    "The low-failure stopping criterion remains unmet. All outcome labels derive from synthetic batch expectations, not human-annotated partner outcomes."
+  ]
+}
