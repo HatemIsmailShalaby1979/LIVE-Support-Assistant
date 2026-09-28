@@ -1,0 +1,774 @@
+{
+  "data_mode": "simulated",
+  "source": "Fictional scale-rung WaveCast procedures authored for this evaluation; not operational policy.",
+  "sops": [
+    {
+      "data_mode": "simulated",
+      "id": "sc-payout-timing",
+      "title": "Payout Timing",
+      "category": "Creator payouts",
+      "triggerKeywords": [
+        "payout",
+        "processed",
+        "bank",
+        "arrive"
+      ],
+      "summary": "A standard creator payout usually arrives a few business days after it is marked processed. Ask the creator to confirm the payout date and the masked destination; never request full bank credentials. Un pago estándar suele llegar unos días hábiles después de figurar como procesado. Pide confirmar la fecha y el destino enmascarado; nunca solicites credenciales bancarias completas. Um saque padrão costuma chegar alguns dias úteis depois de aparecer como processado. Peça para confirmar a data e o destino mascarado; nunca peça credenciais bancárias completas.",
+      "suggestedReply": "A processed payout normally arrives within a few business days. If it is well past that, share the payout reference so we can trace it.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-payout-missing",
+      "title": "Missing Payout Trace",
+      "category": "Creator payouts",
+      "triggerKeywords": [
+        "payout",
+        "missing",
+        "trace",
+        "reference"
+      ],
+      "summary": "When a payout is marked processed but never reaches the bank, open a trace with Payments using the payout reference and status. Do not promise a replacement payment before the trace completes. Cuando un pago figura como procesado pero no llega al banco, abre una investigación con Pagos usando la referencia y el estado. No prometas un pago de reemplazo antes de terminar la investigación. Quando um saque aparece como processado mas não chega ao banco, abra uma investigação com Pagamentos usando a referência e o status. Não prometa um novo pagamento antes de concluir a investigação.",
+      "suggestedReply": "I am opening a trace with Payments using the payout reference; a replacement cannot be promised until the trace is complete.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-payout-method",
+      "title": "Changing Payout Method",
+      "category": "Creator payouts",
+      "triggerKeywords": [
+        "payout",
+        "method",
+        "bank",
+        "change"
+      ],
+      "summary": "A creator can change the payout destination from the payout settings. A change made after a payout is marked processed applies to the next cycle, not the payout already in flight. El creador puede cambiar el destino del pago desde la configuración. Un cambio hecho tras marcar un pago como procesado se aplica al siguiente ciclo, no al pago en curso. O criador pode alterar o destino do saque nas configurações. Uma alteração feita depois de o saque ser processado vale para o próximo ciclo, não para o saque em andamento.",
+      "suggestedReply": "You can update the payout destination in payout settings; it applies from the next cycle, not the payout already in progress.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-payout-tax",
+      "title": "Payout Tax Forms",
+      "category": "Creator payouts",
+      "triggerKeywords": [
+        "payout",
+        "tax",
+        "form",
+        "withholding"
+      ],
+      "summary": "Payouts may require a completed tax form before they are released. If the form is missing or rejected, route the case to Payments rather than advising on tax law. Los pagos pueden requerir un formulario fiscal completo antes de liberarse. Si falta o fue rechazado, remite el caso a Pagos en lugar de asesorar sobre legislación fiscal. Os saques podem exigir um formulário fiscal completo antes de serem liberados. Se estiver ausente ou rejeitado, encaminhe o caso a Pagamentos em vez de orientar sobre legislação fiscal.",
+      "suggestedReply": "A completed tax form may be required before payout. I am routing this to Payments; I cannot advise on tax law.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-gift-refund",
+      "title": "Gift and Coin Purchase Refunds",
+      "category": "Gifts and purchases",
+      "triggerKeywords": [
+        "coins",
+        "gift",
+        "refund",
+        "charge"
+      ],
+      "summary": "Coins are used to send Gifts and cannot be transferred between accounts. A completed Coin purchase is normally final; a duplicate or unauthorized charge is reviewed by Payments. Las monedas se usan para enviar regalos y no se pueden transferir entre cuentas. Una compra completada normalmente es definitiva; un cargo duplicado o no autorizado lo revisa Pagos. As moedas são usadas para enviar Presentes e não podem ser transferidas entre contas. Uma compra concluída normalmente é definitiva; uma cobrança duplicada ou não autorizada é analisada por Pagamentos.",
+      "suggestedReply": "Completed Coin purchases are normally final; a duplicate or unauthorized charge is reviewed by Payments before any refund decision.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-gift-missing",
+      "title": "Coins Missing After Purchase",
+      "category": "Gifts and purchases",
+      "triggerKeywords": [
+        "coins",
+        "purchase",
+        "receipt",
+        "balance"
+      ],
+      "summary": "Gift balances update after the purchase settles. If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a settlement issue, not a refund. El saldo de regalos se actualiza cuando se liquida la compra. Si el recibo confirma la compra pero las monedas no aparecen, revisa el estado de la compra y del saldo; es un problema de liquidación. O saldo de Presentes é atualizado quando a compra é liquidada. Se o recibo confirma a compra mas as Moedas não aparecem, verifique o status da compra e do saldo; é um problema de liquidação.",
+      "suggestedReply": "If the receipt confirms the purchase but Coins have not appeared, I can check the purchase and balance status; this is a settlement issue.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-gift-send-error",
+      "title": "Gift Sending Error",
+      "category": "Gifts and purchases",
+      "triggerKeywords": [
+        "gift",
+        "error",
+        "send",
+        "balance"
+      ],
+      "summary": "If sending a Gift returns an error, confirm the account has enough Coins and that the recipient is available. A charge that appears without a delivered Gift is reviewed by Payments. Si enviar un regalo da error, confirma que la cuenta tiene monedas suficientes y que el destinatario está disponible. Un cargo sin regalo entregado lo revisa Pagos. Se enviar um Presente retornar erro, confirme que a conta tem Moedas suficientes e que o destinatário está disponível. Uma cobrança sem Presente entregue é analisada por Pagamentos.",
+      "suggestedReply": "Please confirm the account has enough Coins and the recipient is available. A charge without a delivered Gift is reviewed by Payments.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-gift-membership",
+      "title": "Gifted Membership Billing",
+      "category": "Gifts and purchases",
+      "triggerKeywords": [
+        "membership",
+        "gift",
+        "billing",
+        "renewal"
+      ],
+      "summary": "A gifted membership is billed once for the chosen period and does not renew automatically. A renewal charge on a gifted membership is a billing question for Payments. Una membresía regalada se cobra una vez por el periodo elegido y no se renueva automáticamente. Un cargo de renovación en una membresía regalada es una consulta de facturación para Pagos. Uma assinatura de presente é cobrada uma vez pelo período escolhido e não renova automaticamente. Uma cobrança de renovação nessa assinatura é uma questão de faturamento para Pagamentos.",
+      "suggestedReply": "A gifted membership is billed once and does not auto-renew. A renewal charge would be a billing question I route to Payments.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-login-recovery",
+      "title": "Routine Login Recovery",
+      "category": "Account access",
+      "triggerKeywords": [
+        "login",
+        "password",
+        "reset",
+        "code"
+      ],
+      "summary": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code. Never ask a customer to send a password, a one-time code, or a recovery link. Para un problema habitual de inicio de sesión, usa «Olvidé mi contraseña» y solicita un código nuevo. Nunca pidas la contraseña, un código de un solo uso ni un enlace de recuperación. Para um problema comum de acesso, use «Esqueci minha senha» e solicite um novo código. Nunca peça a senha, um código de uso único nem um link de recuperação.",
+      "suggestedReply": "Use Forgot password to request a fresh recovery code, and never share that code. If it still fails, we can route the case for verification.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-login-code",
+      "title": "Recovery Code Not Arriving",
+      "category": "Account access",
+      "triggerKeywords": [
+        "code",
+        "sms",
+        "phone",
+        "recovery"
+      ],
+      "summary": "A recovery code that does not arrive after a phone change is a routine access problem unless the recovery contact itself was changed without permission. Check the contact is reachable and request one fresh code. Un código que no llega tras cambiar de teléfono es un problema de acceso habitual, salvo que el contacto de recuperación se haya cambiado sin permiso. Comprueba el contacto y pide un código nuevo. Um código que não chega após trocar de telefone é um problema de acesso comum, a menos que o contato de recuperação tenha sido alterado sem permissão. Verifique o contato e peça um novo código.",
+      "suggestedReply": "Please confirm the recovery phone or email is reachable and request one fresh code. If the contact was changed without you, this becomes a security case.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-login-loop",
+      "title": "Password Reset Loop",
+      "category": "Account access",
+      "triggerKeywords": [
+        "password",
+        "loop",
+        "reset",
+        "signin"
+      ],
+      "summary": "A password reset that returns to the sign-in screen without accepting the new password is a routine access problem. Confirm the app is current and the new password meets the stated rules, then retry once. Un restablecimiento que vuelve a la pantalla de acceso sin aceptar la nueva contraseña es un problema de acceso habitual. Confirma la versión de la app y los requisitos, y reintenta una vez. Uma redefinição que volta à tela de acesso sem aceitar a nova senha é um problema de acesso comum. Confirme a versão do app e os requisitos, e tente uma vez.",
+      "suggestedReply": "Confirm the app is current and the new password meets the rules, then retry once. If the loop continues, we can route it for verification.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-login-email",
+      "title": "Changing Sign-in Email",
+      "category": "Account access",
+      "triggerKeywords": [
+        "email",
+        "signin",
+        "change",
+        "verify"
+      ],
+      "summary": "Changing the sign-in email requires confirming the current password and verifying the new address. If the current password is unknown, treat it as routine recovery rather than an account change. Cambiar el correo de acceso requiere confirmar la contraseña actual y verificar la nueva dirección. Si no se conoce la contraseña, trátalo como recuperación habitual, no como cambio de cuenta. Alterar o e-mail de acesso exige confirmar a senha atual e verificar o novo endereço. Se a senha atual for desconhecida, trate como recuperação comum, não como alteração de conta.",
+      "suggestedReply": "Changing the sign-in email needs the current password and verification of the new address. Without the password, this is routine recovery.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-sec-takeover",
+      "title": "Suspected Account Takeover",
+      "category": "Account security",
+      "triggerKeywords": [
+        "hacked",
+        "takeover",
+        "unauthorized",
+        "stolen"
+      ],
+      "summary": "A suspected account takeover requires specialist Account Security review. Do not disclose account changes or ask for credentials; direct the customer to secure the recovery email from a trusted device. Un posible acceso no autorizado requiere revisión especializada de Seguridad. No reveles cambios ni pidas credenciales; indica proteger el correo de recuperación desde un dispositivo de confianza. Uma possível invasão exige análise especializada de Segurança. Não revele alterações nem peça credenciais; oriente a proteger o e-mail de recuperação em um dispositivo confiável.",
+      "suggestedReply": "I am routing this to Account Security for urgent review. Please secure the recovery email from a trusted device and do not share codes.",
+      "escalationRequired": true,
+      "escalationReason": "Suspected account takeover requires specialist identity verification."
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-sec-suspicious",
+      "title": "Suspicious Login Activity",
+      "category": "Account security",
+      "triggerKeywords": [
+        "login",
+        "suspicious",
+        "country",
+        "session"
+      ],
+      "summary": "Logins from an unrecognised location are a security concern. Advise signing out of other sessions, changing the password from a trusted device, and creating a specialist handoff; do not confirm or deny account changes. Los inicios de sesión desde una ubicación desconocida son un problema de seguridad. Aconseja cerrar otras sesiones, cambiar la contraseña desde un dispositivo de confianza y derivar a un especialista. Logins de um local desconhecido são uma preocupação de segurança. Oriente encerrar outras sessões, trocar a senha em um dispositivo confiável e encaminhar a um especialista.",
+      "suggestedReply": "Please sign out of other sessions and change the password from a trusted device. I am routing this to Account Security.",
+      "escalationRequired": true,
+      "escalationReason": "Suspicious login activity needs specialist review."
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-sec-email",
+      "title": "Compromised Recovery Email",
+      "category": "Account security",
+      "triggerKeywords": [
+        "email",
+        "compromised",
+        "recovery",
+        "locked"
+      ],
+      "summary": "If the recovery email was changed and the account is locked, this is a security case, not routine recovery. Do not attempt to reverse the change from support; create a specialist handoff. Si el correo de recuperación cambió y la cuenta está bloqueada, es un caso de seguridad, no de recuperación habitual. No intentes revertir el cambio desde soporte; deriva a un especialista. Se o e-mail de recuperação foi alterado e a conta está bloqueada, é um caso de segurança, não de recuperação comum. Não tente reverter pelo suporte; encaminhe a um especialista.",
+      "suggestedReply": "A changed recovery email with a locked account is a security case. I am routing it to Account Security rather than reversing it here.",
+      "escalationRequired": true,
+      "escalationReason": "A changed recovery contact with a locked account is a security case."
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-sec-2fa",
+      "title": "Two-Factor Setup Help",
+      "category": "Account security",
+      "triggerKeywords": [
+        "two-factor",
+        "2fa",
+        "authenticator",
+        "setup"
+      ],
+      "summary": "Setting up two-factor authentication is a self-service task from security settings. Never ask for a one-time code. If the customer cannot complete setup because a factor is already registered to someone else, escalate. Configurar la verificación en dos pasos es autoservicio desde la configuración de seguridad. Nunca pidas un código. Si no puede completarlo porque un factor ya está registrado por otra persona, escala. Configurar a verificação em duas etapas é autoatendimento nas configurações de segurança. Nunca peça um código. Se não puder concluir porque um fator já está registrado por outra pessoa, escale.",
+      "suggestedReply": "Two-factor setup is self-service in security settings, and I will never ask for your code. If a factor is registered to someone else, I will escalate.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-live-disconnect",
+      "title": "LIVE Disconnects",
+      "category": "LIVE technical support",
+      "triggerKeywords": [
+        "live",
+        "disconnect",
+        "stream",
+        "drop"
+      ],
+      "summary": "For an isolated LIVE disconnection, confirm the app version and network stability, then retry once after reconnecting. A stream that drops repeatedly across viewers is a possible service incident, not a device fault. Para una desconexión LIVE aislada, confirma la versión de la app y la red, y reintenta una vez. Una transmisión que se corta para varios espectadores es un posible incidente del servicio. Para uma desconexão LIVE isolada, confirme a versão do app e a rede, e tente uma vez. Uma transmissão que cai para vários espectadores é um possível incidente do serviço.",
+      "suggestedReply": "Please confirm the app is current and try one reconnect. If several viewers are affected, tell us the start time so we can check for an incident.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-live-lag",
+      "title": "LIVE Lag and Buffering",
+      "category": "LIVE technical support",
+      "triggerKeywords": [
+        "lag",
+        "buffer",
+        "live",
+        "quality"
+      ],
+      "summary": "Persistent LIVE lag is usually a network or device issue. Confirm the connection, lower the stream quality, and retry. If viewers in one region all report lag, treat it as a possible service incident. El retraso persistente en LIVE suele ser un problema de red o dispositivo. Confirma la conexión, baja la calidad y reintenta. Si todos los espectadores de una región lo reportan, trátalo como incidente. O atraso persistente no LIVE costuma ser problema de rede ou dispositivo. Confirme a conexão, reduza a qualidade e tente. Se todos os espectadores de uma região relatarem, trate como incidente.",
+      "suggestedReply": "Please confirm the connection and try a lower stream quality. If a whole region reports it, we will treat it as a possible incident.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-live-key",
+      "title": "Stream Key Conflict",
+      "category": "LIVE technical support",
+      "triggerKeywords": [
+        "stream key",
+        "conflict",
+        "auto-start",
+        "duplicate"
+      ],
+      "summary": "A warning about multiple streams using the same stream key means the key is being reused. Ask the creator to reset the stream key and disable auto-start, then reconnect once. Un aviso de varias transmisiones con la misma clave significa que la clave se reutiliza. Pide restablecer la clave y desactivar el inicio automático, y reconectar una vez. Um aviso de várias transmissões com a mesma chave significa que a chave está sendo reutilizada. Peça para redefinir a chave e desativar o início automático, e reconectar uma vez.",
+      "suggestedReply": "Please reset the stream key and disable auto-start, then reconnect once. Reusing one key across streams causes this warning.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-live-audio",
+      "title": "LIVE Audio Problems",
+      "category": "LIVE technical support",
+      "triggerKeywords": [
+        "audio",
+        "microphone",
+        "live",
+        "sound"
+      ],
+      "summary": "No audio during a LIVE stream is a technical issue. Confirm the microphone permission, the selected input device, and the app version, then retry once. It is not an eligibility or access question. La falta de audio en un LIVE es un problema técnico. Confirma el permiso del micrófono, el dispositivo de entrada y la versión, y reintenta una vez. No es una cuestión de elegibilidad. A falta de áudio no LIVE é um problema técnico. Confirme a permissão do microfone, o dispositivo de entrada e a versão, e tente uma vez. Não é uma questão de elegibilidade.",
+      "suggestedReply": "Please check the microphone permission and the selected input device, then retry once. This is a technical audio issue, not eligibility.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-elig-missing",
+      "title": "LIVE Control Missing",
+      "category": "Creator eligibility",
+      "triggerKeywords": [
+        "eligible",
+        "live",
+        "missing",
+        "button"
+      ],
+      "summary": "If the account meets the published eligibility conditions but the LIVE control is absent, route the case for an eligibility review rather than promising access. Region availability can change. Si la cuenta cumple las condiciones publicadas pero falta el control LIVE, remite el caso a revisión de elegibilidad sin prometer acceso. La disponibilidad por región puede cambiar. Se a conta atende às condições publicadas mas o controle LIVE não aparece, encaminhe para análise de elegibilidade sem prometer acesso. A disponibilidade por região pode mudar.",
+      "suggestedReply": "If the published conditions are met and the control is still missing, I can request an eligibility review rather than promise access.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-elig-region",
+      "title": "Region Availability",
+      "category": "Creator eligibility",
+      "triggerKeywords": [
+        "region",
+        "country",
+        "available",
+        "support"
+      ],
+      "summary": "LIVE availability depends on the account region. If the country is not currently supported, access cannot be enabled; do not promise a date. Region lists change, so route unusual cases for review. La disponibilidad de LIVE depende de la región. Si el país no es compatible, no se puede activar el acceso; no prometas una fecha. Las listas cambian, así que deriva casos inusuales. A disponibilidade do LIVE depende da região. Se o país não é compatível, o acesso não pode ser ativado; não prometa uma data. As listas mudam, então encaminhe casos incomuns.",
+      "suggestedReply": "LIVE availability depends on the account region. If the country is unsupported I cannot enable it or promise a date, but I can route it for review.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-elig-threshold",
+      "title": "Eligibility Conditions",
+      "category": "Creator eligibility",
+      "triggerKeywords": [
+        "followers",
+        "age",
+        "eligible",
+        "requirements"
+      ],
+      "summary": "LIVE eligibility depends on age, a follower threshold, a supported region, and good standing. If all appear satisfied but access is missing, route for review rather than promising access. La elegibilidad para LIVE depende de la edad, un umbral de seguidores, una región compatible y el buen estado. Si todo parece cumplirse pero falta el acceso, deriva a revisión. A elegibilidade para LIVE depende de idade, um limite de seguidores, uma região compatível e boa situação. Se tudo parecer cumprido mas faltar o acesso, encaminhe para análise.",
+      "suggestedReply": "Eligibility depends on age, a follower threshold, a supported region and good standing. If those appear met, I can request a review.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-elig-standing",
+      "title": "Account Standing Check",
+      "category": "Creator eligibility",
+      "triggerKeywords": [
+        "standing",
+        "warning",
+        "eligible",
+        "review"
+      ],
+      "summary": "An account not in good standing is not eligible for LIVE until the outstanding issue clears. Explain the general condition but do not predict the outcome of a specific review. Una cuenta que no está en buen estado no es elegible para LIVE hasta que se resuelva el problema pendiente. Explica la condición general sin predecir el resultado de una revisión. Uma conta fora de boa situação não é elegível para LIVE até o problema pendente ser resolvido. Explique a condição geral sem prever o resultado de uma análise.",
+      "suggestedReply": "An account must be in good standing for LIVE. I can explain the general condition but cannot predict a specific review outcome.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-rest-removed",
+      "title": "Video Removal Appeal",
+      "category": "Content and restrictions",
+      "triggerKeywords": [
+        "removed",
+        "video",
+        "appeal",
+        "guidelines"
+      ],
+      "summary": "A creator who disputes a removed video should open the notice in the app and submit the appeal from that notice. Trust & Safety reviews the original decision; support must not promise the appeal will succeed. Quien dispute un vídeo eliminado debe abrir el aviso en la app y presentar la apelación desde allí. Confianza y Seguridad revisa la decisión original; soporte no debe prometer el éxito. Quem contestar um vídeo removido deve abrir o aviso no app e enviar a contestação por ele. Confiança e Segurança analisa a decisão original; o suporte não deve prometer sucesso.",
+      "suggestedReply": "Open the in-app notice and use its appeal option. Trust & Safety reviews the original decision, so I cannot promise an outcome.",
+      "escalationRequired": true,
+      "escalationReason": "Content removal appeals require Trust & Safety review."
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-rest-strike",
+      "title": "Community Strike Appeal",
+      "category": "Content and restrictions",
+      "triggerKeywords": [
+        "strike",
+        "appeal",
+        "warning",
+        "guidelines"
+      ],
+      "summary": "A community strike can be appealed once from the notice in the app. Explain the general process but never state whether a strike will be removed; that decision belongs to Trust & Safety. Una amonestación se puede apelar una vez desde el aviso en la app. Explica el proceso general pero nunca afirmes si se retirará; esa decisión es de Confianza y Seguridad. Uma advertência pode ser contestada uma vez pelo aviso no app. Explique o processo geral mas nunca afirme se será removida; essa decisão é de Confiança e Segurança.",
+      "suggestedReply": "A strike can be appealed once from the in-app notice. I can explain the process but not predict the outcome.",
+      "escalationRequired": true,
+      "escalationReason": "Strike appeals require Trust & Safety review."
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-rest-live",
+      "title": "LIVE Restriction Appeal",
+      "category": "Content and restrictions",
+      "triggerKeywords": [
+        "live",
+        "restriction",
+        "appeal",
+        "disabled"
+      ],
+      "summary": "A LIVE restriction is disputed from the notice in the app. Support must not manually reverse a restriction or promise reinstatement; Trust & Safety reviews the original decision. Una restricción de LIVE se disputa desde el aviso en la app. Soporte no debe revertir una restricción ni prometer la reactivación; Confianza y Seguridad revisa la decisión. Uma restrição de LIVE é contestada pelo aviso no app. O suporte não deve reverter a restrição nem prometer reativação; Confiança e Segurança analisa a decisão.",
+      "suggestedReply": "Open the in-app notice to appeal the LIVE restriction. I cannot reverse it here or promise reinstatement.",
+      "escalationRequired": true,
+      "escalationReason": "LIVE restriction appeals require Trust & Safety review."
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-rest-copyright",
+      "title": "Copyright Claim",
+      "category": "Content and restrictions",
+      "triggerKeywords": [
+        "copyright",
+        "claim",
+        "dispute",
+        "takedown"
+      ],
+      "summary": "A copyright claim is handled through the copyright dispute process, not frontline support. Direct the creator to the claim notice and do not give legal advice or predict the result. Una reclamación de derechos de autor se gestiona por el proceso de disputa, no por soporte. Dirige al creador al aviso de la reclamación y no des asesoramiento legal. Uma reivindicação de direitos autorais é tratada pelo processo de disputa, não pelo suporte. Direcione o criador ao aviso da reivindicação e não dê orientação jurídica.",
+      "suggestedReply": "Copyright claims are handled through the dispute process in the claim notice. I cannot give legal advice or predict the result.",
+      "escalationRequired": true,
+      "escalationReason": "Copyright disputes are handled outside frontline support."
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-monet-elig",
+      "title": "Monetization Eligibility",
+      "category": "Monetization",
+      "triggerKeywords": [
+        "monetization",
+        "eligible",
+        "requirements",
+        "apply"
+      ],
+      "summary": "Monetization eligibility depends on the published conditions and good standing. If the application control is missing, explain the conditions and route the case for review rather than promising approval. La elegibilidad para monetización depende de las condiciones publicadas y el buen estado. Si falta el control de solicitud, explica las condiciones y deriva a revisión. A elegibilidade para monetização depende das condições publicadas e boa situação. Se o controle de solicitação faltar, explique as condições e encaminhe para análise.",
+      "suggestedReply": "Monetization eligibility depends on the published conditions and good standing. If the control is missing, I can request a review.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-monet-review",
+      "title": "Monetization Review Status",
+      "category": "Monetization",
+      "triggerKeywords": [
+        "monetization",
+        "review",
+        "status",
+        "pending"
+      ],
+      "summary": "A monetization review has no fixed completion date. Explain that the review is in progress and do not promise a decision date or outcome; route repeated failures to the monetization team. Una revisión de monetización no tiene fecha fija. Explica que está en curso y no prometas fecha ni resultado; deriva fallos repetidos al equipo de monetización. Uma análise de monetização não tem data fixa. Explique que está em andamento e não prometa data nem resultado; encaminhe falhas repetidas ao time de monetização.",
+      "suggestedReply": "A monetization review has no fixed completion date. I can confirm it is in progress but cannot promise a date or outcome.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-monet-adsense",
+      "title": "AdSense Linking",
+      "category": "Monetization",
+      "triggerKeywords": [
+        "adsense",
+        "link",
+        "account",
+        "payment"
+      ],
+      "summary": "Linking an AdSense account is done from monetization settings and requires the account to be in good standing. A linking error that persists after re-authentication is routed to the monetization team. Vincular una cuenta de AdSense se hace desde la configuración y requiere buen estado. Un error que persiste tras reautenticar se deriva al equipo de monetización. Vincular uma conta do AdSense é feito nas configurações e exige boa situação. Um erro que persiste após reautenticar é encaminhado ao time de monetização.",
+      "suggestedReply": "Linking AdSense is done in monetization settings and needs good standing. A persistent linking error goes to the monetization team.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-monet-pause",
+      "title": "Monetization Paused",
+      "category": "Monetization",
+      "triggerKeywords": [
+        "monetization",
+        "paused",
+        "revenue",
+        "policy"
+      ],
+      "summary": "A monetization pause is usually tied to a policy review. Explain the general reason category and route the case; do not promise restoration or advise on how to change the outcome. Una pausa de monetización suele deberse a una revisión de políticas. Explica la categoría general y deriva el caso; no prometas restauración ni aconsejes cómo cambiarlo. Uma pausa na monetização geralmente decorre de uma revisão de políticas. Explique a categoria geral e encaminhe; não prometa restauração nem oriente como mudar.",
+      "suggestedReply": "A monetization pause is usually a policy review. I can explain the general category and route it, but cannot promise restoration.",
+      "escalationRequired": true,
+      "escalationReason": "A monetization pause tied to policy review needs specialist handling."
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-comm-comments",
+      "title": "Comment Moderation",
+      "category": "Community",
+      "triggerKeywords": [
+        "comments",
+        "moderation",
+        "hidden",
+        "filter"
+      ],
+      "summary": "Comments can be held by moderation filters. Explain the general filters and how to review held comments; a repeated disappearance across many comments is routed for a moderation check. Los comentarios pueden retenerse por filtros de moderación. Explica los filtros generales y cómo revisarlos; una desaparición repetida se deriva a revisión de moderación. Comentários podem ser retidos por filtros de moderação. Explique os filtros gerais e como revisar; um desaparecimento repetido é encaminhado para verificação.",
+      "suggestedReply": "Comments can be held by moderation filters. I can explain the general filters; a repeated pattern goes to a moderation check.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-comm-tab",
+      "title": "Community Tab Access",
+      "category": "Community",
+      "triggerKeywords": [
+        "community",
+        "tab",
+        "access",
+        "posts"
+      ],
+      "summary": "The Community tab unlocks once the account meets the published conditions and is in good standing. If it is absent despite that, route the case for a review rather than promising access. La pestaña Comunidad se habilita cuando la cuenta cumple las condiciones publicadas y está en buen estado. Si falta pese a ello, deriva a revisión sin prometer acceso. A aba Comunidade é liberada quando a conta atende às condições publicadas e está em boa situação. Se faltar apesar disso, encaminhe para análise sem prometer acesso.",
+      "suggestedReply": "The Community tab unlocks when the published conditions are met and the account is in good standing. If it is missing, I can request a review.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-comm-report",
+      "title": "Reporting Another User",
+      "category": "Community",
+      "triggerKeywords": [
+        "report",
+        "user",
+        "abuse",
+        "harassment"
+      ],
+      "summary": "A report about another user is submitted through the in-app report flow. Support does not disclose the outcome or the actions taken. Harassment involving safety is routed for specialist review. Un informe sobre otro usuario se envía por el flujo de reporte de la app. Soporte no revela el resultado ni las medidas. El acoso con riesgo de seguridad se deriva a especialistas. Uma denúncia sobre outro usuário é enviada pelo fluxo de denúncia do app. O suporte não revela o resultado nem as medidas. Assédio com risco de segurança é encaminhado a especialistas.",
+      "suggestedReply": "Please use the in-app report flow. I cannot disclose the outcome or any action taken; safety-related reports go to specialists.",
+      "escalationRequired": true,
+      "escalationReason": "Safety-related reports require specialist review."
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-comm-block",
+      "title": "Blocking and Muting",
+      "category": "Community",
+      "triggerKeywords": [
+        "block",
+        "mute",
+        "user",
+        "privacy"
+      ],
+      "summary": "Blocking or muting another account is self-service from the profile menu. Explain where the control is; do not act on the account on the customer's behalf. Bloquear o silenciar otra cuenta es autoservicio desde el menú del perfil. Explica dónde está el control; no actúes en nombre del cliente. Bloquear ou silenciar outra conta é autoatendimento no menu do perfil. Explique onde está o controle; não aja em nome do cliente.",
+      "suggestedReply": "Blocking and muting are self-service in the profile menu. I can point you to the control but will not act on your account.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-up-upload",
+      "title": "Upload Failure",
+      "category": "Uploads and processing",
+      "triggerKeywords": [
+        "upload",
+        "failed",
+        "video",
+        "publish"
+      ],
+      "summary": "A failed upload is usually a connection or file-format issue. Confirm the connection and the file type, retry once, and check available storage. A failure that repeats for every file is routed for review. Una subida fallida suele ser un problema de conexión o formato. Confirma la conexión y el tipo de archivo, reintenta una vez y revisa el almacenamiento disponible. Um upload que falha geralmente é problema de conexão ou formato. Confirme a conexão e o tipo de arquivo, tente uma vez e verifique o armazenamento disponível.",
+      "suggestedReply": "Please confirm the connection and file type, retry once, and check available storage. A repeat failure goes for review.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-up-processing",
+      "title": "Video Processing Stuck",
+      "category": "Uploads and processing",
+      "triggerKeywords": [
+        "processing",
+        "stuck",
+        "video",
+        "quality"
+      ],
+      "summary": "A video stuck in processing is normally completed shortly. Ask the creator to wait and then retry the upload once; a video stuck well past the usual window is routed for a processing review. Un vídeo atascado en procesamiento suele completarse pronto. Pide esperar y reintentar la subida una vez; un vídeo atascado mucho más tiempo se deriva a revisión. Um vídeo travado no processamento geralmente conclui logo. Peça para aguardar e tentar o upload uma vez; um vídeo travado muito além disso é encaminhado para análise.",
+      "suggestedReply": "Please wait a little and retry the upload once. A video stuck well past the usual window goes for a processing review.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-up-thumbnail",
+      "title": "Thumbnail or Metadata Not Saving",
+      "category": "Uploads and processing",
+      "triggerKeywords": [
+        "thumbnail",
+        "metadata",
+        "save",
+        "title"
+      ],
+      "summary": "A thumbnail or title that does not save is usually a session or file-size issue. Confirm the image meets the stated limits and retry after a refresh; a persistent failure is routed for review. Una miniatura o título que no se guarda suele ser un problema de sesión o tamaño. Confirma los límites y reintenta tras actualizar; un fallo persistente se deriva a revisión. Uma miniatura ou título que não salva geralmente é problema de sessão ou tamanho. Confirme os limites e tente após atualizar; uma falha persistente é encaminhada.",
+      "suggestedReply": "Please confirm the image meets the stated limits and retry after a refresh. A persistent failure goes for review.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-prem-billing",
+      "title": "Premium Billing Question",
+      "category": "Premium membership",
+      "triggerKeywords": [
+        "premium",
+        "billing",
+        "charge",
+        "invoice"
+      ],
+      "summary": "Premium billing questions are reviewed by Payments. Confirm the masked payment method and the charge date; never request full card details. Do not promise a refund before review. Las consultas de facturación de Premium las revisa Pagos. Confirma el método enmascarado y la fecha; nunca pidas datos completos de la tarjeta. Dúvidas de cobrança do Premium são analisadas por Pagamentos. Confirme o método mascarado e a data; nunca peça dados completos do cartão.",
+      "suggestedReply": "I can confirm the masked payment method and date. Billing reviews go to Payments; I cannot promise a refund before review.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-prem-cancel",
+      "title": "Cancelling Premium",
+      "category": "Premium membership",
+      "triggerKeywords": [
+        "premium",
+        "cancel",
+        "subscription",
+        "renew"
+      ],
+      "summary": "Premium can be cancelled from the subscription settings and stays active until the end of the paid period. Support does not cancel the subscription on the customer's behalf. Premium se puede cancelar desde la configuración de la suscripción y sigue activo hasta el final del periodo pagado. Soporte no cancela en nombre del cliente. O Premium pode ser cancelado nas configurações da assinatura e permanece ativo até o fim do período pago. O suporte não cancela em nome do cliente.",
+      "suggestedReply": "You can cancel Premium in subscription settings; it stays active until the end of the paid period. I cannot cancel it for you.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-prem-restore",
+      "title": "Restoring Premium Access",
+      "category": "Premium membership",
+      "triggerKeywords": [
+        "premium",
+        "restore",
+        "access",
+        "address"
+      ],
+      "summary": "Restoring Premium access after a billing issue can require confirming the account address. If the address cannot be confirmed, route the case to Payments rather than restoring access directly. Restaurar el acceso a Premium tras un problema de facturación puede requerir confirmar la dirección. Si no se puede, deriva a Pagos en lugar de restaurar el acceso. Restaurar o acesso Premium após um problema de cobrança pode exigir confirmar o endereço. Se não for possível, encaminhe a Pagamentos em vez de restaurar.",
+      "suggestedReply": "Restoring Premium may require confirming the account address. If that fails, I route the case to Payments.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-an-viewcount",
+      "title": "View Count Discrepancy",
+      "category": "Analytics and reporting",
+      "triggerKeywords": [
+        "views",
+        "count",
+        "analytics",
+        "drop"
+      ],
+      "summary": "View counts are adjusted as invalid views are removed, so a later count can be lower than an earlier one. Explain the general adjustment; do not promise to restore a count. Los recuentos de visualizaciones se ajustan al eliminar vistas no válidas, por lo que pueden bajar. Explica el ajuste general; no prometas restaurar un recuento. As contagens de visualizações são ajustadas quando views inválidas são removidas, então podem cair. Explique o ajuste geral; não prometa restaurar uma contagem.",
+      "suggestedReply": "View counts are adjusted when invalid views are removed, so a later count can be lower. I cannot restore a count.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-an-watchtime",
+      "title": "Watch-Time Reporting",
+      "category": "Analytics and reporting",
+      "triggerKeywords": [
+        "watch time",
+        "analytics",
+        "report",
+        "minutes"
+      ],
+      "summary": "Watch-time figures in analytics can lag the live view. Explain the reporting delay and ask the creator to check again later; a figure that never updates is routed for a reporting check. Las cifras de tiempo de visualización pueden ir con retraso. Explica el retraso y pide comprobar más tarde; una cifra que nunca se actualiza se deriva a revisión. As cifras de tempo de exibição podem atrasar. Explique o atraso e peça para verificar mais tarde; uma cifra que nunca atualiza é encaminhada.",
+      "suggestedReply": "Watch-time reporting can lag; please check again later. A figure that never updates goes for a reporting check.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-an-revenue",
+      "title": "Revenue Reporting",
+      "category": "Analytics and reporting",
+      "triggerKeywords": [
+        "revenue",
+        "analytics",
+        "estimate",
+        "report"
+      ],
+      "summary": "Revenue figures shown in analytics are estimates and are finalised later. Explain the estimate nature; a specific revenue dispute is routed to Payments rather than adjusted by support. Las cifras de ingresos en analíticas son estimaciones y se finalizan después. Explica su naturaleza; una disputa concreta se deriva a Pagos. As cifras de receita nas análises são estimativas e são finalizadas depois. Explique isso; uma disputa específica é encaminhada a Pagamentos.",
+      "suggestedReply": "Revenue in analytics is an estimate that is finalised later. A specific dispute goes to Payments rather than being adjusted here.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-an-export",
+      "title": "Data Export Request",
+      "category": "Analytics and reporting",
+      "triggerKeywords": [
+        "export",
+        "data",
+        "download",
+        "report"
+      ],
+      "summary": "A data export is requested from the account privacy settings and is delivered to the account email. Support does not email exports directly. An export that never arrives is routed for review. La exportación de datos se solicita desde la configuración de privacidad y se envía al correo de la cuenta. Soporte no envía exportaciones. Una que no llega se deriva a revisión. A exportação de dados é solicitada nas configurações de privacidade e enviada ao e-mail da conta. O suporte não envia exportações. Uma que não chega é encaminhada.",
+      "suggestedReply": "A data export is requested in privacy settings and delivered to the account email. I cannot email it directly; a missing export goes for review.",
+      "escalationRequired": false,
+      "escalationReason": ""
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-spec-access",
+      "title": "Accessibility Accommodation",
+      "category": "Specialist support",
+      "triggerKeywords": [
+        "accessibility",
+        "accommodation",
+        "disability",
+        "support"
+      ],
+      "summary": "A request for an accessibility accommodation requires specialist review. Record the request and route it; do not promise a specific accommodation or timeline. Una solicitud de adaptación de accesibilidad requiere revisión especializada. Registra la solicitud y derívala; no prometas una adaptación ni un plazo concretos. Um pedido de adaptação de acessibilidade exige análise especializada. Registre o pedido e encaminhe; não prometa adaptação nem prazo específicos.",
+      "suggestedReply": "Accessibility accommodation requests go to a specialist team. I have recorded it and cannot promise a specific outcome or timeline.",
+      "escalationRequired": true,
+      "escalationReason": "Accessibility accommodation requires specialist review."
+    },
+    {
+      "data_mode": "simulated",
+      "id": "sc-spec-legal",
+      "title": "Legal or Law-Enforcement Request",
+      "category": "Specialist support",
+      "triggerKeywords": [
+        "legal",
+        "law enforcement",
+        "subpoena",
+        "court"
+      ],
+      "summary": "A legal or law-enforcement request must not be handled in frontline support. Do not confirm account details; route the request to the legal team and acknowledge receipt only. Una solicitud legal o policial no debe gestionarse en soporte. No confirmes datos de la cuenta; deriva la solicitud al equipo legal y limítate a acusar recibo. Um pedido legal ou policial não deve ser tratado no suporte. Não confirme dados da conta; encaminhe ao time jurídico e apenas confirme o recebimento.",
+      "suggestedReply": "Legal and law-enforcement requests go to the legal team. I cannot confirm account details; I will acknowledge receipt only.",
+      "escalationRequired": true,
+      "escalationReason": "Legal requests must be handled by the legal team."
+    }
+  ]
+}

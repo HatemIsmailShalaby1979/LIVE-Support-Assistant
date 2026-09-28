@@ -1,0 +1,4635 @@
+{
+  "data_mode": "simulated",
+  "seed": 20260928,
+  "ticketCount": 408,
+  "chaosRateConfigured": 0.02,
+  "chaosRateActual": 0.02,
+  "chaosSummary": {
+    "chaosTicketCount": 8
+  },
+  "chaosTypeDistribution": {
+    "baseline": 400,
+    "mixed_language_typos_sarcasm": 2,
+    "near_duplicate": 6
+  },
+  "tickets": [
+    {
+      "ticketId": "SCALE-0001",
+      "subject": "my payout says processed three days",
+      "message": "my payout says processed three days ago but nothing in my bank yet",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-timing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0002",
+      "subject": "how long after processed until the",
+      "message": "how long after processed until the money actually lands?",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-timing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0003",
+      "subject": "payout marked completed tuesday, bank still",
+      "message": "payout marked completed tuesday, bank still shows zero",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-timing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0004",
+      "subject": "mi pago figura como procesado pero",
+      "message": "mi pago figura como procesado pero no llega al banco, cuanto tarda",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-timing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0005",
+      "subject": "el pago aparece completado y mi",
+      "message": "el pago aparece completado y mi cuenta sigue en cero",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-timing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0006",
+      "subject": "meu saque aparece como processado mas",
+      "message": "meu saque aparece como processado mas nao caiu na conta",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-timing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0007",
+      "subject": "quanto tempo depois de processado o",
+      "message": "quanto tempo depois de processado o dinheiro chega",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-timing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0008",
+      "subject": "payout procesed 2 days ago still",
+      "message": "payout procesed 2 days ago still not in bank",
+      "language": "en",
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "mixed_language_typos_sarcasm"
+      },
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-timing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0009",
+      "subject": "payout says paid but it never",
+      "message": "payout says paid but it never arrived, can you trace it?",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0010",
+      "subject": "the payout reference shows processed but",
+      "message": "the payout reference shows processed but no deposit, please investigate",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0011",
+      "subject": "el pago figura como pagado pero",
+      "message": "el pago figura como pagado pero nunca llego, pueden rastrearlo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0012",
+      "subject": "o saque consta como pago mas",
+      "message": "o saque consta como pago mas nunca chegou, podem rastrear",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0013",
+      "subject": "money vanished between payout and bank,",
+      "message": "money vanished between payout and bank, need a trace",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0014",
+      "subject": "payout completed but the bank has",
+      "message": "payout completed but the bank has no record of it",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0015",
+      "subject": "saque processado mas banco nao tem",
+      "message": "saque processado mas banco nao tem registro, preciso de rastreio",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0016",
+      "subject": "can you check where my payout",
+      "message": "can you check where my payout went",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0017",
+      "subject": "how do i change the bank",
+      "message": "how do i change the bank account my payouts go to?",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-method"
+      }
+    },
+    {
+      "ticketId": "SCALE-0018",
+      "subject": "i want to update my payout",
+      "message": "i want to update my payout destination before the next cycle",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-method"
+      }
+    },
+    {
+      "ticketId": "SCALE-0019",
+      "subject": "como cambio la cuenta bancaria donde",
+      "message": "como cambio la cuenta bancaria donde recibo los pagos",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-method"
+      }
+    },
+    {
+      "ticketId": "SCALE-0020",
+      "subject": "como altero a conta bancaria que",
+      "message": "como altero a conta bancaria que recebe os saques",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-method"
+      }
+    },
+    {
+      "ticketId": "SCALE-0021",
+      "subject": "changed my bank, will this payout",
+      "message": "changed my bank, will this payout go to the new one or the old one",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-method"
+      }
+    },
+    {
+      "ticketId": "SCALE-0022",
+      "subject": "update payout method please",
+      "message": "update payout method please",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-method"
+      }
+    },
+    {
+      "ticketId": "SCALE-0023",
+      "subject": "mudei de banco, o saque atual",
+      "message": "mudei de banco, o saque atual vai para qual conta",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-method"
+      }
+    },
+    {
+      "ticketId": "SCALE-0024",
+      "subject": "cambie de banco, el pago en",
+      "message": "cambie de banco, el pago en curso a donde va",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-method"
+      }
+    },
+    {
+      "ticketId": "SCALE-0025",
+      "subject": "my payout is on hold asking",
+      "message": "my payout is on hold asking for a tax form, what do i do",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-tax"
+      }
+    },
+    {
+      "ticketId": "SCALE-0026",
+      "subject": "tax form rejected, payout not released",
+      "message": "tax form rejected, payout not released",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-tax"
+      }
+    },
+    {
+      "ticketId": "SCALE-0027",
+      "subject": "mi pago esta retenido por un",
+      "message": "mi pago esta retenido por un formulario fiscal, que hago",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-tax"
+      }
+    },
+    {
+      "ticketId": "SCALE-0028",
+      "subject": "meu saque esta retido por um",
+      "message": "meu saque esta retido por um formulario fiscal, o que faco",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-tax"
+      }
+    },
+    {
+      "ticketId": "SCALE-0029",
+      "subject": "do i need to submit tax",
+      "message": "do i need to submit tax info before payout",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-tax"
+      }
+    },
+    {
+      "ticketId": "SCALE-0030",
+      "subject": "withholding form question before i get",
+      "message": "withholding form question before i get paid",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-tax"
+      }
+    },
+    {
+      "ticketId": "SCALE-0031",
+      "subject": "preciso enviar dados fiscais antes do",
+      "message": "preciso enviar dados fiscais antes do saque",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-tax"
+      }
+    },
+    {
+      "ticketId": "SCALE-0032",
+      "subject": "formulario fiscal pendiente, no me pagan",
+      "message": "formulario fiscal pendiente, no me pagan",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-tax"
+      }
+    },
+    {
+      "ticketId": "SCALE-0033",
+      "subject": "i got charged twice for the",
+      "message": "i got charged twice for the 100 coins pack, need a refund",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-refund"
+      }
+    },
+    {
+      "ticketId": "SCALE-0034",
+      "subject": "bought coins and want the second",
+      "message": "bought coins and want the second charge reversed",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-refund"
+      }
+    },
+    {
+      "ticketId": "SCALE-0035",
+      "subject": "me cobraron dos veces las monedas,",
+      "message": "me cobraron dos veces las monedas, quiero un reembolso",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-refund"
+      }
+    },
+    {
+      "ticketId": "SCALE-0036",
+      "subject": "fui cobrado duas vezes pelas moedas,",
+      "message": "fui cobrado duas vezes pelas moedas, quero reembolso",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-refund"
+      }
+    },
+    {
+      "ticketId": "SCALE-0037",
+      "subject": "unauthorized coin purchase on my card,",
+      "message": "unauthorized coin purchase on my card, please review",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-refund"
+      }
+    },
+    {
+      "ticketId": "SCALE-0038",
+      "subject": "can i get my coins refunded,",
+      "message": "can i get my coins refunded, i bought by mistake",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-refund"
+      }
+    },
+    {
+      "ticketId": "SCALE-0039",
+      "subject": "compra de moedas nao autorizada no",
+      "message": "compra de moedas nao autorizada no cartao",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-refund"
+      }
+    },
+    {
+      "ticketId": "SCALE-0040",
+      "subject": "compra de monedas no autorizada, revisen",
+      "message": "compra de monedas no autorizada, revisen por favor",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-refund"
+      }
+    },
+    {
+      "ticketId": "SCALE-0041",
+      "subject": "i paid for coins but nothing",
+      "message": "i paid for coins but nothing showed up in my balance",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0042",
+      "subject": "receipt confirms my coin purchase but",
+      "message": "receipt confirms my coin purchase but the coins are missing",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0043",
+      "subject": "pague monedas pero no aparecen en",
+      "message": "pague monedas pero no aparecen en mi saldo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0044",
+      "subject": "paguei moedas mas nada apareceu no",
+      "message": "paguei moedas mas nada apareceu no saldo",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0045",
+      "subject": "coins not credited after purchase, receipt",
+      "message": "coins not credited after purchase, receipt attached",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0046",
+      "subject": "bought coins, balance unchanged",
+      "message": "bought coins, balance unchanged",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0047",
+      "subject": "comprei moedas e o saldo nao",
+      "message": "comprei moedas e o saldo nao mudou",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0048",
+      "subject": "el recibo confirma la compra pero",
+      "message": "el recibo confirma la compra pero faltan las monedas",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0049",
+      "subject": "i tried sending a gift but",
+      "message": "i tried sending a gift but it said error, did it take my money?",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-send-error"
+      }
+    },
+    {
+      "ticketId": "SCALE-0050",
+      "subject": "gift failed to send but i",
+      "message": "gift failed to send but i was charged",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-send-error"
+      }
+    },
+    {
+      "ticketId": "SCALE-0051",
+      "subject": "intente enviar un regalo y dio",
+      "message": "intente enviar un regalo y dio error, me cobraron?",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-send-error"
+      }
+    },
+    {
+      "ticketId": "SCALE-0052",
+      "subject": "tentei enviar um presente e deu",
+      "message": "tentei enviar um presente e deu erro, cobraram?",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-send-error"
+      }
+    },
+    {
+      "ticketId": "SCALE-0053",
+      "subject": "error when sending a gift, recipient",
+      "message": "error when sending a gift, recipient never got it",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-send-error"
+      }
+    },
+    {
+      "ticketId": "SCALE-0054",
+      "subject": "gift sending keeps failing",
+      "message": "gift sending keeps failing",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-send-error"
+      }
+    },
+    {
+      "ticketId": "SCALE-0055",
+      "subject": "erro ao enviar presente, destinatario nao",
+      "message": "erro ao enviar presente, destinatario nao recebeu",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-send-error"
+      }
+    },
+    {
+      "ticketId": "SCALE-0056",
+      "subject": "el regalo no se envio pero",
+      "message": "el regalo no se envio pero si me cobraron",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-send-error"
+      }
+    },
+    {
+      "ticketId": "SCALE-0057",
+      "subject": "gifted membership problem, it charged me",
+      "message": "gifted membership problem, it charged me again",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-membership"
+      }
+    },
+    {
+      "ticketId": "SCALE-0058",
+      "subject": "i gifted a membership, why was",
+      "message": "i gifted a membership, why was i billed twice",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-membership"
+      }
+    },
+    {
+      "ticketId": "SCALE-0059",
+      "subject": "regale una membresia y me cobraron",
+      "message": "regale una membresia y me cobraron de nuevo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-membership"
+      }
+    },
+    {
+      "ticketId": "SCALE-0060",
+      "subject": "presenteei uma assinatura e cobraram de",
+      "message": "presenteei uma assinatura e cobraram de novo",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-membership"
+      }
+    },
+    {
+      "ticketId": "SCALE-0061",
+      "subject": "does a gifted membership renew on",
+      "message": "does a gifted membership renew on its own?",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-membership"
+      }
+    },
+    {
+      "ticketId": "SCALE-0062",
+      "subject": "gifted membership renewal charge question",
+      "message": "gifted membership renewal charge question",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-membership"
+      }
+    },
+    {
+      "ticketId": "SCALE-0063",
+      "subject": "assinatura de presente renova sozinha?",
+      "message": "assinatura de presente renova sozinha?",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-membership"
+      }
+    },
+    {
+      "ticketId": "SCALE-0064",
+      "subject": "la membresia regalada se renueva sola?",
+      "message": "la membresia regalada se renueva sola?",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-membership"
+      }
+    },
+    {
+      "ticketId": "SCALE-0065",
+      "subject": "forgot my password, how do i",
+      "message": "forgot my password, how do i get back in",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-recovery"
+      }
+    },
+    {
+      "ticketId": "SCALE-0066",
+      "subject": "cant log in, need a reset",
+      "message": "cant log in, need a reset link",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-recovery"
+      }
+    },
+    {
+      "ticketId": "SCALE-0067",
+      "subject": "olvide mi contrasena, como entro de",
+      "message": "olvide mi contrasena, como entro de nuevo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-recovery"
+      }
+    },
+    {
+      "ticketId": "SCALE-0068",
+      "subject": "esqueci minha senha, como entro de",
+      "message": "esqueci minha senha, como entro de novo",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-recovery"
+      }
+    },
+    {
+      "ticketId": "SCALE-0069",
+      "subject": "password reset not working, help me",
+      "message": "password reset not working, help me sign in",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-recovery"
+      }
+    },
+    {
+      "ticketId": "SCALE-0070",
+      "subject": "locked out and need a recovery",
+      "message": "locked out and need a recovery code",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-recovery"
+      }
+    },
+    {
+      "ticketId": "SCALE-0071",
+      "subject": "nao consigo entrar, preciso redefinir a",
+      "message": "nao consigo entrar, preciso redefinir a senha",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-recovery"
+      }
+    },
+    {
+      "ticketId": "SCALE-0072",
+      "subject": "no puedo iniciar sesion, necesito recuperar",
+      "message": "no puedo iniciar sesion, necesito recuperar la cuenta",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-recovery"
+      }
+    },
+    {
+      "ticketId": "SCALE-0073",
+      "subject": "never got the sms code to",
+      "message": "never got the sms code to my phone, cant login",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-code"
+      }
+    },
+    {
+      "ticketId": "SCALE-0074",
+      "subject": "recovery code not arriving after i",
+      "message": "recovery code not arriving after i changed phones",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-code"
+      }
+    },
+    {
+      "ticketId": "SCALE-0075",
+      "subject": "no me llega el codigo al",
+      "message": "no me llega el codigo al telefono, no puedo entrar",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-code"
+      }
+    },
+    {
+      "ticketId": "SCALE-0076",
+      "subject": "o codigo nao chega no meu",
+      "message": "o codigo nao chega no meu telefone, nao consigo entrar",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-code"
+      }
+    },
+    {
+      "ticketId": "SCALE-0077",
+      "subject": "verification code never shows up",
+      "message": "verification code never shows up",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-code"
+      }
+    },
+    {
+      "ticketId": "SCALE-0078",
+      "subject": "code to my email is not",
+      "message": "code to my email is not coming through",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-code"
+      }
+    },
+    {
+      "ticketId": "SCALE-0079",
+      "subject": "codigo de recuperacao nao chega apos",
+      "message": "codigo de recuperacao nao chega apos trocar de celular",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-code"
+      }
+    },
+    {
+      "ticketId": "SCALE-0080",
+      "subject": "el codigo no llega despues de",
+      "message": "el codigo no llega despues de cambiar de movil",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-code"
+      }
+    },
+    {
+      "ticketId": "SCALE-0081",
+      "subject": "it keeps looping when i put",
+      "message": "it keeps looping when i put my username in",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-loop"
+      }
+    },
+    {
+      "ticketId": "SCALE-0082",
+      "subject": "password reset sends me back to",
+      "message": "password reset sends me back to the sign in screen",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-loop"
+      }
+    },
+    {
+      "ticketId": "SCALE-0083",
+      "subject": "se queda en bucle al poner",
+      "message": "se queda en bucle al poner mi usuario",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-loop"
+      }
+    },
+    {
+      "ticketId": "SCALE-0084",
+      "subject": "fica em loop quando coloco meu",
+      "message": "fica em loop quando coloco meu usuario",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-loop"
+      }
+    },
+    {
+      "ticketId": "SCALE-0085",
+      "subject": "reset loop, new password never accepted",
+      "message": "reset loop, new password never accepted",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-loop"
+      }
+    },
+    {
+      "ticketId": "SCALE-0086",
+      "subject": "stuck in a login loop",
+      "message": "stuck in a login loop",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-loop"
+      }
+    },
+    {
+      "ticketId": "SCALE-0087",
+      "subject": "redefinicao em loop, senha nova nao",
+      "message": "redefinicao em loop, senha nova nao aceita",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-loop"
+      }
+    },
+    {
+      "ticketId": "SCALE-0088",
+      "subject": "bucle al restablecer la contrasena",
+      "message": "bucle al restablecer la contrasena",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-loop"
+      }
+    },
+    {
+      "ticketId": "SCALE-0089",
+      "subject": "i need to change the email",
+      "message": "i need to change the email i sign in with",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-email"
+      }
+    },
+    {
+      "ticketId": "SCALE-0090",
+      "subject": "how do i update my sign",
+      "message": "how do i update my sign in email address",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-email"
+      }
+    },
+    {
+      "ticketId": "SCALE-0091",
+      "subject": "quiero cambiar el correo con el",
+      "message": "quiero cambiar el correo con el que inicio sesion",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-email"
+      }
+    },
+    {
+      "ticketId": "SCALE-0092",
+      "subject": "quero trocar o e-mail com que",
+      "message": "quero trocar o e-mail com que faco login",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-email"
+      }
+    },
+    {
+      "ticketId": "SCALE-0093",
+      "subject": "change sign in email, i know",
+      "message": "change sign in email, i know my password",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-email"
+      }
+    },
+    {
+      "ticketId": "SCALE-0094",
+      "subject": "email change for sign in, verification",
+      "message": "email change for sign in, verification needed",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-email"
+      }
+    },
+    {
+      "ticketId": "SCALE-0095",
+      "subject": "alterar e-mail de acesso, tenho a",
+      "message": "alterar e-mail de acesso, tenho a senha",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-email"
+      }
+    },
+    {
+      "ticketId": "SCALE-0096",
+      "subject": "cambiar el correo de acceso, se",
+      "message": "cambiar el correo de acceso, se mi contrasena",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-email"
+      }
+    },
+    {
+      "ticketId": "SCALE-0097",
+      "subject": "someone changed my email and i",
+      "message": "someone changed my email and i am locked out help",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0098",
+      "subject": "i think my account was hacked,",
+      "message": "i think my account was hacked, please secure it",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0099",
+      "subject": "unknown person is using my channel,",
+      "message": "unknown person is using my channel, takeover suspected",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0100",
+      "subject": "alguien cambio mi correo y no",
+      "message": "alguien cambio mi correo y no puedo entrar, ayuda",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0101",
+      "subject": "creo que hackearon mi cuenta, asegurenla",
+      "message": "creo que hackearon mi cuenta, asegurenla por favor",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0102",
+      "subject": "alguem mudou meu e-mail e estou",
+      "message": "alguem mudou meu e-mail e estou bloqueado, ajuda",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0103",
+      "subject": "acho que invadiram minha conta, protejam",
+      "message": "acho que invadiram minha conta, protejam por favor",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0104",
+      "subject": "my account got stolen, locked out",
+      "message": "my account got stolen, locked out completely",
+      "language": "en",
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "mixed_language_typos_sarcasm"
+      },
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0105",
+      "subject": "i see logins from another country",
+      "message": "i see logins from another country in my settings, was i hacked?",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0106",
+      "subject": "sessions i do not recognise are",
+      "message": "sessions i do not recognise are active on my account",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0107",
+      "subject": "veo inicios de sesion de otro",
+      "message": "veo inicios de sesion de otro pais, me hackearon?",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0108",
+      "subject": "vejo logins de outro pais, fui",
+      "message": "vejo logins de outro pais, fui invadido?",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0109",
+      "subject": "strange login locations on my account",
+      "message": "strange login locations on my account",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0110",
+      "subject": "active sessions i did not create",
+      "message": "active sessions i did not create",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0111",
+      "subject": "sessoes ativas que nao criei",
+      "message": "sessoes ativas que nao criei",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0112",
+      "subject": "sesiones activas que yo no abri",
+      "message": "sesiones activas que yo no abri",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0113",
+      "subject": "the recovery email was changed and",
+      "message": "the recovery email was changed and i am locked out",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0114",
+      "subject": "my recovery email is gone, i",
+      "message": "my recovery email is gone, i cannot reset anything",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0115",
+      "subject": "cambiaron mi correo de recuperacion y",
+      "message": "cambiaron mi correo de recuperacion y estoy bloqueado",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0116",
+      "subject": "mudaram meu e-mail de recuperacao e",
+      "message": "mudaram meu e-mail de recuperacao e estou bloqueado",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0117",
+      "subject": "recovery contact changed without me",
+      "message": "recovery contact changed without me",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0118",
+      "subject": "locked out, recovery email no longer",
+      "message": "locked out, recovery email no longer mine",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0119",
+      "subject": "contato de recuperacao alterado sem meu",
+      "message": "contato de recuperacao alterado sem meu consentimento",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0120",
+      "subject": "contacto de recuperacion cambiado sin mi",
+      "message": "contacto de recuperacion cambiado sin mi permiso",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0121",
+      "subject": "how do i turn on two",
+      "message": "how do i turn on two factor authentication?",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-sec-2fa"
+      }
+    },
+    {
+      "ticketId": "SCALE-0122",
+      "subject": "setting up an authenticator app, where",
+      "message": "setting up an authenticator app, where do i start",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-sec-2fa"
+      }
+    },
+    {
+      "ticketId": "SCALE-0123",
+      "subject": "como activo la verificacion en dos",
+      "message": "como activo la verificacion en dos pasos",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-sec-2fa"
+      }
+    },
+    {
+      "ticketId": "SCALE-0124",
+      "subject": "como ativo a verificacao em duas",
+      "message": "como ativo a verificacao em duas etapas",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-sec-2fa"
+      }
+    },
+    {
+      "ticketId": "SCALE-0125",
+      "subject": "enable 2fa on my account please",
+      "message": "enable 2fa on my account please",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-sec-2fa"
+      }
+    },
+    {
+      "ticketId": "SCALE-0126",
+      "subject": "where is the two factor setting",
+      "message": "where is the two factor setting",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-sec-2fa"
+      }
+    },
+    {
+      "ticketId": "SCALE-0127",
+      "subject": "onde fica a opcao de dois",
+      "message": "onde fica a opcao de dois fatores",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-sec-2fa"
+      }
+    },
+    {
+      "ticketId": "SCALE-0128",
+      "subject": "donde esta la opcion de dos",
+      "message": "donde esta la opcion de dos pasos",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-sec-2fa"
+      }
+    },
+    {
+      "ticketId": "SCALE-0129",
+      "subject": "every time i try to go",
+      "message": "every time i try to go live it disconnects after a couple of minutes",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-disconnect"
+      }
+    },
+    {
+      "ticketId": "SCALE-0130",
+      "subject": "my stream drops repeatedly for everyone",
+      "message": "my stream drops repeatedly for everyone watching",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-disconnect"
+      }
+    },
+    {
+      "ticketId": "SCALE-0131",
+      "subject": "mi transmision se corta a los",
+      "message": "mi transmision se corta a los pocos minutos",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-disconnect"
+      }
+    },
+    {
+      "ticketId": "SCALE-0132",
+      "subject": "minha transmissao cai depois de alguns",
+      "message": "minha transmissao cai depois de alguns minutos",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-disconnect"
+      }
+    },
+    {
+      "ticketId": "SCALE-0133",
+      "subject": "live keeps disconnecting mid broadcast",
+      "message": "live keeps disconnecting mid broadcast",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-disconnect"
+      }
+    },
+    {
+      "ticketId": "SCALE-0134",
+      "subject": "stream drops for all viewers at",
+      "message": "stream drops for all viewers at once",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-disconnect"
+      }
+    },
+    {
+      "ticketId": "SCALE-0135",
+      "subject": "live desconecta no meio da transmissao",
+      "message": "live desconecta no meio da transmissao",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-disconnect"
+      }
+    },
+    {
+      "ticketId": "SCALE-0136",
+      "subject": "el directo se corta a mitad",
+      "message": "el directo se corta a mitad",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-disconnect"
+      }
+    },
+    {
+      "ticketId": "SCALE-0137",
+      "subject": "my stream is lagging very badly",
+      "message": "my stream is lagging very badly for all my viewers",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-lag"
+      }
+    },
+    {
+      "ticketId": "SCALE-0138",
+      "subject": "live is buffering constantly, viewers complaining",
+      "message": "live is buffering constantly, viewers complaining",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-lag"
+      }
+    },
+    {
+      "ticketId": "SCALE-0139",
+      "subject": "mi transmision va con mucho retraso,",
+      "message": "mi transmision va con mucho retraso, se quejan los espectadores",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-lag"
+      }
+    },
+    {
+      "ticketId": "SCALE-0140",
+      "subject": "minha transmissao esta travando muito, espectadores",
+      "message": "minha transmissao esta travando muito, espectadores reclamam",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-lag"
+      }
+    },
+    {
+      "ticketId": "SCALE-0141",
+      "subject": "bad lag on live today",
+      "message": "bad lag on live today",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-lag"
+      }
+    },
+    {
+      "ticketId": "SCALE-0142",
+      "subject": "live quality keeps dropping",
+      "message": "live quality keeps dropping",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-lag"
+      }
+    },
+    {
+      "ticketId": "SCALE-0143",
+      "subject": "qualidade do live caindo direto",
+      "message": "qualidade do live caindo direto",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-lag"
+      }
+    },
+    {
+      "ticketId": "SCALE-0144",
+      "subject": "la calidad del directo baja todo",
+      "message": "la calidad del directo baja todo el tiempo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-lag"
+      }
+    },
+    {
+      "ticketId": "SCALE-0145",
+      "subject": "warning about multiple streams using the",
+      "message": "warning about multiple streams using the same stream key with auto-start",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-key"
+      }
+    },
+    {
+      "ticketId": "SCALE-0146",
+      "subject": "got a duplicate stream key warning,",
+      "message": "got a duplicate stream key warning, what now",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-key"
+      }
+    },
+    {
+      "ticketId": "SCALE-0147",
+      "subject": "aviso de varias transmisiones con la",
+      "message": "aviso de varias transmisiones con la misma clave",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-key"
+      }
+    },
+    {
+      "ticketId": "SCALE-0148",
+      "subject": "aviso de varias transmissoes com a",
+      "message": "aviso de varias transmissoes com a mesma chave",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-key"
+      }
+    },
+    {
+      "ticketId": "SCALE-0149",
+      "subject": "stream key conflict, how do i",
+      "message": "stream key conflict, how do i fix it",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-key"
+      }
+    },
+    {
+      "ticketId": "SCALE-0150",
+      "subject": "auto start and same key causing",
+      "message": "auto start and same key causing a warning",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-key"
+      }
+    },
+    {
+      "ticketId": "SCALE-0151",
+      "subject": "conflito de chave de transmissao, como",
+      "message": "conflito de chave de transmissao, como resolver",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-key"
+      }
+    },
+    {
+      "ticketId": "SCALE-0152",
+      "subject": "conflicto de clave de transmision, como",
+      "message": "conflicto de clave de transmision, como lo arreglo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-key"
+      }
+    },
+    {
+      "ticketId": "SCALE-0153",
+      "subject": "microphone not enabling during my live",
+      "message": "microphone not enabling during my live stream",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-audio"
+      }
+    },
+    {
+      "ticketId": "SCALE-0154",
+      "subject": "no sound on my live, viewers",
+      "message": "no sound on my live, viewers cannot hear me",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-audio"
+      }
+    },
+    {
+      "ticketId": "SCALE-0155",
+      "subject": "el microfono no se activa durante",
+      "message": "el microfono no se activa durante el directo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-audio"
+      }
+    },
+    {
+      "ticketId": "SCALE-0156",
+      "subject": "o microfone nao ativa durante a",
+      "message": "o microfone nao ativa durante a transmissao",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-audio"
+      }
+    },
+    {
+      "ticketId": "SCALE-0157",
+      "subject": "live audio is silent",
+      "message": "live audio is silent",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-audio"
+      }
+    },
+    {
+      "ticketId": "SCALE-0158",
+      "subject": "mic not working on live",
+      "message": "mic not working on live",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-audio"
+      }
+    },
+    {
+      "ticketId": "SCALE-0159",
+      "subject": "sem audio no live",
+      "message": "sem audio no live",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-audio"
+      }
+    },
+    {
+      "ticketId": "SCALE-0160",
+      "subject": "sin audio en el directo",
+      "message": "sin audio en el directo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-audio"
+      }
+    },
+    {
+      "ticketId": "SCALE-0161",
+      "subject": "i have 800 followers why is",
+      "message": "i have 800 followers why is the live button missing",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0162",
+      "subject": "live control is absent even though",
+      "message": "live control is absent even though i meet the conditions",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0163",
+      "subject": "cumplo los requisitos pero no aparece",
+      "message": "cumplo los requisitos pero no aparece el boton live",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0164",
+      "subject": "cumpro os requisitos mas o botao",
+      "message": "cumpro os requisitos mas o botao live nao aparece",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0165",
+      "subject": "no live option on my account",
+      "message": "no live option on my account",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0166",
+      "subject": "where is my go live button",
+      "message": "where is my go live button",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0167",
+      "subject": "cade o botao de ir ao",
+      "message": "cade o botao de ir ao vivo",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0168",
+      "subject": "no veo la opcion de emitir",
+      "message": "no veo la opcion de emitir en directo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0169",
+      "subject": "does my country support going live?",
+      "message": "does my country support going live? i meet all other requirements",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-region"
+      }
+    },
+    {
+      "ticketId": "SCALE-0170",
+      "subject": "is live available in my region",
+      "message": "is live available in my region",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-region"
+      }
+    },
+    {
+      "ticketId": "SCALE-0171",
+      "subject": "esta disponible el directo en mi",
+      "message": "esta disponible el directo en mi pais",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-region"
+      }
+    },
+    {
+      "ticketId": "SCALE-0172",
+      "subject": "o live esta disponivel na minha",
+      "message": "o live esta disponivel na minha regiao",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-region"
+      }
+    },
+    {
+      "ticketId": "SCALE-0173",
+      "subject": "region support for live streaming",
+      "message": "region support for live streaming",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-region"
+      }
+    },
+    {
+      "ticketId": "SCALE-0174",
+      "subject": "live not available where i live",
+      "message": "live not available where i live",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-region"
+      }
+    },
+    {
+      "ticketId": "SCALE-0175",
+      "subject": "live indisponivel onde eu moro",
+      "message": "live indisponivel onde eu moro",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-region"
+      }
+    },
+    {
+      "ticketId": "SCALE-0176",
+      "subject": "directo no disponible donde vivo",
+      "message": "directo no disponible donde vivo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-region"
+      }
+    },
+    {
+      "ticketId": "SCALE-0177",
+      "subject": "what are the requirements to start",
+      "message": "what are the requirements to start live streaming",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-threshold"
+      }
+    },
+    {
+      "ticketId": "SCALE-0178",
+      "subject": "do i have enough followers to",
+      "message": "do i have enough followers to go live",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-threshold"
+      }
+    },
+    {
+      "ticketId": "SCALE-0179",
+      "subject": "que requisitos hay para emitir en",
+      "message": "que requisitos hay para emitir en directo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-threshold"
+      }
+    },
+    {
+      "ticketId": "SCALE-0180",
+      "subject": "quais os requisitos para transmitir ao",
+      "message": "quais os requisitos para transmitir ao vivo",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-threshold"
+      }
+    },
+    {
+      "ticketId": "SCALE-0181",
+      "subject": "eligibility conditions for live",
+      "message": "eligibility conditions for live",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-threshold"
+      }
+    },
+    {
+      "ticketId": "SCALE-0182",
+      "subject": "how many followers do i need",
+      "message": "how many followers do i need for live",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-threshold"
+      }
+    },
+    {
+      "ticketId": "SCALE-0183",
+      "subject": "quantos seguidores preciso para o live",
+      "message": "quantos seguidores preciso para o live",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-threshold"
+      }
+    },
+    {
+      "ticketId": "SCALE-0184",
+      "subject": "cuantos seguidores necesito para el directo",
+      "message": "cuantos seguidores necesito para el directo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-threshold"
+      }
+    },
+    {
+      "ticketId": "SCALE-0185",
+      "subject": "am i eligible for live if",
+      "message": "am i eligible for live if i have an open warning",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-standing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0186",
+      "subject": "does account standing affect my live",
+      "message": "does account standing affect my live access",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-standing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0187",
+      "subject": "mi estado de cuenta afecta al",
+      "message": "mi estado de cuenta afecta al acceso a directo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-standing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0188",
+      "subject": "a situacao da conta afeta o",
+      "message": "a situacao da conta afeta o acesso ao live",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-standing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0189",
+      "subject": "open warning and live eligibility",
+      "message": "open warning and live eligibility",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-standing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0190",
+      "subject": "account not in good standing, live",
+      "message": "account not in good standing, live question",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-standing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0191",
+      "subject": "conta irregular e elegibilidade do live",
+      "message": "conta irregular e elegibilidade do live",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-standing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0192",
+      "subject": "cuenta irregular y elegibilidad del directo",
+      "message": "cuenta irregular y elegibilidad del directo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-standing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0193",
+      "subject": "my video was removed by youtube,",
+      "message": "my video was removed by youtube, how do i appeal",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0194",
+      "subject": "a video i posted is gone,",
+      "message": "a video i posted is gone, i want it reviewed",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0195",
+      "subject": "eliminaron mi video, quiero apelar",
+      "message": "eliminaron mi video, quiero apelar",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0196",
+      "subject": "meu video foi removido, quero recorrer",
+      "message": "meu video foi removido, quero recorrer",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0197",
+      "subject": "video taken down, please review the",
+      "message": "video taken down, please review the decision",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0198",
+      "subject": "content removed without explanation, appeal",
+      "message": "content removed without explanation, appeal",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0199",
+      "subject": "conteudo removido sem explicacao, recurso",
+      "message": "conteudo removido sem explicacao, recurso",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0200",
+      "subject": "contenido eliminado sin explicacion, apelacion",
+      "message": "contenido eliminado sin explicacion, apelacion",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0201",
+      "subject": "i received a community strike, can",
+      "message": "i received a community strike, can i appeal it",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0202",
+      "subject": "strike on my channel, how do",
+      "message": "strike on my channel, how do i dispute it",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0203",
+      "subject": "recibi una amonestacion, puedo apelarla",
+      "message": "recibi una amonestacion, puedo apelarla",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0204",
+      "subject": "recebi uma advertência, posso contestar",
+      "message": "recebi uma advertência, posso contestar",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0205",
+      "subject": "warning strike appeal process",
+      "message": "warning strike appeal process",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0206",
+      "subject": "dispute a strike on my account",
+      "message": "dispute a strike on my account",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0207",
+      "subject": "contestar uma advertência na conta",
+      "message": "contestar uma advertência na conta",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0208",
+      "subject": "disputar una amonestacion en mi cuenta",
+      "message": "disputar una amonestacion en mi cuenta",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0209",
+      "subject": "my live was restricted for no",
+      "message": "my live was restricted for no reason, i was just playing music",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0210",
+      "subject": "live streaming has been disabled, i",
+      "message": "live streaming has been disabled, i want to appeal",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0211",
+      "subject": "mi directo fue restringido sin razon,",
+      "message": "mi directo fue restringido sin razon, quiero apelar",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0212",
+      "subject": "meu live foi restrito sem motivo,",
+      "message": "meu live foi restrito sem motivo, quero recorrer",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0213",
+      "subject": "live access restricted, appeal please",
+      "message": "live access restricted, appeal please",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0214",
+      "subject": "live ban dispute",
+      "message": "live ban dispute",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0215",
+      "subject": "restricao de live, recurso",
+      "message": "restricao de live, recurso",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0216",
+      "subject": "restriccion de directo, apelacion",
+      "message": "restriccion de directo, apelacion",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0217",
+      "subject": "i got a copyright claim on",
+      "message": "i got a copyright claim on my video, how do i dispute it",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0218",
+      "subject": "copyright takedown question",
+      "message": "copyright takedown question",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0219",
+      "subject": "recibi una reclamacion de derechos de",
+      "message": "recibi una reclamacion de derechos de autor, como la disputo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0220",
+      "subject": "recebi uma reivindicacao de direitos autorais,",
+      "message": "recebi uma reivindicacao de direitos autorais, como contesto",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0221",
+      "subject": "copyright strike on my upload",
+      "message": "copyright strike on my upload",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0222",
+      "subject": "dispute a copyright claim",
+      "message": "dispute a copyright claim",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0223",
+      "subject": "contestar uma reivindicacao de direitos autorais",
+      "message": "contestar uma reivindicacao de direitos autorais",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0224",
+      "subject": "disputar una reclamacion de derechos de",
+      "message": "disputar una reclamacion de derechos de autor",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0225",
+      "subject": "what are the requirements to monetize",
+      "message": "what are the requirements to monetize my channel",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-elig"
+      }
+    },
+    {
+      "ticketId": "SCALE-0226",
+      "subject": "am i eligible for monetization",
+      "message": "am i eligible for monetization",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-elig"
+      }
+    },
+    {
+      "ticketId": "SCALE-0227",
+      "subject": "cuales son los requisitos para monetizar",
+      "message": "cuales son los requisitos para monetizar",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-elig"
+      }
+    },
+    {
+      "ticketId": "SCALE-0228",
+      "subject": "quais os requisitos para monetizar",
+      "message": "quais os requisitos para monetizar",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-elig"
+      }
+    },
+    {
+      "ticketId": "SCALE-0229",
+      "subject": "monetization application missing, why",
+      "message": "monetization application missing, why",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-elig"
+      }
+    },
+    {
+      "ticketId": "SCALE-0230",
+      "subject": "how do i qualify for monetization",
+      "message": "how do i qualify for monetization",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-elig"
+      }
+    },
+    {
+      "ticketId": "SCALE-0231",
+      "subject": "como me qualifico para monetizacao",
+      "message": "como me qualifico para monetizacao",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-elig"
+      }
+    },
+    {
+      "ticketId": "SCALE-0232",
+      "subject": "como califico para la monetizacion",
+      "message": "como califico para la monetizacion",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-elig"
+      }
+    },
+    {
+      "ticketId": "SCALE-0233",
+      "subject": "my monetization review has been pending",
+      "message": "my monetization review has been pending for weeks",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-review"
+      }
+    },
+    {
+      "ticketId": "SCALE-0234",
+      "subject": "how long does the monetization review",
+      "message": "how long does the monetization review take",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-review"
+      }
+    },
+    {
+      "ticketId": "SCALE-0235",
+      "subject": "mi revision de monetizacion lleva semanas",
+      "message": "mi revision de monetizacion lleva semanas pendiente",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-review"
+      }
+    },
+    {
+      "ticketId": "SCALE-0236",
+      "subject": "minha analise de monetizacao esta pendente",
+      "message": "minha analise de monetizacao esta pendente ha semanas",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-review"
+      }
+    },
+    {
+      "ticketId": "SCALE-0237",
+      "subject": "status of my monetization application",
+      "message": "status of my monetization application",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-review"
+      }
+    },
+    {
+      "ticketId": "SCALE-0238",
+      "subject": "monetization under review, any update",
+      "message": "monetization under review, any update",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-review"
+      }
+    },
+    {
+      "ticketId": "SCALE-0239",
+      "subject": "status da minha solicitacao de monetizacao",
+      "message": "status da minha solicitacao de monetizacao",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-review"
+      }
+    },
+    {
+      "ticketId": "SCALE-0240",
+      "subject": "estado de mi solicitud de monetizacion",
+      "message": "estado de mi solicitud de monetizacion",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-review"
+      }
+    },
+    {
+      "ticketId": "SCALE-0241",
+      "subject": "adsense linking error when i connect",
+      "message": "adsense linking error when i connect my account",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-adsense"
+      }
+    },
+    {
+      "ticketId": "SCALE-0242",
+      "subject": "cannot link my adsense account",
+      "message": "cannot link my adsense account",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-adsense"
+      }
+    },
+    {
+      "ticketId": "SCALE-0243",
+      "subject": "error al vincular mi cuenta de",
+      "message": "error al vincular mi cuenta de adsense",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-adsense"
+      }
+    },
+    {
+      "ticketId": "SCALE-0244",
+      "subject": "erro ao vincular minha conta do",
+      "message": "erro ao vincular minha conta do adsense",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-adsense"
+      }
+    },
+    {
+      "ticketId": "SCALE-0245",
+      "subject": "adsense account not linking",
+      "message": "adsense account not linking",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-adsense"
+      }
+    },
+    {
+      "ticketId": "SCALE-0246",
+      "subject": "how do i link adsense for",
+      "message": "how do i link adsense for monetization",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-adsense"
+      }
+    },
+    {
+      "ticketId": "SCALE-0247",
+      "subject": "como vincular o adsense para monetizacao",
+      "message": "como vincular o adsense para monetizacao",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-adsense"
+      }
+    },
+    {
+      "ticketId": "SCALE-0248",
+      "subject": "como vinculo adsense para monetizar",
+      "message": "como vinculo adsense para monetizar",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-monet-adsense"
+      }
+    },
+    {
+      "ticketId": "SCALE-0249",
+      "subject": "monetization is paused for my channel,",
+      "message": "monetization is paused for my channel, why",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0250",
+      "subject": "my revenue stopped, monetization paused",
+      "message": "my revenue stopped, monetization paused",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0251",
+      "subject": "la monetizacion esta en pausa, por",
+      "message": "la monetizacion esta en pausa, por que",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0252",
+      "subject": "a monetizacao esta pausada, por que",
+      "message": "a monetizacao esta pausada, por que",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0253",
+      "subject": "monetization paused without warning",
+      "message": "monetization paused without warning",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0254",
+      "subject": "earnings stopped suddenly",
+      "message": "earnings stopped suddenly",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0255",
+      "subject": "ganhos pararam de repente",
+      "message": "ganhos pararam de repente",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0256",
+      "subject": "las ganancias se detuvieron de repente",
+      "message": "las ganancias se detuvieron de repente",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0257",
+      "subject": "my comments are being hidden by",
+      "message": "my comments are being hidden by the filter",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-comments"
+      }
+    },
+    {
+      "ticketId": "SCALE-0258",
+      "subject": "comments not showing up, moderation issue",
+      "message": "comments not showing up, moderation issue",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-comments"
+      }
+    },
+    {
+      "ticketId": "SCALE-0259",
+      "subject": "mis comentarios estan ocultos por el",
+      "message": "mis comentarios estan ocultos por el filtro",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-comments"
+      }
+    },
+    {
+      "ticketId": "SCALE-0260",
+      "subject": "meus comentarios estao ocultos pelo filtro",
+      "message": "meus comentarios estao ocultos pelo filtro",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-comments"
+      }
+    },
+    {
+      "ticketId": "SCALE-0261",
+      "subject": "held comments, how do i review",
+      "message": "held comments, how do i review them",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-comments"
+      }
+    },
+    {
+      "ticketId": "SCALE-0262",
+      "subject": "comment moderation is hiding my replies",
+      "message": "comment moderation is hiding my replies",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-comments"
+      }
+    },
+    {
+      "ticketId": "SCALE-0263",
+      "subject": "moderacao escondendo minhas respostas",
+      "message": "moderacao escondendo minhas respostas",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-comments"
+      }
+    },
+    {
+      "ticketId": "SCALE-0264",
+      "subject": "moderacion ocultando mis respuestas",
+      "message": "moderacion ocultando mis respuestas",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-comments"
+      }
+    },
+    {
+      "ticketId": "SCALE-0265",
+      "subject": "my community tab disappeared",
+      "message": "my community tab disappeared",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-tab"
+      }
+    },
+    {
+      "ticketId": "SCALE-0266",
+      "subject": "where is the community tab on",
+      "message": "where is the community tab on my channel",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-tab"
+      }
+    },
+    {
+      "ticketId": "SCALE-0267",
+      "subject": "desaparecio la pestana comunidad",
+      "message": "desaparecio la pestana comunidad",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-tab"
+      }
+    },
+    {
+      "ticketId": "SCALE-0268",
+      "subject": "a aba comunidade sumiu",
+      "message": "a aba comunidade sumiu",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-tab"
+      }
+    },
+    {
+      "ticketId": "SCALE-0269",
+      "subject": "community tab not available",
+      "message": "community tab not available",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-tab"
+      }
+    },
+    {
+      "ticketId": "SCALE-0270",
+      "subject": "how do i get the community",
+      "message": "how do i get the community tab",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-tab"
+      }
+    },
+    {
+      "ticketId": "SCALE-0271",
+      "subject": "como obter a aba comunidade",
+      "message": "como obter a aba comunidade",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-tab"
+      }
+    },
+    {
+      "ticketId": "SCALE-0272",
+      "subject": "como obtener la pestana comunidad",
+      "message": "como obtener la pestana comunidad",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-tab"
+      }
+    },
+    {
+      "ticketId": "SCALE-0273",
+      "subject": "someone is harassing me in comments,",
+      "message": "someone is harassing me in comments, how do i report them",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0274",
+      "subject": "i want to report an abusive",
+      "message": "i want to report an abusive user",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0275",
+      "subject": "alguien me acosa en los comentarios,",
+      "message": "alguien me acosa en los comentarios, como lo denuncio",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0276",
+      "subject": "alguem me assedia nos comentarios, como",
+      "message": "alguem me assedia nos comentarios, como denuncio",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0277",
+      "subject": "report a user for abuse",
+      "message": "report a user for abuse",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0278",
+      "subject": "harassment report process",
+      "message": "harassment report process",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0279",
+      "subject": "processo de denuncia por assedio",
+      "message": "processo de denuncia por assedio",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0280",
+      "subject": "proceso de denuncia por acoso",
+      "message": "proceso de denuncia por acoso",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0281",
+      "subject": "how do i block someone",
+      "message": "how do i block someone",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-block"
+      }
+    },
+    {
+      "ticketId": "SCALE-0282",
+      "subject": "mute a user so i stop",
+      "message": "mute a user so i stop seeing them",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-block"
+      }
+    },
+    {
+      "ticketId": "SCALE-0283",
+      "subject": "como bloqueo a alguien",
+      "message": "como bloqueo a alguien",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-block"
+      }
+    },
+    {
+      "ticketId": "SCALE-0284",
+      "subject": "como bloquear alguem",
+      "message": "como bloquear alguem",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-block"
+      }
+    },
+    {
+      "ticketId": "SCALE-0285",
+      "subject": "blocking and muting question",
+      "message": "blocking and muting question",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-block"
+      }
+    },
+    {
+      "ticketId": "SCALE-0286",
+      "subject": "where is the block option",
+      "message": "where is the block option",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-block"
+      }
+    },
+    {
+      "ticketId": "SCALE-0287",
+      "subject": "onde fica a opcao de bloquear",
+      "message": "onde fica a opcao de bloquear",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-block"
+      }
+    },
+    {
+      "ticketId": "SCALE-0288",
+      "subject": "donde esta la opcion de bloquear",
+      "message": "donde esta la opcion de bloquear",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-comm-block"
+      }
+    },
+    {
+      "ticketId": "SCALE-0289",
+      "subject": "my upload keeps failing at the",
+      "message": "my upload keeps failing at the end",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-upload"
+      }
+    },
+    {
+      "ticketId": "SCALE-0290",
+      "subject": "cannot upload any video today",
+      "message": "cannot upload any video today",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-upload"
+      }
+    },
+    {
+      "ticketId": "SCALE-0291",
+      "subject": "mi subida falla siempre al final",
+      "message": "mi subida falla siempre al final",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-upload"
+      }
+    },
+    {
+      "ticketId": "SCALE-0292",
+      "subject": "meu upload falha sempre no final",
+      "message": "meu upload falha sempre no final",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-upload"
+      }
+    },
+    {
+      "ticketId": "SCALE-0293",
+      "subject": "upload failed, retry not working",
+      "message": "upload failed, retry not working",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-upload"
+      }
+    },
+    {
+      "ticketId": "SCALE-0294",
+      "subject": "video upload error",
+      "message": "video upload error",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-upload"
+      }
+    },
+    {
+      "ticketId": "SCALE-0295",
+      "subject": "erro ao enviar video",
+      "message": "erro ao enviar video",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-upload"
+      }
+    },
+    {
+      "ticketId": "SCALE-0296",
+      "subject": "error al subir el video",
+      "message": "error al subir el video",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-upload"
+      }
+    },
+    {
+      "ticketId": "SCALE-0297",
+      "subject": "my video is stuck processing for",
+      "message": "my video is stuck processing for hours",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-processing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0298",
+      "subject": "upload finished but processing never completes",
+      "message": "upload finished but processing never completes",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-processing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0299",
+      "subject": "mi video se queda procesando por",
+      "message": "mi video se queda procesando por horas",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-processing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0300",
+      "subject": "meu video fica processando por horas",
+      "message": "meu video fica processando por horas",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-processing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0301",
+      "subject": "processing stuck, video not live yet",
+      "message": "processing stuck, video not live yet",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-processing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0302",
+      "subject": "video still processing after a long",
+      "message": "video still processing after a long time",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-processing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0303",
+      "subject": "video ainda processando depois de muito",
+      "message": "video ainda processando depois de muito tempo",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-processing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0304",
+      "subject": "video aun procesando tras mucho tiempo",
+      "message": "video aun procesando tras mucho tiempo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-processing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0305",
+      "subject": "my thumbnail will not save",
+      "message": "my thumbnail will not save",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-thumbnail"
+      }
+    },
+    {
+      "ticketId": "SCALE-0306",
+      "subject": "title and description changes not saving",
+      "message": "title and description changes not saving",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-thumbnail"
+      }
+    },
+    {
+      "ticketId": "SCALE-0307",
+      "subject": "mi miniatura no se guarda",
+      "message": "mi miniatura no se guarda",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-thumbnail"
+      }
+    },
+    {
+      "ticketId": "SCALE-0308",
+      "subject": "minha miniatura nao salva",
+      "message": "minha miniatura nao salva",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-thumbnail"
+      }
+    },
+    {
+      "ticketId": "SCALE-0309",
+      "subject": "thumbnail upload fails every time",
+      "message": "thumbnail upload fails every time",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-thumbnail"
+      }
+    },
+    {
+      "ticketId": "SCALE-0310",
+      "subject": "metadata edits keep reverting",
+      "message": "metadata edits keep reverting",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-thumbnail"
+      }
+    },
+    {
+      "ticketId": "SCALE-0311",
+      "subject": "edicoes de metadados nao salvam",
+      "message": "edicoes de metadados nao salvam",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-thumbnail"
+      }
+    },
+    {
+      "ticketId": "SCALE-0312",
+      "subject": "los cambios de metadatos no se",
+      "message": "los cambios de metadatos no se guardan",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-up-thumbnail"
+      }
+    },
+    {
+      "ticketId": "SCALE-0313",
+      "subject": "why was i charged for premium",
+      "message": "why was i charged for premium this month",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-billing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0314",
+      "subject": "premium charge i do not recognise",
+      "message": "premium charge i do not recognise",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-billing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0315",
+      "subject": "por que me cobraron premium este",
+      "message": "por que me cobraron premium este mes",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-billing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0316",
+      "subject": "por que fui cobrado pelo premium",
+      "message": "por que fui cobrado pelo premium este mes",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-billing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0317",
+      "subject": "unexpected premium invoice",
+      "message": "unexpected premium invoice",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-billing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0318",
+      "subject": "premium billing question",
+      "message": "premium billing question",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-billing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0319",
+      "subject": "duvida de cobranca do premium",
+      "message": "duvida de cobranca do premium",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-billing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0320",
+      "subject": "duda de facturacion de premium",
+      "message": "duda de facturacion de premium",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-billing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0321",
+      "subject": "how do i cancel premium",
+      "message": "how do i cancel premium",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-cancel"
+      }
+    },
+    {
+      "ticketId": "SCALE-0322",
+      "subject": "cancel my premium subscription",
+      "message": "cancel my premium subscription",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-cancel"
+      }
+    },
+    {
+      "ticketId": "SCALE-0323",
+      "subject": "como cancelo premium",
+      "message": "como cancelo premium",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-cancel"
+      }
+    },
+    {
+      "ticketId": "SCALE-0324",
+      "subject": "como cancelo o premium",
+      "message": "como cancelo o premium",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-cancel"
+      }
+    },
+    {
+      "ticketId": "SCALE-0325",
+      "subject": "stop premium from renewing",
+      "message": "stop premium from renewing",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-cancel"
+      }
+    },
+    {
+      "ticketId": "SCALE-0326",
+      "subject": "turn off premium auto renew",
+      "message": "turn off premium auto renew",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-cancel"
+      }
+    },
+    {
+      "ticketId": "SCALE-0327",
+      "subject": "desativar renovacao automatica do premium",
+      "message": "desativar renovacao automatica do premium",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-cancel"
+      }
+    },
+    {
+      "ticketId": "SCALE-0328",
+      "subject": "desactivar la renovacion automatica",
+      "message": "desactivar la renovacion automatica",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-cancel"
+      }
+    },
+    {
+      "ticketId": "SCALE-0329",
+      "subject": "confirm my address to restore premium",
+      "message": "confirm my address to restore premium access",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-restore"
+      }
+    },
+    {
+      "ticketId": "SCALE-0330",
+      "subject": "premium access lost, need to restore",
+      "message": "premium access lost, need to restore it",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-restore"
+      }
+    },
+    {
+      "ticketId": "SCALE-0331",
+      "subject": "confirmar mi direccion para restaurar premium",
+      "message": "confirmar mi direccion para restaurar premium",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-restore"
+      }
+    },
+    {
+      "ticketId": "SCALE-0332",
+      "subject": "confirmar meu endereco para restaurar o",
+      "message": "confirmar meu endereco para restaurar o premium",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-restore"
+      }
+    },
+    {
+      "ticketId": "SCALE-0333",
+      "subject": "restore premium after a billing issue",
+      "message": "restore premium after a billing issue",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-restore"
+      }
+    },
+    {
+      "ticketId": "SCALE-0334",
+      "subject": "premium not active, restore it",
+      "message": "premium not active, restore it",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-restore"
+      }
+    },
+    {
+      "ticketId": "SCALE-0335",
+      "subject": "premium inativo, restaurar",
+      "message": "premium inativo, restaurar",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-restore"
+      }
+    },
+    {
+      "ticketId": "SCALE-0336",
+      "subject": "premium inactivo, restaurar",
+      "message": "premium inactivo, restaurar",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-prem-restore"
+      }
+    },
+    {
+      "ticketId": "SCALE-0337",
+      "subject": "my views dropped from a million",
+      "message": "my views dropped from a million to much less, why",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-viewcount"
+      }
+    },
+    {
+      "ticketId": "SCALE-0338",
+      "subject": "view count went down overnight",
+      "message": "view count went down overnight",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-viewcount"
+      }
+    },
+    {
+      "ticketId": "SCALE-0339",
+      "subject": "mis visualizaciones bajaron de repente",
+      "message": "mis visualizaciones bajaron de repente",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-viewcount"
+      }
+    },
+    {
+      "ticketId": "SCALE-0340",
+      "subject": "minhas visualizacoes caíram de repente",
+      "message": "minhas visualizacoes caíram de repente",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-viewcount"
+      }
+    },
+    {
+      "ticketId": "SCALE-0341",
+      "subject": "why did my view count decrease",
+      "message": "why did my view count decrease",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-viewcount"
+      }
+    },
+    {
+      "ticketId": "SCALE-0342",
+      "subject": "views adjusted downward, confused",
+      "message": "views adjusted downward, confused",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-viewcount"
+      }
+    },
+    {
+      "ticketId": "SCALE-0343",
+      "subject": "contagem de views caiu, confuso",
+      "message": "contagem de views caiu, confuso",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-viewcount"
+      }
+    },
+    {
+      "ticketId": "SCALE-0344",
+      "subject": "el recuento de vistas bajo, confundido",
+      "message": "el recuento de vistas bajo, confundido",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-viewcount"
+      }
+    },
+    {
+      "ticketId": "SCALE-0345",
+      "subject": "analytics shows the wrong watch time",
+      "message": "analytics shows the wrong watch time",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-watchtime"
+      }
+    },
+    {
+      "ticketId": "SCALE-0346",
+      "subject": "watch time figure has not updated",
+      "message": "watch time figure has not updated in days",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-watchtime"
+      }
+    },
+    {
+      "ticketId": "SCALE-0347",
+      "subject": "las analiticas muestran un tiempo de",
+      "message": "las analiticas muestran un tiempo de visualizacion erroneo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-watchtime"
+      }
+    },
+    {
+      "ticketId": "SCALE-0348",
+      "subject": "as analises mostram tempo de exibicao",
+      "message": "as analises mostram tempo de exibicao errado",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-watchtime"
+      }
+    },
+    {
+      "ticketId": "SCALE-0349",
+      "subject": "watch time stuck at the same",
+      "message": "watch time stuck at the same number",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-watchtime"
+      }
+    },
+    {
+      "ticketId": "SCALE-0350",
+      "subject": "watch time report looks wrong",
+      "message": "watch time report looks wrong",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-watchtime"
+      }
+    },
+    {
+      "ticketId": "SCALE-0351",
+      "subject": "relatorio de tempo de exibicao errado",
+      "message": "relatorio de tempo de exibicao errado",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-watchtime"
+      }
+    },
+    {
+      "ticketId": "SCALE-0352",
+      "subject": "informe de tiempo de visualizacion erroneo",
+      "message": "informe de tiempo de visualizacion erroneo",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-watchtime"
+      }
+    },
+    {
+      "ticketId": "SCALE-0353",
+      "subject": "my revenue estimate does not match",
+      "message": "my revenue estimate does not match what i expected",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-revenue"
+      }
+    },
+    {
+      "ticketId": "SCALE-0354",
+      "subject": "revenue figure changed after finalisation",
+      "message": "revenue figure changed after finalisation",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-revenue"
+      }
+    },
+    {
+      "ticketId": "SCALE-0355",
+      "subject": "mi estimacion de ingresos no coincide",
+      "message": "mi estimacion de ingresos no coincide",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-revenue"
+      }
+    },
+    {
+      "ticketId": "SCALE-0356",
+      "subject": "minha estimativa de receita nao bate",
+      "message": "minha estimativa de receita nao bate",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-revenue"
+      }
+    },
+    {
+      "ticketId": "SCALE-0357",
+      "subject": "revenue report question",
+      "message": "revenue report question",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-revenue"
+      }
+    },
+    {
+      "ticketId": "SCALE-0358",
+      "subject": "why is my revenue an estimate",
+      "message": "why is my revenue an estimate",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-revenue"
+      }
+    },
+    {
+      "ticketId": "SCALE-0359",
+      "subject": "por que minha receita e uma",
+      "message": "por que minha receita e uma estimativa",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-revenue"
+      }
+    },
+    {
+      "ticketId": "SCALE-0360",
+      "subject": "por que mi ingreso es una",
+      "message": "por que mi ingreso es una estimacion",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-revenue"
+      }
+    },
+    {
+      "ticketId": "SCALE-0361",
+      "subject": "how do i download my data",
+      "message": "how do i download my data",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-export"
+      }
+    },
+    {
+      "ticketId": "SCALE-0362",
+      "subject": "requested a data export and it",
+      "message": "requested a data export and it never arrived",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-export"
+      }
+    },
+    {
+      "ticketId": "SCALE-0363",
+      "subject": "como descargo mis datos",
+      "message": "como descargo mis datos",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-export"
+      }
+    },
+    {
+      "ticketId": "SCALE-0364",
+      "subject": "como baixo meus dados",
+      "message": "como baixo meus dados",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-export"
+      }
+    },
+    {
+      "ticketId": "SCALE-0365",
+      "subject": "data export request missing",
+      "message": "data export request missing",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-export"
+      }
+    },
+    {
+      "ticketId": "SCALE-0366",
+      "subject": "where do i get my account",
+      "message": "where do i get my account data",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-export"
+      }
+    },
+    {
+      "ticketId": "SCALE-0367",
+      "subject": "exportacao de dados nao chegou",
+      "message": "exportacao de dados nao chegou",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-export"
+      }
+    },
+    {
+      "ticketId": "SCALE-0368",
+      "subject": "la exportacion de datos no llego",
+      "message": "la exportacion de datos no llego",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-an-export"
+      }
+    },
+    {
+      "ticketId": "SCALE-0369",
+      "subject": "i need an accessibility accommodation to",
+      "message": "i need an accessibility accommodation to use the app",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0370",
+      "subject": "requesting disability accommodations for live captions",
+      "message": "requesting disability accommodations for live captions",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0371",
+      "subject": "necesito una adaptacion de accesibilidad para",
+      "message": "necesito una adaptacion de accesibilidad para usar la app",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0372",
+      "subject": "preciso de adaptacao de acessibilidade para",
+      "message": "preciso de adaptacao de acessibilidade para usar o app",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0373",
+      "subject": "accessibility support request",
+      "message": "accessibility support request",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0374",
+      "subject": "caption accommodation request",
+      "message": "caption accommodation request",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0375",
+      "subject": "pedido de suporte de acessibilidade",
+      "message": "pedido de suporte de acessibilidade",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0376",
+      "subject": "solicitud de soporte de accesibilidad",
+      "message": "solicitud de soporte de accesibilidad",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0377",
+      "subject": "we have a court order requesting",
+      "message": "we have a court order requesting account records",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0378",
+      "subject": "law enforcement request for user data",
+      "message": "law enforcement request for user data",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0379",
+      "subject": "tenemos una orden judicial que solicita",
+      "message": "tenemos una orden judicial que solicita registros",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0380",
+      "subject": "temos uma ordem judicial solicitando registros",
+      "message": "temos uma ordem judicial solicitando registros",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0381",
+      "subject": "legal request for account information",
+      "message": "legal request for account information",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0382",
+      "subject": "subpoena for user records",
+      "message": "subpoena for user records",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0383",
+      "subject": "intimacao para registros de usuario",
+      "message": "intimacao para registros de usuario",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0384",
+      "subject": "citacion para registros de usuario",
+      "message": "citacion para registros de usuario",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0385",
+      "subject": "how do i change my profile",
+      "message": "how do i change my profile photo",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0386",
+      "subject": "why is the app so slow",
+      "message": "why is the app so slow",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0387",
+      "subject": "can i change my username",
+      "message": "can i change my username",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0388",
+      "subject": "how to delete a video i",
+      "message": "how to delete a video i posted",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0389",
+      "subject": "dark mode please",
+      "message": "dark mode please",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0390",
+      "subject": "the app crashes when i open",
+      "message": "the app crashes when i open settings",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0391",
+      "subject": "i want a different language for",
+      "message": "i want a different language for the app",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0392",
+      "subject": "como cambio mi foto de perfil",
+      "message": "como cambio mi foto de perfil",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0393",
+      "subject": "por que la app va tan",
+      "message": "por que la app va tan lenta",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0394",
+      "subject": "como altero minha foto de perfil",
+      "message": "como altero minha foto de perfil",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0395",
+      "subject": "por que o app esta tao",
+      "message": "por que o app esta tao lento",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0396",
+      "subject": "add a night theme to the",
+      "message": "add a night theme to the app",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0397",
+      "subject": "my notifications are too frequent",
+      "message": "my notifications are too frequent",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0398",
+      "subject": "can you add a scheduling feature",
+      "message": "can you add a scheduling feature",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0399",
+      "subject": "quiero cambiar mi nombre de usuario",
+      "message": "quiero cambiar mi nombre de usuario",
+      "language": "es",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0400",
+      "subject": "quero mudar meu nome de usuario",
+      "message": "quero mudar meu nome de usuario",
+      "language": "pt",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0401",
+      "subject": "the app store page has the",
+      "message": "the app store page has the wrong screenshots",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0402",
+      "subject": "request a new emoji reaction",
+      "message": "request a new emoji reaction",
+      "language": "en",
+      "isChaos": false,
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "no procedure covers this; specialist handling"
+      }
+    },
+    {
+      "ticketId": "SCALE-0403",
+      "subject": "payout marked processed a few days",
+      "message": "payout marked processed a few days back, still not in bank",
+      "language": "en",
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "near_duplicate"
+      },
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-timing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0404",
+      "subject": "i forgot my password and cannot",
+      "message": "i forgot my password and cannot sign in",
+      "language": "en",
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "near_duplicate"
+      },
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-recovery"
+      }
+    },
+    {
+      "ticketId": "SCALE-0405",
+      "subject": "my video got removed, how can",
+      "message": "my video got removed, how can i appeal it",
+      "language": "en",
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "near_duplicate"
+      },
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-rest-removed"
+      }
+    },
+    {
+      "ticketId": "SCALE-0406",
+      "subject": "i meet the requirements but there",
+      "message": "i meet the requirements but there is no live button",
+      "language": "en",
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "near_duplicate"
+      },
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-elig-missing"
+      }
+    },
+    {
+      "ticketId": "SCALE-0407",
+      "subject": "i was charged twice for coins",
+      "message": "i was charged twice for coins and want a refund",
+      "language": "en",
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "near_duplicate"
+      },
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-gift-refund"
+      }
+    },
+    {
+      "ticketId": "SCALE-0408",
+      "subject": "my live disconnects after a couple",
+      "message": "my live disconnects after a couple of minutes every time",
+      "language": "en",
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "near_duplicate"
+      },
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-live-disconnect"
+      }
+    }
+  ]
+}
