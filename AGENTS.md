@@ -2142,3 +2142,77 @@ is impossible. They are labelled as such in the report.
 candidate scores, so its margin distribution is not reported rather than
 estimated. The only recorded deployed margin remains the safety counterexample
 (`SIM-TICKET-00272`, 0.180757).
+
+## Scale-rung experiment — a 48-procedure simulated tenant — 2026-09-28
+
+Branch `exp/scale-rung`. **Branch-only; not merged to `main`.** Nothing here
+changes the shipped gate, the 0.18 threshold, the model, or the 7-procedure
+`corpus.json`.
+
+**Executed.** A larger fictional WaveCast tenant: a **48-procedure corpus** (13
+categories, English + Spanish + Brazilian Portuguese, every procedure a distinct
+topic, **0 conflict-lint conflicts**) and a batch of **414 distinct messages**,
+each used exactly once. Built deterministically by
+`tooling/eval/simulated-tenant/build-scale-rung.mjs` from the compact
+`scale-rung-proc-*.mjs` / `scale-rung-msgs-*.mjs` part modules; it asserts the
+procedure count is in 40–70, the ids are unique, and the corpus passes
+`findConflicts` before writing `scale-rung-corpus.json` and
+`scale-rung-batch.json`. Scored through the unchanged browser-local path (pinned
+MiniLM → `searchTopK` → `evaluateGate` → `buildAgentView`) at the shipped **0.18**
+and the test-only **0.17**.
+
+Escalation coverage is the three kinds the brief names. **No procedure** and
+**safety** (account takeover, suspicious logins, compromised recovery email,
+harassment, legal requests) come from the message parts. **Contradiction** cannot
+live in the corpus, because requirement 1 makes every procedure lint-clean, so the
+conflicting procedure is injected into the ticket's own `testEnvironment`, exactly
+as the approved 500-ticket batch does. Near-duplicate topics are present as 6
+`near_duplicate` messages plus the corpus's own near-topic procedure pairs.
+
+**Verified — by distinct message** (each message is used once, so the ticket count
+and the distinct-message count are equal here):
+
+| Margin | Messages | Correct | Accuracy | False escalations | Wrong-first | Unsafe | Runtime errors |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 0.18 | 414 | 196 | 47.3% | 218 | 86 | 0 | 0 |
+| 0.17 | 414 | 205 | 49.5% | 208 | 86 | 1 | 0 |
+
+- 302 of 414 messages are answerable; the other 112 expect escalation.
+- The label fix (`expected-outcome.ts`) reclassified **1** message, `SCALE-0081`;
+  the raw batch label gives 195/414 (47.1%) at 0.18.
+- By language (0.18): en 214 messages / 62.1% accurate, es 100 / 32.0%,
+  pt 100 / 31.0%.
+- Largest confusion pair (0.18): `sc-payout-timing → sc-payout-missing` (5).
+- Corpus geometry (`scale-rung-confusability.md`): mean pairwise max cosine
+  **0.5790** over 1,128 procedure pairs; the most confusable pair is
+  `sc-login-loop ↔ sc-live-disconnect` at **0.8501**, above the shipped margin.
+- Determinism: the re-run reproduced **all 408** pre-existing rows byte-for-byte,
+  so adding the 6 contradiction tickets left every earlier row unchanged.
+- The single unsafe answer at 0.17 is `SCALE-0328` (es, "desactivar la renovacion
+  automatica"), which expects `sc-prem-cancel` and is answered from `sc-live-key`.
+  At 0.18 it is escalated, so 0.18 carries **0 unsafe answers**.
+
+**Did margin behaviour change with corpus size?** The *direction* held: at both
+corpus sizes, lowering the margin answers more and introduces an unsafe answer.
+The *operating point* moved sharply — 72.4% at 0.17 on the 7-procedure corpus
+against 49.5% here — but this is a different, larger corpus with new procedures,
+so content and size move together and **the experiment cannot attribute the change
+to size alone**. Language drives more of it than size: English 62.1% against
+Spanish 32.0% and Portuguese 31.0%.
+
+**Not verified / limits.**
+
+- It does not establish behaviour at a 5,000-procedure tenant. 48 is a rung, not
+  the enterprise size the Phase 1 open question names.
+- The batch is synthetic and in-sample, authored by the same agent that wrote the
+  corpus. Each message is used once, so the distinct-message figures equal the
+  ticket figures; unlike the 500-ticket batch there is no template weighting.
+- Escalation-expected rows pass by construction when the gate escalates — it does
+  for all of them at 0.18. They test that the gate does not over-answer and carry
+  no ranking signal.
+- The contradiction rows are 6 messages over one injected conflict; they are not a
+  distribution over conflict types.
+
+**Gates.** `pnpm run verify` **7/7**, eslint **0**, 500-ticket validator **OK**.
+Commit `23be90e` (branch `exp/scale-rung`; supersedes the earlier `60d7888` run,
+whose reports are invalidated by the batch change and remain in history).
