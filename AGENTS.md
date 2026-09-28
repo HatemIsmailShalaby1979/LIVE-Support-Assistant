@@ -2142,3 +2142,58 @@ is impossible. They are labelled as such in the report.
 candidate scores, so its margin distribution is not reported rather than
 estimated. The only recorded deployed margin remains the safety counterexample
 (`SIM-TICKET-00272`, 0.180757).
+
+## Procedure-wording experiment — branch `exp/procedure-distinctness` — 2026-09-28
+
+**Not merged.** Product code, gate logic, the shipped threshold, `chaos-500.json`
+and the holdout batch are untouched.
+
+**Hypothesis.** The false-escalation analysis named cross-procedure confusion as
+the dominant mechanism. If four procedures (`wc-live`, `wc-eligibility`,
+`wc-payout`, `wc-gifts`) named their own topic in the opening sentence and
+stopped cross-referencing each other, the margins would separate.
+
+**What was added.** `tooling/eval/confusability-report.mjs` — read-only corpus
+geometry: the highest passage cosine similarity between each procedure pair, per
+language, with a within-procedure reference. `tooling/eval/compare-wording-experiment.mjs`
+— the before/after comparison, including every decision that changed.
+
+**What was edited.** In all four languages: each opening sentence names the
+procedure's own topic, and `wc-live`'s cross-reference to eligibility ("not an
+eligibility question") is removed. No policy fact changed — the digit sequence is
+identical, and the conflict lint still reports 0 conflicts.
+
+**Measured.** Before = recorded runs on the pre-edit corpus (`e9e05868…`).
+After = fresh runs on the edited corpus (`5da97ad6…`).
+
+| Configuration | Correct before | after | False escalations before | after | Wrong-first (of false escalations) before | after | Unsafe |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| chaos-500 @ 0.17 | 362/500 (72.4%) | 355/500 (71.0%) | 138 | 145 | 42 | 42 | 0 → 0 |
+| chaos-500 @ 0.18 | 335/500 (67.0%) | 355/500 (71.0%) | 165 | 145 | 42 | 42 | 0 → 0 |
+| holdout @ 0.17 | 379/500 (75.8%) | 373/500 (74.6%) | 121 | 127 | 40 | 40 | 0 → 0 |
+| holdout @ 0.18 | 359/500 (71.8%) | 372/500 (74.4%) | 141 | 128 | 40 | 40 | 0 → 0 |
+
+**Mechanism — the decisive finding.** The edit emptied the margin band between
+0.17 and 0.18: chaos-500 went from 27 tickets in the band to 0, the holdout from
+20 to 1. Every changed decision comes from **one** distinct message on chaos-500
+and **two** on the holdout, all `wc-gifts`: the Spanish template rose
+0.175024 → 0.183411 (27 tickets), the French template fell 0.180346 → 0.098172
+(7 tickets). The two after-runs at different margins produced identical decisions
+on each batch, because nothing is left in the band.
+
+**Corpus geometry.** Mean pairwise similarity 0.5046 → 0.4956. The single
+riskiest pair *rose* (es `wc-gifts` ↔ `wc-payout`, 0.6704 → 0.6819). The largest
+reductions were all `wc-live` pairs — the one cross-reference actually removed.
+The topic prefixes on the other three procedures did not separate them.
+
+**Outcome.** No new unsafe answer in any configuration. The new wrong-first
+tickets are all escalation-expected with unchanged decisions, at margins near
+0.01. **Recommendation: do not merge** — the benefit is threshold-dependent
+(helps at 0.18, hurts at 0.17 on both batches), it is a few templates crossing a
+line rather than a separation gain, and the dominant confusion pair got slightly
+worse. A second iteration would be tuning to those templates, which the
+experiment was set up to avoid.
+
+**Artifacts.** `confusability-report-before.md` / `.json`,
+`confusability-report-after.md` / `.json`, `wording-experiment-report.md`, and
+the four `exp-distinctness-*` result files.

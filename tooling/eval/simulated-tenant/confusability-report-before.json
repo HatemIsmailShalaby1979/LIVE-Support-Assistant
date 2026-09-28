@@ -1,0 +1,564 @@
+{
+  "data_mode": "simulated",
+  "corpus": "tooling/eval/simulated-tenant/corpus.json",
+  "corpusSha256": "e9e058685d255b24219ed5aab2ede0eaf62542eda9844b9b7b26becec63546fe",
+  "model": {
+    "id": "Xenova/all-MiniLM-L6-v2",
+    "revision": "751bff37182d3f1213fa05d7196b954e230abad9",
+    "dtype": "q8"
+  },
+  "procedures": 7,
+  "passages": 92,
+  "unclassifiedPassages": 7,
+  "topPairs": [
+    {
+      "language": "es",
+      "left": "wc-gifts",
+      "right": "wc-payout",
+      "max": 0.6703733694083309,
+      "mean": 0.5127850089918436
+    },
+    {
+      "language": "pt-BR",
+      "left": "wc-login",
+      "right": "wc-security",
+      "max": 0.6636410203164298,
+      "mean": 0.5013497911790927
+    },
+    {
+      "language": "es",
+      "left": "wc-security",
+      "right": "wc-appeal",
+      "max": 0.6583867147812048,
+      "mean": 0.46223022141542053
+    },
+    {
+      "language": "fr",
+      "left": "wc-security",
+      "right": "wc-appeal",
+      "max": 0.6459270689619944,
+      "mean": 0.5596916431090658
+    },
+    {
+      "language": "es",
+      "left": "wc-payout",
+      "right": "wc-live",
+      "max": 0.6406921737722369,
+      "mean": 0.40515661918207296
+    }
+  ],
+  "perLanguage": {
+    "en": [
+      {
+        "left": "wc-login",
+        "right": "wc-security",
+        "max": 0.6319359469394454,
+        "mean": 0.4295256755490425
+      },
+      {
+        "left": "wc-appeal",
+        "right": "wc-eligibility",
+        "max": 0.5573987941791047,
+        "mean": 0.3019435276578625
+      },
+      {
+        "left": "wc-live",
+        "right": "wc-eligibility",
+        "max": 0.5010119338873417,
+        "mean": 0.27997573063367864
+      },
+      {
+        "left": "wc-login",
+        "right": "wc-live",
+        "max": 0.48081999515715285,
+        "mean": 0.2192268365260796
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-payout",
+        "max": 0.43671698596783676,
+        "mean": 0.29901911436512113
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-security",
+        "max": 0.43083339897670225,
+        "mean": 0.18243791724685568
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-security",
+        "max": 0.3842415781324312,
+        "mean": 0.21476387047723647
+      },
+      {
+        "left": "wc-login",
+        "right": "wc-eligibility",
+        "max": 0.380026679444859,
+        "mean": 0.17945275680096792
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-eligibility",
+        "max": 0.3785012803531328,
+        "mean": 0.12122681425209761
+      },
+      {
+        "left": "wc-live",
+        "right": "wc-appeal",
+        "max": 0.377735152080747,
+        "mean": 0.17951660962128504
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-login",
+        "max": 0.3696313946186398,
+        "mean": 0.17186417502037532
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-login",
+        "max": 0.36368523362435584,
+        "mean": 0.12445486789135836
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-appeal",
+        "max": 0.36046380660253147,
+        "mean": 0.11840896089265336
+      },
+      {
+        "left": "wc-security",
+        "right": "wc-eligibility",
+        "max": 0.34849048923505765,
+        "mean": 0.17753049796250134
+      },
+      {
+        "left": "wc-security",
+        "right": "wc-live",
+        "max": 0.33290982884028475,
+        "mean": 0.15891487883112537
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-eligibility",
+        "max": 0.31416604271061543,
+        "mean": 0.16041731537586906
+      },
+      {
+        "left": "wc-security",
+        "right": "wc-appeal",
+        "max": 0.28822953050571376,
+        "mean": 0.16771573697009276
+      },
+      {
+        "left": "wc-login",
+        "right": "wc-appeal",
+        "max": 0.2724580800176999,
+        "mean": 0.09348775495099712
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-live",
+        "max": 0.26252098259413087,
+        "mean": 0.06488420458884053
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-appeal",
+        "max": 0.2579502442250514,
+        "mean": 0.09882579822147648
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-live",
+        "max": 0.22084856735451033,
+        "mean": 0.12411951708052145
+      }
+    ],
+    "es": [
+      {
+        "left": "wc-gifts",
+        "right": "wc-payout",
+        "max": 0.6703733694083309,
+        "mean": 0.5127850089918436
+      },
+      {
+        "left": "wc-security",
+        "right": "wc-appeal",
+        "max": 0.6583867147812048,
+        "mean": 0.46223022141542053
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-live",
+        "max": 0.6406921737722369,
+        "mean": 0.40515661918207296
+      },
+      {
+        "left": "wc-security",
+        "right": "wc-live",
+        "max": 0.6264796850547404,
+        "mean": 0.4016292927117282
+      },
+      {
+        "left": "wc-live",
+        "right": "wc-eligibility",
+        "max": 0.6189918447488563,
+        "mean": 0.4501780245707381
+      },
+      {
+        "left": "wc-security",
+        "right": "wc-eligibility",
+        "max": 0.6114678659788324,
+        "mean": 0.5178876369680802
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-eligibility",
+        "max": 0.5928030336119396,
+        "mean": 0.5148940607292634
+      },
+      {
+        "left": "wc-login",
+        "right": "wc-security",
+        "max": 0.5828875153709989,
+        "mean": 0.4816015882690297
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-eligibility",
+        "max": 0.5724311724795405,
+        "mean": 0.49728879638815987
+      },
+      {
+        "left": "wc-appeal",
+        "right": "wc-eligibility",
+        "max": 0.5719815444501698,
+        "mean": 0.4721464191419195
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-security",
+        "max": 0.5545630294318769,
+        "mean": 0.4561570273622038
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-live",
+        "max": 0.5518025873104458,
+        "mean": 0.43702834080662356
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-login",
+        "max": 0.5478981105965052,
+        "mean": 0.45759740172890956
+      },
+      {
+        "left": "wc-live",
+        "right": "wc-appeal",
+        "max": 0.5348127871389252,
+        "mean": 0.40007344279972346
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-security",
+        "max": 0.527307130141504,
+        "mean": 0.43771167663361354
+      },
+      {
+        "left": "wc-login",
+        "right": "wc-appeal",
+        "max": 0.5225408662692997,
+        "mean": 0.37433494775276155
+      },
+      {
+        "left": "wc-login",
+        "right": "wc-live",
+        "max": 0.5130940106262053,
+        "mean": 0.4104094293850907
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-login",
+        "max": 0.4951735481627921,
+        "mean": 0.4272261978537398
+      },
+      {
+        "left": "wc-login",
+        "right": "wc-eligibility",
+        "max": 0.48294860420819413,
+        "mean": 0.43964243009739895
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-appeal",
+        "max": 0.46753291253366336,
+        "mean": 0.38440693205928766
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-appeal",
+        "max": 0.4634040316489783,
+        "mean": 0.35815404027734915
+      }
+    ],
+    "pt-BR": [
+      {
+        "left": "wc-login",
+        "right": "wc-security",
+        "max": 0.6636410203164298,
+        "mean": 0.5013497911790927
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-eligibility",
+        "max": 0.6401752165351076,
+        "mean": 0.5143128962612451
+      },
+      {
+        "left": "wc-security",
+        "right": "wc-appeal",
+        "max": 0.6266650967593445,
+        "mean": 0.5141058787940809
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-appeal",
+        "max": 0.6265812617910247,
+        "mean": 0.5575497337162612
+      },
+      {
+        "left": "wc-appeal",
+        "right": "wc-eligibility",
+        "max": 0.6146489651918531,
+        "mean": 0.5786372782516163
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-payout",
+        "max": 0.606950647542061,
+        "mean": 0.5540584884101748
+      },
+      {
+        "left": "wc-live",
+        "right": "wc-appeal",
+        "max": 0.6051606118871429,
+        "mean": 0.545349185475641
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-live",
+        "max": 0.5994846866341891,
+        "mean": 0.5083829515920951
+      },
+      {
+        "left": "wc-live",
+        "right": "wc-eligibility",
+        "max": 0.5957977917774269,
+        "mean": 0.5718720118372694
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-eligibility",
+        "max": 0.5950218230483328,
+        "mean": 0.5589810721419834
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-login",
+        "max": 0.5892258764031092,
+        "mean": 0.39700327351745207
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-live",
+        "max": 0.5884024176252899,
+        "mean": 0.5451084141730146
+      },
+      {
+        "left": "wc-security",
+        "right": "wc-eligibility",
+        "max": 0.5824685307087863,
+        "mean": 0.5170607006941887
+      },
+      {
+        "left": "wc-security",
+        "right": "wc-live",
+        "max": 0.5761618207959985,
+        "mean": 0.5064304719414326
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-security",
+        "max": 0.5641400534223896,
+        "mean": 0.5198662869310081
+      },
+      {
+        "left": "wc-login",
+        "right": "wc-live",
+        "max": 0.545050030915599,
+        "mean": 0.471948664659742
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-appeal",
+        "max": 0.5382649771669352,
+        "mean": 0.4789118749973537
+      },
+      {
+        "left": "wc-login",
+        "right": "wc-eligibility",
+        "max": 0.5201018129149164,
+        "mean": 0.4573093982172706
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-security",
+        "max": 0.5188785009606555,
+        "mean": 0.4567937117582799
+      },
+      {
+        "left": "wc-login",
+        "right": "wc-appeal",
+        "max": 0.5074919648425544,
+        "mean": 0.4421105251820026
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-login",
+        "max": 0.4931028789033565,
+        "mean": 0.4651775885810581
+      }
+    ],
+    "fr": [
+      {
+        "left": "wc-security",
+        "right": "wc-appeal",
+        "max": 0.6459270689619944,
+        "mean": 0.5596916431090658
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-eligibility",
+        "max": 0.6379633340813381,
+        "mean": 0.4398799512731412
+      },
+      {
+        "left": "wc-login",
+        "right": "wc-security",
+        "max": 0.6234975257928768,
+        "mean": 0.4012177205334715
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-security",
+        "max": 0.5843877444117032,
+        "mean": 0.4525096069265785
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-payout",
+        "max": 0.5811465015487437,
+        "mean": 0.5205616746948678
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-appeal",
+        "max": 0.5671884868553002,
+        "mean": 0.515807382285169
+      },
+      {
+        "left": "wc-security",
+        "right": "wc-eligibility",
+        "max": 0.5655323426474568,
+        "mean": 0.4084637824092506
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-security",
+        "max": 0.5134578259025914,
+        "mean": 0.4121890140394228
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-appeal",
+        "max": 0.5097936382432451,
+        "mean": 0.46594287591487943
+      },
+      {
+        "left": "wc-live",
+        "right": "wc-eligibility",
+        "max": 0.4996012389292463,
+        "mean": 0.4481997252295227
+      },
+      {
+        "left": "wc-appeal",
+        "right": "wc-eligibility",
+        "max": 0.4935327595321627,
+        "mean": 0.4107927136101543
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-login",
+        "max": 0.46957305624789936,
+        "mean": 0.3412853988019587
+      },
+      {
+        "left": "wc-live",
+        "right": "wc-appeal",
+        "max": 0.46433152973196656,
+        "mean": 0.414664449928302
+      },
+      {
+        "left": "wc-login",
+        "right": "wc-eligibility",
+        "max": 0.4464375462745445,
+        "mean": 0.3198919592646227
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-eligibility",
+        "max": 0.439537989667472,
+        "mean": 0.3723114369086967
+      },
+      {
+        "left": "wc-payout",
+        "right": "wc-live",
+        "max": 0.4259390349146263,
+        "mean": 0.3487110380615807
+      },
+      {
+        "left": "wc-login",
+        "right": "wc-live",
+        "max": 0.41895117976918406,
+        "mean": 0.2718897881481359
+      },
+      {
+        "left": "wc-login",
+        "right": "wc-appeal",
+        "max": 0.4115778840460136,
+        "mean": 0.32692993142804117
+      },
+      {
+        "left": "wc-security",
+        "right": "wc-live",
+        "max": 0.41147686710473097,
+        "mean": 0.35077430642988755
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-login",
+        "max": 0.3961761085661551,
+        "mean": 0.31239046773295304
+      },
+      {
+        "left": "wc-gifts",
+        "right": "wc-live",
+        "max": 0.3282067676116665,
+        "mean": 0.3003470449583925
+      }
+    ]
+  }
+}
