@@ -234,9 +234,16 @@ Full runbook, including the four scenarios and their expected outcomes:
 [`docs/DEMO.md`](docs/DEMO.md). A pre-run copy of the output is checked in as
 `tooling/eval/simulated-tenant/demo-four-tickets.md`.
 
+**Narrated walkthrough.** `tooling/video/demo-video.mp4` (3 minutes 2 seconds) shows the same
+four-ticket run with the real gate decisions on screen, narrated from
+[`docs/DEMO_NARRATION.md`](docs/DEMO_NARRATION.md). It is a capture of the **local browser**
+evaluation, not of the hosted app. Regenerate it with `node tooling/video/capture-demo.mjs`
+then `python tooling/video/assemble-video.py`; the derived MP4 is not committed, but the
+sources and `tooling/video/demo-video-manifest.json` are.
+
 The **hosted** app is a separate, credential-gated path — see `docs/PRODUCTION_STATUS.md`. There
-is no guest account, so a reviewer without one should watch the recording rather than click
-through.
+is no guest account, so a reviewer without one should watch the narrated walkthrough above
+rather than click through.
 
 ## Shadow-mode pilot checklist
 

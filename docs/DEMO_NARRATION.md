@@ -1,13 +1,18 @@
 # Demo narration (TTS script)
 
-A 2–3 minute voice-over script for the five-minute local demo. Read the spoken text
+A three-minute voice-over script for the five-minute local demo. Read the spoken text
 verbatim; the on-screen action tells you what to show. Every spoken number also appears
 in the `README.md` claims table, so the voice and the written evidence agree.
 
-- Total runtime: ~2 minutes 30 seconds of speech at a calm pace.
-- Constraint: each spoken block is 40 words or fewer. No spoken jargon (no "margin",
-  "bi-encoder", "reranker", "embedding"). Write "answered" / "sent to a person" instead.
+- Total runtime: **3 minutes 2 seconds** of speech, measured from the rendered audio
+  (`tooling/video/audio/`, 13 segments, 182.06 s).
+- Constraint: each spoken block is 40 words or fewer (longest block: 37 words). No spoken
+  jargon (no "margin", "bi-encoder", "reranker", "embedding"). Write "answered" / "sent to
+  a person" instead.
 - The positioning line is quoted exactly as it appears in `README.md`.
+- Rendered into `tooling/video/demo-video.mp4` (182.155 s) by `tooling/video/capture-demo.mjs`
+  and `tooling/video/assemble-video.py`. Regeneration steps and the Windows-only constraint
+  are in `tooling/eval/simulated-tenant/screen-recording-instructions.md`.
 
 ---
 

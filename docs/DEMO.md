@@ -66,6 +66,15 @@ The page shows progress and a summary; it does not write a report file.
 unusable. The direct Vite command above is the working equivalent and is what the driver itself
 uses.
 
+### Narrated walkthrough — no setup at all
+
+If you only want to see the path decide, watch `tooling/video/demo-video.mp4` (3 minutes
+2 seconds). It narrates the four scenarios below with the real gate decisions and top
+candidate scores on screen, and is built from a capture of this same local browser
+evaluation — not from the hosted app. The script is `docs/DEMO_NARRATION.md`; regeneration
+steps are in `tooling/eval/simulated-tenant/screen-recording-instructions.md`. The MP4 is a
+build output and is not committed.
+
 ## What to expect
 
 Four tickets, each extracted verbatim from the pinned 500-ticket batch. Measured on 2026-09-28;

@@ -85,3 +85,19 @@ connect them to the running client is **not wired into the standalone demo**. A 
 telemetry or escalation is not actually delivered to the live backend in the demo path;
 the deployed path (public Vercel app + development Supabase) is the only place the full
 round trip is exercised. This is a demo limitation, not a backend failure.
+
+## 8. The demo-video tooling is Windows-only
+
+`tooling/video/` builds the narrated walkthrough, and two of its scripts assume Windows:
+
+- `tooling/video/capture-demo.mjs:15-18` searches only
+  `C:\Program Files\Google\Chrome\Application\chrome.exe` and the `Program Files (x86)`
+  equivalent, and throws "Google Chrome was not found in either standard Windows install
+  path" otherwise. The evaluation driver next to it also checks `%LOCALAPPDATA%`, so the
+  two differ in how portable they are.
+- `tooling/video/gen-titlecards.py:18-21` loads Arial from `C:\Windows\Fonts\`, so title
+  cards cannot be generated off Windows without editing those paths.
+
+`assemble-video.py` (ffmpeg via `shutil.which`) and `gen-audio.py` (edge-tts) are portable.
+Consequence: the walkthrough can be re-rendered on Windows only, as written. This affects
+build tooling, not the shipped decision path or any measured claim.

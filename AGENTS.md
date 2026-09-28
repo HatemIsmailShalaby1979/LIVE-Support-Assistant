@@ -20,9 +20,10 @@ this first in any new session; update it at the end of every completed step.
 | `packages/sync` | `@sop/sync` — encrypted bundle protocol: canonical JSON, crypto, install pipeline, server publish |
 | `tooling/eval` | Parity harness, golden set, retrieval evaluation, simulated-tenant evaluation (label fix, real-phrased scorer) |
 | `tooling/conflicts` | `lint-procedure-conflicts.mjs` — same-category numeric policy conflicts; `verify-conflict-lint.mjs` — regression test |
+| `tooling/video` | Demo-video build: `parse-narration.mjs` → `segments.json` → `gen-audio.py` / `gen-titlecards.py` → `capture-demo.mjs` (headless Chrome capture of the four-ticket browser run) → `assemble-video.py` (ffmpeg). Windows-only, see `docs/KNOWN_ISSUES.md` §8. Derived media is gitignored |
 | `tooling/sync` | `verify-sync.mjs` — the 31-check sync verification |
 | `tooling/db` | `verify-phase7.sh` — brings up PostgreSQL, applies everything, runs all three SQL suites. `verify-phase2.sh` and `verify-phase5.sh` are subsets of it, kept for focused reruns |
-| `tooling/run-verification.mjs` | **The gate.** Runs all seven JS harnesses and requires both exit 0 and each suite's own verdict line |
+| `tooling/run-verification.mjs` | **The gate.** Runs all eight JS harnesses and requires both exit 0 and each suite's own verdict line |
 | `tooling/audit-gate.mjs` | Dependency gate: fails on new or escalated advisories vs `tooling/audit-baseline.json` |
 | `tooling/db/verify-hosted.sh` | Runs all three SQL suites against a real Supabase project over the session pooler, and removes the probe functions afterwards |
 | `tooling/db/provision-hosted-fixtures.mjs` | Creates the seven fixture principals through the Auth Admin API, because a hosted project will not let us choose their UUIDs |
@@ -2512,4 +2513,15 @@ therefore reported as previously measured, not re-measured.
 **Left deliberately untracked:** `phase5-deployed-run-60cdbbea8a4f478f.{json,md}` — the
 pre-slug-fix deployed run, superseded by `phase5-deployed-run-2bdf0864473a4d50`, excluded
 from the commit by the earlier decision and not deleted here.
+
+**Documentation pass in the same commit.** The video existed nowhere in the prose, so:
+`README.md` now points account-less reviewers at the narrated walkthrough instead of "the
+recording"; `docs/DEMO.md` gained a no-setup "Narrated walkthrough" section; the Repository
+table above gained a `tooling/video` row; and three stale claims were corrected —
+`docs/DEMO_NARRATION.md` said "~2 minutes 30 seconds" where the rendered audio measures
+**3 minutes 2 seconds**, and the Repository table said the gate runs "seven JS harnesses"
+where it runs **eight**. `docs/KNOWN_ISSUES.md` gained **§8**: the video tooling is
+Windows-only (`capture-demo.mjs:15-18` Chrome paths, `gen-titlecards.py:18-21` Arial from
+`C:\Windows\Fonts\`). The dated ledger records that say "seven" are left as written — they
+were true when written.
 
