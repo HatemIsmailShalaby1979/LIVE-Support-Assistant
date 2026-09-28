@@ -2094,3 +2094,51 @@ unsafe answer found and documented."
 
 **Gate change.** `tooling/run-verification.mjs` now runs seven JS harnesses; the
 conflicting-procedure lint is the seventh.
+
+## False-escalation analysis, and the scale of the evidence — 2026-09-28
+
+Read-only analysis of the 138 false escalations, added as
+`tooling/eval/analyze-false-escalations.mjs` → `false-escalation-analysis.md`.
+No product code, gate logic, threshold, procedure, or recorded result file was
+changed.
+
+**Scale, now stated wherever the 500 figure appears.** The 500 tickets carry only
+**47 distinct messages** (en 17, es 13, pt-BR 8, fr 10, plus one ticket whose
+language column `missing_fields` removed) across **7 procedures**. The 138 false
+escalations come from **17** distinct messages. Ticket counts are therefore
+weighted by template repetition and are not independent observations. The README
+status claim now reads: "Validated on 500 simulated tickets (47 distinct
+messages, 7 procedures, four languages) through the deployed path with tenant
+isolation audited; one unsafe answer found and documented."
+
+**Measured.** All 138 false escalations were blocked for `insufficient_margin`;
+none for an absent candidate or the absolute floor. The expected procedure was
+ranked first in **96** of 138 tickets and not first in **42** (30.4%); at
+distinct-message level, 12 of the 17 failing messages have the expected procedure
+first throughout and 5 do not. Margin: min 0.013248, median 0.087425, max
+0.163173 against an applied 0.17; only 30 of 138 sit within 0.05 below it. The
+largest confusion pair is `wc-payout` → `wc-gifts` (49 tickets, 3 distinct
+messages, median margin 0.087425).
+
+**Runner-up identity.** `searchTopK` (`packages/vector-store/src/cosine.ts`)
+collapses passages to procedures — `bestPerProcedure` — before the gate sees
+them, so each procedure contributes at most one candidate and a runner-up can
+never be another passage of the same procedure. Measured: 0 of 138. Every false
+escalation is a cross-procedure confusion by construction, not by observation.
+
+**Overlap, labelled as observation.** The competing passages behind the three
+most frequent confusion pairs share almost no wording — at most two words, no
+multi-word phrase. The overlap is topical, not lexical. The `wc-live` passage
+carrying "not an eligibility question" while the eligibility passage carries
+`LIVE` is recorded as a hypothesis, untested. No procedure was edited.
+
+**Chaos types are not comparable.** Each mutated type carries 7–8 tickets and one
+or two distinct messages. `contradicting_sops` and `no_correct_answer` — and the
+`wc-security`, `wc-appeal` and `(none)` procedure rows — are 100% correct by
+construction, because the expected outcome is escalation and a false escalation
+is impossible. They are labelled as such in the report.
+
+**Deployed margins are not measurable.** The deployed-path result records no
+candidate scores, so its margin distribution is not reported rather than
+estimated. The only recorded deployed margin remains the safety counterexample
+(`SIM-TICKET-00272`, 0.180757).

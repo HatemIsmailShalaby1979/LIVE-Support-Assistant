@@ -26,6 +26,12 @@ of the configured chaos patterns. The assistant receives only the ticket's
 message, matching the existing product interface. Expected labels and other
 ticket fields remain in the test harness.
 
+Those 500 tickets carry **47 distinct messages** — en 17, es 13, pt-BR 8, fr 10,
+plus one ticket whose language column a chaos mutation removed — across **7
+procedures** and four languages. Ticket counts are therefore weighted by how often
+each template repeats, and are not independent observations. The distinct-message
+table in the analysis below is the unit of evidence.
+
 Two paths were exercised:
 
 - **Local decision path** — the browser-local pinned MiniLM, passage retrieval,
@@ -79,13 +85,14 @@ full before/after and per-technique tables are in
 
 The 138 false escalations are analysed separately, read-only, in
 [`false-escalation-analysis.md`](tooling/eval/simulated-tenant/false-escalation-analysis.md):
-split by language, chaos type and expected procedure, with the gate margin behind
-each one. Two measured findings from it bear on any reading of the numbers above.
-Every false escalation was blocked for insufficient margin — retrieval returned a
-candidate every time — and in 96 of 138 the expected procedure was already ranked
-first. And the 500 tickets carry only **47 distinct messages**, the 138 false
-escalations only **17**, so those counts are not independent observations; the
-per-language and per-chaos-type rates are the meaningful figures.
+one row per distinct message, split by language, chaos type and expected
+procedure, with the gate margin and the runner-up behind each one. Three measured
+findings bear on any reading of the numbers above. Every false escalation was
+blocked for insufficient margin, so retrieval always returned a candidate. The
+expected procedure was ranked first in 96 of the 138 and not first in 42 — mostly
+a separation problem, but roughly a third are also misranked. And the 138 false
+escalations come from only **17 distinct messages**, so those counts are not
+independent observations.
 
 ## The one unsafe answer, and its measured margin
 
