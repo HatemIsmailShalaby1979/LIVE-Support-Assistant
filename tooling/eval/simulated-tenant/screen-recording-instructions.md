@@ -39,6 +39,26 @@ The page shows the model loading, then per-ticket progress, then a summary of th
 one clean, one messy, one that should escalate and the contradiction case. First run downloads the
 pinned MiniLM weights (~22 MB); the query text is embedded locally and never leaves the machine.
 
+### Generate the narrated local video
+
+The checked-in local asset builder runs that same four-ticket page in headless Chrome, waits for
+`window.__SIMULATION_RESULT__`, then captures a presentation made from the completed browser
+results. Its capture-only dashboard is not a product screen and does not alter the evaluation.
+The separate 500-ticket panel uses the dated, historical simulated deployed-path report; that run
+used the development Supabase project and is not production-customer evidence.
+
+On Windows, with Chrome, Node 22+, and ffmpeg/ffprobe available:
+
+```powershell
+node tooling/video/capture-demo.mjs
+python tooling/video/assemble-video.py
+```
+
+The output is `tooling/video/demo-video.mp4`; `demo-video-manifest.json` records its duration,
+media format, and simulated evidence sources. The capture-only browser profile is temporary and
+removed after capture. Review the MP4 and manifest locally; neither script uploads or publishes
+anything.
+
 If you want a written report as well, run the driver separately in a second terminal — it writes
 `<label>.md` and `.json` tagged `data_mode: "simulated"`:
 

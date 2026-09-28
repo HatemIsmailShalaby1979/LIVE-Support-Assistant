@@ -16,3 +16,13 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Demo video build outputs. The sources (capture-demo.mjs, assemble-video.py,
+# gen-audio.py, gen-titlecards.py, parse-narration.mjs, segments.json) are
+# tracked; these are regenerable from them and from docs/DEMO_NARRATION.md.
+tooling/video/audio/
+tooling/video/titles/
+tooling/video/frames/
+tooling/video/out/
+tooling/video/demo.mp4
+tooling/video/demo-video.mp4
+

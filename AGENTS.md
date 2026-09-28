@@ -2417,3 +2417,99 @@ enforces that the deployed build matches this repository. Closing it needs a ful
 embedder documentation already promises.
 
 **Gates.** `pnpm run verify` **7/7**, eslint **0**, 500-ticket validator **OK**.
+
+## Release close-out — `v1.0-simulated-validation` — 2026-09-28
+
+Recorded here late: the release task completed and pushed, but this ledger was never
+updated for it. Detail lives in `docs/RELEASE_NOTES.md`; the verifiable state is below.
+
+**Merged into `main` (`--no-ff`, each verified before the next):**
+`feat/publish-conflict-block` (merge `8981533`; `verify` went 7/7 → **8/8** with the new
+`publish-block` suite) and `exp/deployed-local-parity` (merge `0ae45ce`; `git diff --stat
+main...` touched only tooling/docs/AGENTS/evidence — no `apps/`, `packages/` or
+`supabase/`, so no product code moved).
+
+**Not merged — six branches, none deleted:** `exp/procedure-distinctness`,
+`exp/reranker-measurement`, `exp/multilingual-embedder`, `exp/scale-rung`,
+`feat/real-phrased-dual-pass-labels`, `tool/labeling-tool`. The real-phrased labelling and
+floor-query work reached `main` only as the cherry-picks `1f39138` and `ef9dd7a`; the
+branch tip itself is not an ancestor of `main`.
+
+**Tags.** Four annotated evidence tags pin the rejected experiments, each on its own
+branch tip: `evidence/procedure-wording` → `bd6db51`, `evidence/reranker` → `495b52f`,
+`evidence/multilingual-embedder` → `65b76ae`, `evidence/scale-rung` → `e5a7d9b`. Release
+tag `v1.0-simulated-validation` (`da103eb`) is annotated on `5264ec4`, which is `main`
+HEAD and `origin/main`. `main` was pushed; the working tree was clean at tag time.
+
+**Gates at tag time:** `pnpm run verify` **8/8**; 500-ticket validator **335/500 (67.0%)**,
+165 false escalations, **0 unsafe**, **0 runtime errors**; `pnpm -r run build` exit 0.
+
+## Demo video build, and a repo-wide audit — 2026-09-28
+
+The interrupted session was building the narrated demo video. It was resumed from the
+artefacts on disk, finished, and the whole repository audited.
+
+**The video now exists and is verified.** `tooling/video/demo-video.mp4` — **182.155 s**,
+1280x720, h264 30 fps, AAC 48 kHz stereo, 4.56 MB — assembled from 13 narration segments
+and a 72-frame capture of the real four-ticket browser evaluation (3 correct, 1 false
+escalation, 0 unsafe, 0 runtime errors). `demo-video-manifest.json` records duration,
+codecs and both evidence sources; `demo-meta.json` records `scenesRendered: [0,1,2,3,4]`.
+Regenerate with `node tooling/video/capture-demo.mjs` then
+`python tooling/video/assemble-video.py`. The derived media (audio, titles, frames, `out/`,
+both MP4s) is now gitignored; the sources and the JSON metadata are tracked.
+
+**Five defects were found and fixed. Two were in the video tooling and would have shipped
+a wrong video.**
+
+1. **`assemble-video.py` truncated the footage to 2.40 s.** `-frames:v 72` was applied
+   *after* the `fps=30` filter resampled the 1 fps capture, so the cap counted resampled
+   frames: 72/30 = 2.40 s instead of 72 s. The script's own guard caught it and refused to
+   build rather than emitting a silent wrong file. Replaced the cap with `-t <frames>`.
+2. **`capture-demo.mjs` froze the presentation on scene three for 46 of 72 frames.** The
+   benchmark scene referenced `BENCHMARK_FILE`, a *Node* module-scope constant, inside the
+   function that is stringified and evaluated in the page — a `ReferenceError` thrown
+   inside the `requestAnimationFrame` callback, which then never rescheduled. Two
+   consequences: scenes 4 and 5 never rendered at all, and the benchmark scene displayed
+   without its last two source lines. Fixed by passing the filename in the payload, and by
+   replacing the self-timing rAF loop with an explicit per-frame scene API driven by the
+   capture side. The capture now also fails loudly: a CDP `Runtime.exceptionThrown`
+   listener, a per-frame check of the evaluate result, and an assertion that every scene
+   was rendered. **The old code produced 3 distinct frames out of 72; hashing the PNGs is
+   what exposed it** — frame count alone looked healthy.
+3. **Stale narration audio.** `docs/DEMO_NARRATION.md` segments 9 and 11 were reworded at
+   22:03, `segments.json` was regenerated at 22:04, and the session died before the audio
+   was re-rendered, so the MP3s still spoke the previous wording. Duration could not
+   detect this — the old and new texts are both ~37 and ~32 words — so the test was
+   determinism: regenerating all 13 segments reproduced the 11 unchanged ones to the same
+   0.01 s and moved exactly the two edited ones (16.03 → 17.02 s, 15.07 → 15.41 s).
+4. **`docs/DEMO_NARRATION.md` declared word counts were wrong for all 13 segments**
+   (e.g. "12 words" for a 19-word line). Corrected to the measured counts.
+5. **`README.md` carried a stale release line** — "The latest tagged release is v1.0.1
+   (2026-08-29); it predates the current HEAD" — false since `v1.0-simulated-validation`
+   was cut on HEAD. Corrected to name both tags.
+
+**Audit — every gate re-run on current HEAD, no figure carried forward.**
+
+| Gate | Result |
+| --- | --- |
+| `pnpm run verify` (8 suites) | **8 of 8 passed** |
+| 500-ticket validator (`verify-tickets.mjs`, `chaos-500.json`) | **SIMULATED DATA VALIDATION OK**; batch SHA-256 `717c40dc…` unchanged |
+| 500-ticket browser re-run, margin 0.18, fresh label | **335/500 (67.0%)**, 165 false escalations, 0 unsafe, 0 runtime errors — **0 differing rows of 500** against `phase5-original-margin-018-repro.json` |
+| `pnpm -r run build` | exit 0 (web, desktop release binary, all packages) |
+| `eslint` (`@sop/web`) | 0 |
+| Dependency gate (`audit-gate.mjs`) | passed — 36 advisories, **0 new, 0 escalated** |
+| `pnpm run verify:db` (RBAC, telemetry, RLS bypass, retention) | **all four suites OK** |
+
+**Claims re-verified against their sources, not restated:** the claims-table figures all
+match the files they cite (362/500 and 361/500 at 72.2–72.4%, holdout 379/500 and 359/500,
+floor set 5/21 in scope and 0/8 refusal false accepts). The `evidence/*` tag SHAs quoted in
+`README.md` dereference to the correct branch tips.
+
+**Not run this session:** `pnpm run verify:hosted` (needs live Supabase credentials) and
+`pnpm run verify:deployed`. The deployed-parity finding and the HTTP 422 publish block are
+therefore reported as previously measured, not re-measured.
+
+**Left deliberately untracked:** `phase5-deployed-run-60cdbbea8a4f478f.{json,md}` — the
+pre-slug-fix deployed run, superseded by `phase5-deployed-run-2bdf0864473a4d50`, excluded
+from the commit by the earlier decision and not deleted here.
+

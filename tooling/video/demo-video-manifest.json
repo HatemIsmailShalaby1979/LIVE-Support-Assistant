@@ -1,0 +1,15 @@
+{
+  "data_mode": "simulated",
+  "output": "demo-video.mp4",
+  "duration_seconds": 182.155,
+  "audio_seconds": 182.064,
+  "resolution": "1280x720",
+  "frame_rate": 30,
+  "video_codec": "h264",
+  "audio_codec": "aac",
+  "narration_segments": 13,
+  "browser_capture_frames": 72,
+  "simulated_evaluation": "tooling/eval/simulated-tenant/demo-tickets.json",
+  "historical_500_ticket_source": "tooling/eval/simulated-tenant/phase5-deployed-run-0aec9773442c4282.json",
+  "historical_500_ticket_source_is_development_evidence": true
+}

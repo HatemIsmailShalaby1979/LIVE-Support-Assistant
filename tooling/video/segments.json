@@ -1,0 +1,80 @@
+[
+  {
+    "n": 1,
+    "title": "Title and positioning",
+    "onscreen": "Title card: \"Live Support Assistant — decision path demo\".",
+    "spoken": "Validated on a simulated tenant; safety-first by design; ready for a shadow-mode pilot. Not production-proven: no real customer traffic."
+  },
+  {
+    "n": 2,
+    "title": "What this is",
+    "onscreen": "Terminal running the local harness; the four-ticket table appears.",
+    "spoken": "This runs the shipped decision path on your own computer. It reads a question, checks it against seven support procedures, and either answers or sends it to a person. All data here is simulated."
+  },
+  {
+    "n": 3,
+    "title": "The scale behind it",
+    "onscreen": "Pinned 500-ticket batch summary; \"47 distinct messages, 7 procedures, four languages\".",
+    "spoken": "Behind this small demo sits a test of five hundred tickets, written in four languages. Forty-seven distinct messages cover seven procedures. The numbers you will hear come from that test."
+  },
+  {
+    "n": 4,
+    "title": "Scenario one: a clear question",
+    "onscreen": "Row 1, SIM-TICKET-00002, gate decision \"answers from wc-gifts\".",
+    "spoken": "First, a clear question about a purchase. The path is confident, so it answers and names the procedure it used. A clean case ends with a clean answer."
+  },
+  {
+    "n": 5,
+    "title": "Scenario two: a messy question",
+    "onscreen": "Row 2, SIM-TICKET-00123, gate decision \"escalates\".",
+    "spoken": "Next, the same question, but angry, with a typo and a word in another language. The right procedure is still first, yet the gap is too small. The path stays quiet and sends it to a person."
+  },
+  {
+    "n": 6,
+    "title": "The main failure mode",
+    "onscreen": "Highlight \"138 false escalations\" in the README claims table.",
+    "spoken": "This quiet refusal is the usual failure. Across the five hundred tickets, one hundred and thirty-eight were sent to a person for too little confidence. Most misses are refusals, not wrong answers."
+  },
+  {
+    "n": 7,
+    "title": "Scenario three: no matching procedure",
+    "onscreen": "Row 3, SIM-TICKET-00132, gate decision \"escalates\".",
+    "spoken": "Third, a question no procedure covers: a closed account, a payout on hold. Nothing fits, so the path sends it to a person without guessing. A confident silence beats a wrong answer."
+  },
+  {
+    "n": 8,
+    "title": "Scenario four: contradictory rules",
+    "onscreen": "Row 4, SIM-TICKET-00272; then the publish-block note (HTTP 422).",
+    "spoken": "Last, two rules in the same category disagree on a payout window. The path escalates it locally. On the published path, a bundle with that clash is now refused before it can ever reach a user."
+  },
+  {
+    "n": 9,
+    "title": "The one unsafe case",
+    "onscreen": "README claims table row: \"1 unsafe\" on the deployed path.",
+    "spoken": "On the full deployed test of five hundred tickets, three hundred and sixty-one matched the expected outcome: seventy-two point two percent. There was one unsafe answer and zero runtime errors. That case led to the publish block."
+  },
+  {
+    "n": 10,
+    "title": "The non-English gap",
+    "onscreen": "README claims table, Tier 2 \"Non-English gap\" and \"In-scope recall at 48 procedures\".",
+    "spoken": "The gap is real. On a larger corpus, in-scope answers in other languages fell to twenty-seven point eight percent, eighty-four of three hundred and two. English stayed near sixty-two percent. This is measured, not hidden."
+  },
+  {
+    "n": 11,
+    "title": "Repeatability",
+    "onscreen": "README claims table, \"identical decisions on all 500 tickets\".",
+    "spoken": "The path is deterministic. Run the same five hundred tickets twice and every decision matches. Three hundred and seventy-nine matched the expected outcome: seventy-five point eight percent, at the lower bar."
+  },
+  {
+    "n": 12,
+    "title": "Limits",
+    "onscreen": "DEMO.md \"Limits\" section.",
+    "spoken": "This four-ticket demo is a tour, not a score. Three of four were correct, one was a false refusal, and none were unsafe."
+  },
+  {
+    "n": 13,
+    "title": "Closing positioning",
+    "onscreen": "Title card returns.",
+    "spoken": "Validated on a simulated tenant; safety-first by design; ready for a shadow-mode pilot. Not production-proven: no real customer traffic."
+  }
+]
