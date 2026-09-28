@@ -3,8 +3,17 @@ import {
   DEFAULT_GATE_CONFIG,
   evaluateGate,
 } from '../../../packages/core/dist/index.js';
-import { EMBEDDING_MODEL, createEmbedder } from '../../../packages/embedder/dist/index.js';
-import { buildCorpusPassages, searchTopK } from '../../../packages/vector-store/dist/index.js';
+import {
+  CROSS_ENCODER_RERANKER,
+  EMBEDDING_MODEL,
+  createEmbedder,
+  createReranker,
+} from '../../../packages/embedder/dist/index.js';
+import {
+  buildCorpusPassages,
+  searchTopK,
+  searchTopKPassages,
+} from '../../../packages/vector-store/dist/index.js';
 import { labelQuery, type ExpectedOutcome } from './expected-outcome';
 import type batchType from './chaos-500.json';
 import type corpusType from './corpus.json';
@@ -50,6 +59,14 @@ const queryInputMode = searchParams.get('queryInput') ?? 'message';
 const minMargin = requestedMargin === null
   ? DEFAULT_GATE_CONFIG.minMargin
   : Number(requestedMargin);
+/**
+ * Opt-in cross-encoder reranking. Off by default: the shipped path is the
+ * bi-encoder only, and this switch exists to measure the difference, not to
+ * change the product. The shortlist size matches the evaluation in
+ * `tooling/eval/semantic-eval.mjs`.
+ */
+const rerankEnabled = searchParams.get('rerank') === '1';
+const RERANK_CANDIDATES = 20;
 const assetPattern = /^[a-z0-9-]+\.json$/;
 
 if (!Number.isFinite(minMargin) || minMargin < 0 || minMargin > 1) {
@@ -136,6 +153,15 @@ async function run(): Promise<void> {
   const embedder = await createEmbedder(EMBEDDING_MODEL);
   const modelLoadMs = performance.now() - loadStarted;
 
+  let reranker: Awaited<ReturnType<typeof createReranker>> | null = null;
+  let rerankLoadMs = 0;
+  if (rerankEnabled) {
+    setStatus('loading the pinned cross-encoder');
+    const rerankStarted = performance.now();
+    reranker = await createReranker(CROSS_ENCODER_RERANKER);
+    rerankLoadMs = performance.now() - rerankStarted;
+  }
+
   setStatus('building the simulated policy index');
   const indexStarted = performance.now();
   const baseSops = corpus.sops;
@@ -160,6 +186,7 @@ async function run(): Promise<void> {
   const entriesWithInjectedSops = [...baseEntries, ...injectedEntries];
   const rows: EvaluationRow[] = [];
   const decisionLatencyMs: number[] = [];
+  const rerankLatencyMs: number[] = [];
 
   for (const [index, ticket] of batch.tickets.entries()) {
     const inputText = queryInputMode === 'subject-message'
@@ -190,7 +217,32 @@ async function run(): Promise<void> {
 
     try {
       const vector = await embedder.embedQuery(inputText);
-      const candidates = searchTopK(vector, activeEntries, 5);
+      let candidates;
+      if (reranker === null) {
+        candidates = searchTopK(vector, activeEntries, 5);
+      } else {
+        const shortlist = searchTopKPassages(vector, activeEntries, RERANK_CANDIDATES);
+        const rerankStarted = performance.now();
+        const scores = await reranker.score(
+          inputText,
+          shortlist.map((candidate) => candidate.evidence[0] ?? ''),
+        );
+        rerankLatencyMs.push(performance.now() - rerankStarted);
+        const rankedPassages = shortlist
+          .map((candidate, position) => ({
+            sopId: candidate.sopId,
+            score: scores[position] ?? 0,
+            evidence: candidate.evidence,
+          }))
+          .sort((left, right) => right.score - left.score);
+        const bestPerProcedure = new Map<string, (typeof rankedPassages)[number]>();
+        for (const candidate of rankedPassages) {
+          if (!bestPerProcedure.has(candidate.sopId)) {
+            bestPerProcedure.set(candidate.sopId, candidate);
+          }
+        }
+        candidates = [...bestPerProcedure.values()].slice(0, DEFAULT_GATE_CONFIG.topK);
+      }
       const decision = evaluateGate(candidates, {
         thresholdAccept: DEFAULT_GATE_CONFIG.thresholdAccept,
         minMargin,
@@ -327,7 +379,9 @@ async function run(): Promise<void> {
       chaosTypes: batch.chaosTypeDistribution,
     },
     implementation: {
-      path: 'browser-local MiniLM embedQuery → passage cosine searchTopK → evaluateGate → buildAgentView',
+      path: rerankEnabled
+        ? 'browser-local MiniLM embedQuery → cosine shortlist (top 20 passages) → cross-encoder rerank → procedure collapse → evaluateGate → buildAgentView'
+        : 'browser-local MiniLM embedQuery → passage cosine searchTopK → evaluateGate → buildAgentView',
       modelId: embedder.modelId,
       modelRevision: embedder.revision,
       dtype: embedder.dtype,
@@ -336,6 +390,24 @@ async function run(): Promise<void> {
       topK: DEFAULT_GATE_CONFIG.topK,
       modelLoadMs,
       indexBuildMs,
+      rerank: rerankEnabled
+        ? {
+            enabled: true,
+            modelId: reranker?.modelId ?? CROSS_ENCODER_RERANKER.id,
+            modelRevision: reranker?.revision ?? CROSS_ENCODER_RERANKER.revision,
+            dtype: CROSS_ENCODER_RERANKER.dtype,
+            shortlist: RERANK_CANDIDATES,
+            loadMs: rerankLoadMs,
+            latencyMs: rerankLatencyMs.length === 0
+              ? null
+              : {
+                  mean: rerankLatencyMs.reduce((sum, value) => sum + value, 0) / rerankLatencyMs.length,
+                  median: percentile(rerankLatencyMs, 0.5),
+                  p95: percentile(rerankLatencyMs, 0.95),
+                  max: Math.max(...rerankLatencyMs),
+                },
+          }
+        : { enabled: false },
     },
     totals: {
       ...byCohort('all'),

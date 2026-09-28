@@ -23,6 +23,8 @@ const batchPath = resolve(evaluationDir, batchName);
 const corpusPath = resolve(evaluationDir, corpusName);
 const minMargin = process.env.SIMULATION_MIN_MARGIN;
 const queryInputMode = process.env.SIMULATION_QUERY_INPUT ?? 'message';
+/** Opt-in cross-encoder reranking; off unless explicitly requested. */
+const rerank = process.env.SIMULATION_RERANK === '1';
 if (!['message', 'subject-message'].includes(queryInputMode)) {
   throw new Error('SIMULATION_QUERY_INPUT must be message or subject-message');
 }
@@ -170,6 +172,7 @@ try {
       corpus: corpusName,
       queryInput: queryInputMode,
       ...(minMargin === undefined ? {} : { minMargin }),
+      ...(rerank ? { rerank: '1' } : {}),
     })}`,
   }, sessionId);
 
@@ -185,7 +188,7 @@ try {
     return response.result.value;
   }
 
-  process.stdout.write(`SIMULATED DATA — evaluating ${batchName} with ${corpusName} in a local headless browser; no Supabase session or telemetry transport.\n`);
+  process.stdout.write(`SIMULATED DATA — evaluating ${batchName} with ${corpusName} in a local headless browser${rerank ? ' with the cross-encoder reranker over a 20-passage shortlist' : ''}; no Supabase session or telemetry transport.\n`);
   const evaluationDeadline = Date.now() + 15 * 60_000;
   let state;
   while (Date.now() < evaluationDeadline) {
