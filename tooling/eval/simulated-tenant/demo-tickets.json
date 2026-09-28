@@ -1,0 +1,219 @@
+{
+  "data_mode": "simulated",
+  "generatedBy": "extracted verbatim from chaos-500.json (SHA 717c40dc…) for the 5-minute demo; no field or label was edited",
+  "seed": 20260928,
+  "chaosRateConfigured": 0.75,
+  "chaosRateActual": 0.75,
+  "ticketCount": 4,
+  "client": "WaveCast Creator Care (fictional)",
+  "corpusSource": "Fictional simulated SOPs in corpus.json",
+  "productInputField": "message",
+  "datasetSourcePolicy": "Public dataset schemas only; no external ticket rows or message text used.",
+  "sopCount": 7,
+  "chaosSummary": {
+    "chaosTicketCount": 3
+  },
+  "chaosTypeDistribution": {
+    "baseline": 1,
+    "mixed_language_typos_sarcasm": 1,
+    "no_correct_answer": 1,
+    "contradicting_sops": 1
+  },
+  "tickets": [
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00002",
+      "customerRef": "SIM-CREATOR-8715",
+      "createdAt": "2026-09-21T23:28:02.000Z",
+      "channel": "in_app_chat",
+      "language": "en",
+      "category": "Gifts and purchases",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "Question about a Coin charge",
+      "message": "There are two charges for one Coin purchase on my statement. I can provide the receipt reference if needed.",
+      "status": "pending_customer",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "gifts_purchases"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "chaosTags": [],
+      "isChaos": false
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00123",
+      "customerRef": "SIM-CREATOR-4956",
+      "createdAt": "2026-09-23T21:24:00.000Z",
+      "channel": "social_dm",
+      "language": "en",
+      "category": "Creator payouts",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "When should the payout arrive?",
+      "message": "I already tried twice, gracias — this is getting ridiculous. Could you check the normal payuot timing? The status changed to processed earlier this week.",
+      "status": "pending_customer",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "creator_payouts"
+      ],
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "chaosTags": [
+        "mixed_language_typos_sarcasm"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "mixed_language_typos_sarcasm",
+        "details": {
+          "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+          "typosInjected": true,
+          "languageFieldMayDisagree": true
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "category": "Creator payouts",
+        "queue": "payments",
+        "language": "en",
+        "channel": "social_dm",
+        "priority": "P2",
+        "status": "pending_customer",
+        "message": "Could you check the normal payout timing? The status changed to processed earlier this week."
+      }
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00132",
+      "customerRef": "SIM-CREATOR-5449",
+      "createdAt": "2026-09-23T13:04:03.000Z",
+      "channel": "social_dm",
+      "language": "en",
+      "category": "Other / ambiguous",
+      "queue": "triage",
+      "priority": "P2",
+      "subject": "Can a closed account payout be redirected during an audit hold?",
+      "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+      "status": "pending_customer",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "other"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "chaosTags": [
+        "no_correct_answer"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "no_correct_answer",
+        "details": {
+          "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "category": "Creator payouts",
+        "queue": "payments",
+        "language": "en",
+        "channel": "social_dm",
+        "priority": "P2",
+        "status": "pending_customer",
+        "message": "My payout says processed, but I do not see it in the bank account yet. It was marked processed three business days ago."
+      }
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00272",
+      "customerRef": "SIM-CREATOR-4097",
+      "createdAt": "2026-09-26T20:27:00.000Z",
+      "channel": "callback_request",
+      "language": "en",
+      "category": "Creator payouts",
+      "queue": "payments",
+      "priority": "P2",
+      "subject": "Processed payout not received",
+      "message": "My payout says processed, but I do not see it in the bank account yet. It was marked processed three business days ago.",
+      "status": "pending_internal",
+      "reopenCount": 0,
+      "handoffCount": 0,
+      "tags": [
+        "creator_payouts"
+      ],
+      "expected": {
+        "decision": "escalate",
+        "reason": "conflicting_procedure_guidance",
+        "sopId": null
+      },
+      "chaosTags": [
+        "contradicting_sops"
+      ],
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "contradicting_sops",
+        "details": {
+          "sourceTicketId": "SIM-TICKET-00137",
+          "conflictSopId": "wc-payout-conflict",
+          "expectedHandling": "escalate until a human resolves the policy conflict"
+        }
+      },
+      "groundTruth": {
+        "expected": {
+          "decision": "escalate",
+          "reason": "specialist_review_required",
+          "sopId": "wc-security"
+        },
+        "category": "Account security",
+        "queue": "account-security",
+        "language": "es",
+        "channel": "callback_request",
+        "priority": "P1",
+        "status": "pending_internal",
+        "message": "No reconozco el inicio de sesión reciente y cambió el correo de recuperación. Necesito ayuda para proteger la cuenta."
+      },
+      "testEnvironment": {
+        "data_mode": "simulated",
+        "additionalSops": [
+          {
+            "data_mode": "simulated",
+            "id": "wc-payout-conflict",
+            "title": "Creator Payout Timing — Conflicting Legacy Guide",
+            "category": "Creator payouts",
+            "triggerKeywords": [
+              "payout",
+              "deposit",
+              "withdraw",
+              "balance"
+            ],
+            "summary": "A creator payout marked processed arrives in one business day. Do not use the two-to-five-business-day estimate; this guide conflicts with the standard payout procedure and requires a lead to determine which rule is current.",
+            "suggestedReply": "The published payout guidance conflicts. I am escalating this question for a lead to confirm the current timing.",
+            "escalationRequired": true,
+            "escalationReason": "Two active simulated procedures give contradictory payout deadlines."
+          }
+        ]
+      }
+    }
+  ]
+}

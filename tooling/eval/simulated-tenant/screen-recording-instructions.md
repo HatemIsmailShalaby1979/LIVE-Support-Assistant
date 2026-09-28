@@ -1,22 +1,71 @@
 # SIMULATED DATA screen-recording instructions
 
-This records one synthetic ticket in the deployed-path evaluation harness. It
-does not record or use a real customer ticket; there is no design partner. The browser
-targets the public Vercel app and the development Supabase project; describe the
-result as deployed-path validation, not production-customer evidence.
+There are two flows worth recording, and they need different things:
 
-## Before recording
+| Flow | Needs credentials? | What it shows |
+| --- | --- | --- |
+| **Local decision path** (recommended) | No | The shipped retrieval + gate + agent view on four tickets, including the contradiction case |
+| **Deployed path** | Yes — development Supabase project | Sign-in, bundle delivery, browser model and gate, tagged ingest against a hosted database |
+
+Neither records or uses a real customer ticket; there is no design partner.
+
+## Flow 1 — local decision path (no account)
+
+This is the same flow as `docs/DEMO.md`. Setup first:
+
+```bash
+pnpm install
+pnpm -r run build
+```
+
+**Record the browser page, not the driver.** `run-chaos-evaluation.mjs` always launches Chrome
+with `--headless=new` and has no visible or pause mode, so it cannot be recorded. Serve the
+repository root with Vite directly and open the harness page in a normal browser:
+
+```bash
+node apps/web/node_modules/vite/bin/vite.js . \
+  --config apps/web/vite.config.ts \
+  --port 5173 --host 127.0.0.1 --strictPort
+```
+
+(`pnpm dev` is not usable — `turbo run dev` fails on this host with `All pipe instances are busy.
+(os error 231)`.) Then open, in the browser you are recording:
+
+```
+http://127.0.0.1:5173/tooling/eval/simulated-tenant/chaos-runner.html?batch=demo-tickets.json&corpus=corpus.json&minMargin=0.18
+```
+
+The page shows the model loading, then per-ticket progress, then a summary of the four tickets:
+one clean, one messy, one that should escalate and the contradiction case. First run downloads the
+pinned MiniLM weights (~22 MB); the query text is embedded locally and never leaves the machine.
+
+If you want a written report as well, run the driver separately in a second terminal — it writes
+`<label>.md` and `.json` tagged `data_mode: "simulated"`:
+
+```bash
+SIMULATION_RUN_LABEL=demo-recording SIMULATION_MIN_MARGIN=0.18 \
+SIMULATION_BATCH=demo-tickets.json SIMULATION_CORPUS=corpus.json \
+node tooling/eval/simulated-tenant/run-chaos-evaluation.mjs
+```
+
+**What to narrate, in order:** the gate answered the clean gifts ticket; it escalated the messy
+payout ticket (a false escalation); it escalated the no-procedure ticket; and it escalated the
+contradiction ticket locally — while noting that the deployed run answered that last one at a
+margin of 0.180757. Do not present the local result as proof the contradiction case is safe.
+
+Keep the recording destination local. Review it for credentials, browser profile details, or other
+private information before publishing.
+
+## Flow 2 — deployed path (development Supabase project)
 
 - Confirm `.env.local` has the development Supabase URL and keys used by the
   evaluation harness. The script reads these values without printing them.
-- Close unrelated browser windows and hide notifications. Use a local recording
-  destination; do not publish the video without reviewing it for credentials,
-  browser profile details, or other private information.
+- Close unrelated browser windows and hide notifications.
 - The run creates an isolated tenant, two synthetic users, a synthetic policy
   bundle, and tagged evaluation telemetry in the development database. Those
   rows are intentionally retained for audit and carry `data_mode: "simulated"`.
 
-## Record one messy ticket
+### Record one messy ticket
 
 From PowerShell at the repository root:
 

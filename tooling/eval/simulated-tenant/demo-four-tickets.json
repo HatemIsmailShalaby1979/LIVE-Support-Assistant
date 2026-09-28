@@ -1,0 +1,702 @@
+{
+  "data_mode": "simulated",
+  "evaluation": "Local browser decision-path evaluation; no live tenant, hosted database, or telemetry transport used.",
+  "evaluatedAt": "2026-09-28T11:31:32.247Z",
+  "sourceBatch": "tooling/eval/simulated-tenant/demo-tickets.json",
+  "sourceCorpus": "tooling/eval/simulated-tenant/corpus.json",
+  "queryInputMode": "message",
+  "batch": {
+    "tickets": 4,
+    "seed": 20260928,
+    "chaosRateConfigured": 0.75,
+    "chaosRateActual": 0.75,
+    "chaosTickets": 3,
+    "chaosTypes": {
+      "baseline": 1,
+      "mixed_language_typos_sarcasm": 1,
+      "no_correct_answer": 1,
+      "contradicting_sops": 1
+    }
+  },
+  "implementation": {
+    "path": "browser-local MiniLM embedQuery → passage cosine searchTopK → evaluateGate → buildAgentView",
+    "modelId": "Xenova/all-MiniLM-L6-v2",
+    "modelRevision": "751bff37182d3f1213fa05d7196b954e230abad9",
+    "dtype": "q8",
+    "thresholdAccept": 0,
+    "minMargin": 0.18,
+    "topK": 5,
+    "modelLoadMs": 12493.70000000298,
+    "indexBuildMs": 5282.5
+  },
+  "totals": {
+    "tickets": 4,
+    "correct": 3,
+    "accuracy": 0.75,
+    "falseEscalations": 1,
+    "unsafeAnswers": 0,
+    "runtimeErrors": 0,
+    "failures": 1,
+    "failureRate": 0.25,
+    "failureCategories": {
+      "false_escalation": 1
+    },
+    "failureCauses": {
+      "false_escalation:insufficient_margin": 1
+    },
+    "failuresByInputType": {
+      "mixed_language_typos_sarcasm": 1
+    },
+    "latencyMs": {
+      "mean": 20.024999998509884,
+      "median": 19.5,
+      "p95": 25.69999999552965,
+      "max": 25.69999999552965
+    }
+  },
+  "labelFix": {
+    "rule": "a truncated query is expected to escalate when it has fewer than four words or no surviving procedure trigger keyword; the keyword test is language-scoped",
+    "truncatedDetected": 0,
+    "reclassified": 0,
+    "reclassifiedTicketIds": [],
+    "before": {
+      "tickets": 4,
+      "correct": 3,
+      "accuracy": 0.75,
+      "falseEscalations": 1,
+      "unsafeAnswers": 0,
+      "runtimeErrors": 0
+    },
+    "after": {
+      "tickets": 4,
+      "correct": 3,
+      "accuracy": 0.75,
+      "falseEscalations": 1,
+      "unsafeAnswers": 0,
+      "runtimeErrors": 0
+    },
+    "byTechnique": {
+      "baseline": {
+        "tickets": 1,
+        "before": {
+          "tickets": 1,
+          "correct": 1,
+          "accuracy": 1,
+          "falseEscalations": 0,
+          "unsafeAnswers": 0,
+          "runtimeErrors": 0
+        },
+        "after": {
+          "tickets": 1,
+          "correct": 1,
+          "accuracy": 1,
+          "falseEscalations": 0,
+          "unsafeAnswers": 0,
+          "runtimeErrors": 0
+        },
+        "reclassified": 0
+      },
+      "contradicting_sops": {
+        "tickets": 1,
+        "before": {
+          "tickets": 1,
+          "correct": 1,
+          "accuracy": 1,
+          "falseEscalations": 0,
+          "unsafeAnswers": 0,
+          "runtimeErrors": 0
+        },
+        "after": {
+          "tickets": 1,
+          "correct": 1,
+          "accuracy": 1,
+          "falseEscalations": 0,
+          "unsafeAnswers": 0,
+          "runtimeErrors": 0
+        },
+        "reclassified": 0
+      },
+      "mixed_language_typos_sarcasm": {
+        "tickets": 1,
+        "before": {
+          "tickets": 1,
+          "correct": 0,
+          "accuracy": 0,
+          "falseEscalations": 1,
+          "unsafeAnswers": 0,
+          "runtimeErrors": 0
+        },
+        "after": {
+          "tickets": 1,
+          "correct": 0,
+          "accuracy": 0,
+          "falseEscalations": 1,
+          "unsafeAnswers": 0,
+          "runtimeErrors": 0
+        },
+        "reclassified": 0
+      },
+      "no_correct_answer": {
+        "tickets": 1,
+        "before": {
+          "tickets": 1,
+          "correct": 1,
+          "accuracy": 1,
+          "falseEscalations": 0,
+          "unsafeAnswers": 0,
+          "runtimeErrors": 0
+        },
+        "after": {
+          "tickets": 1,
+          "correct": 1,
+          "accuracy": 1,
+          "falseEscalations": 0,
+          "unsafeAnswers": 0,
+          "runtimeErrors": 0
+        },
+        "reclassified": 0
+      }
+    }
+  },
+  "cohorts": {
+    "chaos": {
+      "tickets": 3,
+      "correct": 2,
+      "accuracy": 0.6666666666666666,
+      "falseEscalations": 1,
+      "unsafeAnswers": 0,
+      "runtimeErrors": 0
+    },
+    "baseline": {
+      "tickets": 1,
+      "correct": 1,
+      "accuracy": 1,
+      "falseEscalations": 0,
+      "unsafeAnswers": 0,
+      "runtimeErrors": 0
+    }
+  },
+  "cohortsAfter": {
+    "chaos": {
+      "tickets": 3,
+      "correct": 2,
+      "accuracy": 0.6666666666666666,
+      "falseEscalations": 1,
+      "unsafeAnswers": 0,
+      "runtimeErrors": 0
+    },
+    "baseline": {
+      "tickets": 1,
+      "correct": 1,
+      "accuracy": 1,
+      "falseEscalations": 0,
+      "unsafeAnswers": 0,
+      "runtimeErrors": 0
+    }
+  },
+  "topFailures": [
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00123",
+        "customerRef": "SIM-CREATOR-4956",
+        "createdAt": "2026-09-23T21:24:00.000Z",
+        "channel": "social_dm",
+        "language": "en",
+        "category": "Creator payouts",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "When should the payout arrive?",
+        "message": "I already tried twice, gracias — this is getting ridiculous. Could you check the normal payuot timing? The status changed to processed earlier this week.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "creator_payouts"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "chaosTags": [
+          "mixed_language_typos_sarcasm"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "mixed_language_typos_sarcasm",
+          "details": {
+            "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+            "typosInjected": true,
+            "languageFieldMayDisagree": true
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-payout"
+          },
+          "category": "Creator payouts",
+          "queue": "payments",
+          "language": "en",
+          "channel": "social_dm",
+          "priority": "P2",
+          "status": "pending_customer",
+          "message": "Could you check the normal payout timing? The status changed to processed earlier this week."
+        }
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "expectedOutcome": "answer",
+      "expectedOutcomeAfter": "answer",
+      "labelTruncated": false,
+      "labelReason": "query is complete",
+      "reclassified": false,
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "correctAfter": false,
+      "failureCategoryAfter": "false_escalation",
+      "latencyMs": 20,
+      "candidates": [
+        {
+          "sopId": "wc-payout",
+          "score": 0.5043735877250277,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.3585951542484697,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.3436471512055295,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a purchase settlement issue."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2704095641841761,
+          "evidence": "Check that the recovery email or phone is still available and install the current app version."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.266801242358405,
+          "evidence": "Indica a la persona que proteja el correo de recuperación desde un dispositivo de confianza y remite el caso urgentemente."
+        }
+      ]
+    }
+  ],
+  "perTicket": [
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00002",
+        "customerRef": "SIM-CREATOR-8715",
+        "createdAt": "2026-09-21T23:28:02.000Z",
+        "channel": "in_app_chat",
+        "language": "en",
+        "category": "Gifts and purchases",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "Question about a Coin charge",
+        "message": "There are two charges for one Coin purchase on my statement. I can provide the receipt reference if needed.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "gifts_purchases"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-gifts"
+        },
+        "chaosTags": [],
+        "isChaos": false
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "expectedOutcome": "answer",
+      "expectedOutcomeAfter": "answer",
+      "labelTruncated": false,
+      "labelReason": "query is complete",
+      "reclassified": false,
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-gifts"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "correctAfter": true,
+      "failureCategoryAfter": null,
+      "latencyMs": 14.899999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.596775793668828,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a purchase settlement issue."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.4029248772223363,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.27069923653722866,
+          "evidence": "Do not disclose account changes or ask the customer to share credentials or codes."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.24198971472761227,
+          "evidence": "Never ask a customer to send a password, one-time code, or recovery link to support."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.20599188478046762,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00123",
+        "customerRef": "SIM-CREATOR-4956",
+        "createdAt": "2026-09-23T21:24:00.000Z",
+        "channel": "social_dm",
+        "language": "en",
+        "category": "Creator payouts",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "When should the payout arrive?",
+        "message": "I already tried twice, gracias — this is getting ridiculous. Could you check the normal payuot timing? The status changed to processed earlier this week.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "creator_payouts"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "chaosTags": [
+          "mixed_language_typos_sarcasm"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "mixed_language_typos_sarcasm",
+          "details": {
+            "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+            "typosInjected": true,
+            "languageFieldMayDisagree": true
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-payout"
+          },
+          "category": "Creator payouts",
+          "queue": "payments",
+          "language": "en",
+          "channel": "social_dm",
+          "priority": "P2",
+          "status": "pending_customer",
+          "message": "Could you check the normal payout timing? The status changed to processed earlier this week."
+        }
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "expectedOutcome": "answer",
+      "expectedOutcomeAfter": "answer",
+      "labelTruncated": false,
+      "labelReason": "query is complete",
+      "reclassified": false,
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "correctAfter": false,
+      "failureCategoryAfter": "false_escalation",
+      "latencyMs": 20,
+      "candidates": [
+        {
+          "sopId": "wc-payout",
+          "score": 0.5043735877250277,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.3585951542484697,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.3436471512055295,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a purchase settlement issue."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2704095641841761,
+          "evidence": "Check that the recovery email or phone is still available and install the current app version."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.266801242358405,
+          "evidence": "Indica a la persona que proteja el correo de recuperación desde un dispositivo de confianza y remite el caso urgentemente."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00132",
+        "customerRef": "SIM-CREATOR-5449",
+        "createdAt": "2026-09-23T13:04:03.000Z",
+        "channel": "social_dm",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P2",
+        "subject": "Can a closed account payout be redirected during an audit hold?",
+        "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "no_supported_procedure",
+          "sopId": null
+        },
+        "chaosTags": [
+          "no_correct_answer"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "no_correct_answer",
+          "details": {
+            "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-payout"
+          },
+          "category": "Creator payouts",
+          "queue": "payments",
+          "language": "en",
+          "channel": "social_dm",
+          "priority": "P2",
+          "status": "pending_customer",
+          "message": "My payout says processed, but I do not see it in the bank account yet. It was marked processed three business days ago."
+        }
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "expectedOutcome": "escalate",
+      "expectedOutcomeAfter": "escalate",
+      "labelTruncated": false,
+      "labelReason": "batch already expects escalation",
+      "reclassified": false,
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "correctAfter": true,
+      "failureCategoryAfter": null,
+      "latencyMs": 25.69999999552965,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.5288263571584448,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.4793756430571284,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.4739832746356709,
+          "evidence": "A suspected account takeover requires specialist Account Security review."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.3719144021221968,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.34650943594010863,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00272",
+        "customerRef": "SIM-CREATOR-4097",
+        "createdAt": "2026-09-26T20:27:00.000Z",
+        "channel": "callback_request",
+        "language": "en",
+        "category": "Creator payouts",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "Processed payout not received",
+        "message": "My payout says processed, but I do not see it in the bank account yet. It was marked processed three business days ago.",
+        "status": "pending_internal",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "creator_payouts"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "conflicting_procedure_guidance",
+          "sopId": null
+        },
+        "chaosTags": [
+          "contradicting_sops"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "contradicting_sops",
+          "details": {
+            "sourceTicketId": "SIM-TICKET-00137",
+            "conflictSopId": "wc-payout-conflict",
+            "expectedHandling": "escalate until a human resolves the policy conflict"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "escalate",
+            "reason": "specialist_review_required",
+            "sopId": "wc-security"
+          },
+          "category": "Account security",
+          "queue": "account-security",
+          "language": "es",
+          "channel": "callback_request",
+          "priority": "P1",
+          "status": "pending_internal",
+          "message": "No reconozco el inicio de sesión reciente y cambió el correo de recuperación. Necesito ayuda para proteger la cuenta."
+        },
+        "testEnvironment": {
+          "data_mode": "simulated",
+          "additionalSops": [
+            {
+              "data_mode": "simulated",
+              "id": "wc-payout-conflict",
+              "title": "Creator Payout Timing — Conflicting Legacy Guide",
+              "category": "Creator payouts",
+              "triggerKeywords": [
+                "payout",
+                "deposit",
+                "withdraw",
+                "balance"
+              ],
+              "summary": "A creator payout marked processed arrives in one business day. Do not use the two-to-five-business-day estimate; this guide conflicts with the standard payout procedure and requires a lead to determine which rule is current.",
+              "suggestedReply": "The published payout guidance conflicts. I am escalating this question for a lead to confirm the current timing.",
+              "escalationRequired": true,
+              "escalationReason": "Two active simulated procedures give contradictory payout deadlines."
+            }
+          ]
+        }
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "conflicting_procedure_guidance",
+        "sopId": null
+      },
+      "expectedOutcome": "escalate",
+      "expectedOutcomeAfter": "escalate",
+      "labelTruncated": false,
+      "labelReason": "batch already expects escalation",
+      "reclassified": false,
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "correctAfter": true,
+      "failureCategoryAfter": null,
+      "latencyMs": 19.5,
+      "candidates": [
+        {
+          "sopId": "wc-payout",
+          "score": 0.7197246261223147,
+          "evidence": "A payout marked processed but not yet visible in the creator’s bank account is a payout timing question; check how many business days have passed."
+        },
+        {
+          "sopId": "wc-payout-conflict",
+          "score": 0.5520091483950724,
+          "evidence": "A creator payout marked processed arrives in one business day."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.46336732924280777,
+          "evidence": "A completed Coin purchase is normally final."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.22170843504536272,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.18821110956764434,
+          "evidence": "Check that the recovery email or phone is still available and install the current app version."
+        }
+      ]
+    }
+  ],
+  "runLabel": "demo-four-tickets",
+  "batchSha256": "ec5e0489d96e79108d9d8f3d1ad516f4d019d902996e484982a3b97755c222be",
+  "corpusSha256": "e9e058685d255b24219ed5aab2ede0eaf62542eda9844b9b7b26becec63546fe",
+  "browser": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+    "consoleExceptions": [],
+    "telemetryTransport": "not initialized",
+    "externalServicesUsed": [
+      "Hugging Face model-file delivery only; query text is embedded locally in the browser"
+    ]
+  }
+}
