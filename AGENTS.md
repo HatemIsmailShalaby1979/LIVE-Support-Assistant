@@ -2185,7 +2185,7 @@ are summarised in `proof-of-concept.md` and `README.md`.
 
 | Branch | Status |
 | --- | --- |
-| `feat/publish-conflict-block` | **pending review** — publish-path conflict block (option a). Dev smoke test **run and passed**: clean 7-procedure corpus → 200 (bundle created), conflict corpus → 422 (no bundle row), three borderline corpora → 200 with no false positive; `publish-bundle` deployed at VERSION 9. Not merged. |
+| `feat/publish-conflict-block` | **merged 2026-09-28** — publish-path conflict block (option a). Dev smoke test **run and passed**: clean 7-procedure corpus → 200 (bundle created), conflict corpus → 422 (no bundle row), three borderline corpora → 200 with no false positive; `publish-bundle` deployed at VERSION 9. |
 | `tool/labeling-tool` | pending review — offline SOP labeling tool |
 | `feat/real-phrased-dual-pass-labels` | content landed on main (`1f39138`, `ef9dd7a`); branch now redundant |
 | `exp/procedure-distinctness` | rejected — procedure-wording experiment |
@@ -2266,7 +2266,7 @@ refused before signing — dev smoke test passed (clean → 200, conflict → 42
 borderline corpora → 200 with no false positive). **Limits:** it reads English
 number words only, so a conflict stated only in Spanish, Portuguese or French is not
 caught; it parses prose and will false-positive on legitimately different regional
-figures; and it is **not merged**, so the `SIM-TICKET-00272` condition remains live
+figures; and it is **merged in this release**, so the `SIM-TICKET-00272` condition is closed at the source on the published path
 in shipped code.
 
 **Demo — run end to end.** A four-ticket demo (`tooling/eval/simulated-tenant/demo-tickets.json`,
@@ -2306,3 +2306,38 @@ new `docs/DEMO.md` (the runbook), and
 **Verification.** `pnpm run verify` **7/7** suites; `eslint` (apps/web) exit 0; the
 500-ticket validator passes.
 
+## Publish-path conflict block — decision option (a) — 2026-09-28
+
+**Decision (owner): accepted (a) / (b) deferred.** Branch `feat/publish-conflict-block`,
+based on `origin/main`; **merged 2026-09-28**. `docs/decisions/conflicting-procedures.md`
+status updated with the reason: (a) removes the failure class at the source with
+no product-behaviour change; (b) would raise the false-escalation rate (already
+the largest failure category) and needs a schema change, so it is deferred.
+
+**What changed.**
+- `supabase/functions/publish-bundle/index.ts` now runs the conflict check on the
+  tenant's decrypted corpus *before* signing. On any same-category numeric
+  conflict it returns HTTP **422** with `detail` naming the two procedures, the
+  field (`window_days`, …), and both asserted values. No change to the gate, the
+  0.18 threshold, or scoring.
+- Detection logic is single-sourced in the new `tooling/conflicts/conflict-core.mjs`
+  (pure, no `node:` built-ins), imported by the lint CLI, the Deno publish gate,
+  and the harness. `lint-procedure-conflicts.mjs` was refactored to import it; its
+  `runCli`/`findConflicts`/`extractPolicyFacts`/`loadCorpus` exports are unchanged,
+  so `verify-conflict-lint.mjs` still passes.
+- New harness `tooling/conflicts/verify-publish-conflict-block.mjs`, registered as
+  the `publish-block` suite in `tooling/run-verification.mjs`.
+
+**Tests, all passing.**
+- (a) a conflicting corpus is blocked; (b) the clean 7-procedure corpus publishes;
+- (c) the `SIM-TICKET-00272` payout case is blocked and names `wc-payout` vs
+  `wc-payout-conflict`, field `window_days`, values 2–5 vs 1 business day;
+- (d) negative control — two procedures stating the same window are not flagged;
+- (e) the lint's stated limitation (English number words only) is locked: a
+  Spanish-only conflicting pair is NOT flagged while the English equivalent IS.
+
+**Verification.** `pnpm run verify` 8/8 suites pass (incl. `publish-block`); the
+500-ticket validator passes; `pnpm run lint` passes (only `@sop/web` ships a lint
+task). The earlier `(7,7)` extraction from `wc-payout`'s escalation sentence is
+pre-existing lint behaviour, not a regression, and does not create a conflict
+because only cross-procedure pairs are compared.

@@ -93,6 +93,12 @@ const SUITES = [
     script: 'tooling/conflicts/verify-conflict-lint.mjs',
     verdict: 'CONFLICT LINT VERIFICATION OK',
   },
+  {
+    key: 'publish-block',
+    name: 'publish-path conflict block (option a)',
+    script: 'tooling/conflicts/verify-publish-conflict-block.mjs',
+    verdict: 'PUBLISH CONFLICT BLOCK OK',
+  },
 ];
 
 const requested = process.argv.slice(2);
