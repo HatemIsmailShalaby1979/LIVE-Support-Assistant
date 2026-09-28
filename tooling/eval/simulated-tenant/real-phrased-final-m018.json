@@ -1,0 +1,3013 @@
+{
+  "data_mode": "public-wording",
+  "evaluatedAt": "2026-09-28T09:24:07.997Z",
+  "evaluation": "Local browser decision-path scoring of operator-labelled real-phrased queries; no live tenant, hosted database, or telemetry transport used.",
+  "sources": [
+    "real-phrased-queries.csv"
+  ],
+  "marginNote": "minMargin 0.18; the recorded simulated-batch baseline used 0.17 and the shipped default is 0.18",
+  "implementation": {
+    "path": "browser-local MiniLM embedQuery → passage cosine searchTopK → evaluateGate → buildAgentView",
+    "modelId": "Xenova/all-MiniLM-L6-v2",
+    "modelRevision": "751bff37182d3f1213fa05d7196b954e230abad9",
+    "dtype": "q8",
+    "thresholdAccept": 0,
+    "minMargin": 0.18,
+    "topK": 5,
+    "modelLoadMs": 17091,
+    "indexBuildMs": 3394.89999999851
+  },
+  "browser": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+    "consoleExceptions": [],
+    "telemetryTransport": "not initialized"
+  },
+  "provenance": "Real-phrased wording collected from public sources; real-phrased-queries.csv",
+  "totals": {
+    "queries": 72,
+    "scored": 60,
+    "correct": 37,
+    "accuracy": 0.6166666666666667,
+    "falseEscalations": 17,
+    "unsafeAnswers": 6,
+    "runtimeErrors": 0,
+    "ambiguous": 12,
+    "sopUnspecified": 0,
+    "bySourceType": {
+      "help center FAQ title": 26,
+      "public forum": 46
+    },
+    "bySource": {
+      "help center FAQ title": {
+        "queries": 26,
+        "scored": 24,
+        "correct": 16,
+        "accuracy": 0.6666666666666666,
+        "falseEscalations": 6,
+        "unsafeAnswers": 2
+      },
+      "public forum": {
+        "queries": 46,
+        "scored": 36,
+        "correct": 21,
+        "accuracy": 0.5833333333333334,
+        "falseEscalations": 11,
+        "unsafeAnswers": 4
+      }
+    }
+  },
+  "perQuery": [
+    {
+      "id": "rp-001",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 16.899999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.3062312924433516,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.27394518465744,
+          "evidence": "Trust & Safety reviews the original content and decision; frontline support must not promise that an appeal will succeed or manually reverse a restriction."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.2616085886896494,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.22384255280517493,
+          "evidence": "A suspected account takeover requires specialist Account Security review."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.22039384128404393,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-002",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 15.899999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-security",
+          "score": 0.5018818655089237,
+          "evidence": "Suspected account takeover requires specialist identity verification."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.4793264687466976,
+          "evidence": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.4249700091803133,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.4077608305396706,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.3525808424295753,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-003",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 10,
+      "candidates": [
+        {
+          "sopId": "wc-login",
+          "score": 0.31255675374660946,
+          "evidence": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.29875952346963197,
+          "evidence": "For an isolated LIVE connection problem, confirm app version and network stability, then retry once after reconnecting."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.20445119114329716,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.20118583095487205,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.16930859932993972,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a purchase settlement issue."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-004",
+      "source_type": "public forum",
+      "my_label": "ambiguous",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 18.80000000447035,
+      "candidates": [
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.23670774320648633,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.13132868183616403,
+          "evidence": "A payout marked processed but not yet visible in the creator’s bank account is a payout timing question; check how many business days have passed."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.12848525088000717,
+          "evidence": "Gift balances update after the purchase settles."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.09576753052230552,
+          "evidence": "Trust & Safety reviews the original content and decision; frontline support must not promise that an appeal will succeed or manually reverse a restriction."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.09001815079236275,
+          "evidence": "Suspected Account Takeover — Account security"
+        }
+      ],
+      "scored": false,
+      "outcome": "ambiguous",
+      "category": null
+    },
+    {
+      "id": "rp-005",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 13.399999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.31834160792808985,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a purchase settlement issue."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.30464963724297334,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.26610420782571975,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2219712229172199,
+          "evidence": "Check that the recovery email or phone is still available and install the current app version."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.21121896981872806,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-006",
+      "source_type": "public forum",
+      "my_label": "ambiguous",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 8.700000002980232,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.24872697595841214,
+          "evidence": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.23496965537895512,
+          "evidence": "Suspected Account Takeover — Account security"
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.1581063930523535,
+          "evidence": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.15128429307210403,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.14276302944113722,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        }
+      ],
+      "scored": false,
+      "outcome": "ambiguous",
+      "category": null
+    },
+    {
+      "id": "rp-007",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 19.399999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.3474866267373288,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a purchase settlement issue."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.3001781567382699,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.27576154234660094,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.2701525694845228,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.24932327211925281,
+          "evidence": "Indica a la persona que proteja el correo de recuperación desde un dispositivo de confianza y remite el caso urgentemente."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-008",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 9.5,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.26581883666637585,
+          "evidence": "If several creators report the same regional failure, route it as a possible service incident rather than treating each report as an individual device fault."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.2563105383891904,
+          "evidence": "Suspected Account Takeover — Account security"
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.24117388089860656,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.19313809026404144,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.18501015433670767,
+          "evidence": "Pour un problème de connexion courant, utilisez « Mot de passe oublié » et demandez un nouveau code de récupération."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-009",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 9,
+      "candidates": [
+        {
+          "sopId": "wc-security",
+          "score": 0.3712565561951544,
+          "evidence": "Suspected Account Takeover — Account security"
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.3565304001787451,
+          "evidence": "Routine Account Login Recovery — Account access"
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.31211211396192395,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.27045305622736393,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.22540220568727273,
+          "evidence": "For an isolated LIVE connection problem, confirm app version and network stability, then retry once after reconnecting."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-010",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 9.299999997019768,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.26894933747600197,
+          "evidence": "For an isolated LIVE connection problem, confirm app version and network stability, then retry once after reconnecting."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.2355093291775124,
+          "evidence": "Coins are used to send Gifts inside WaveCast and cannot be transferred between accounts."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.21538999889648716,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.19152704318449235,
+          "evidence": "Check that the recovery email or phone is still available and install the current app version."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.15388571416874602,
+          "evidence": "Si toutes les conditions semblent réunies mais que le bouton LIVE est absent, transmettez le dossier pour examen de l’éligibilité sans promettre l’accès."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-011",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 5.700000002980232,
+      "candidates": [
+        {
+          "sopId": "wc-payout",
+          "score": 0.45001110229513686,
+          "evidence": "Creator Payout Timing and Missing Deposits — Creator payouts"
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.3631876009707425,
+          "evidence": "Gifts, Coins, and Purchase Refunds — Gifts and purchases"
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2606870400518643,
+          "evidence": "Para un problema habitual de inicio de sesión, usa «Olvidé mi contraseña» y solicita un código de recuperación nuevo."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.2539142474916029,
+          "evidence": "Suspected Account Takeover — Account security"
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.19513481057691381,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-012",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6.299999997019768,
+      "candidates": [
+        {
+          "sopId": "wc-payout",
+          "score": 0.34112184783111665,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.32659161517831736,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a purchase settlement issue."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.3012905238900229,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2195350919368273,
+          "evidence": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.16397626355650946,
+          "evidence": "For an isolated LIVE connection problem, confirm app version and network stability, then retry once after reconnecting."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-013",
+      "source_type": "public forum",
+      "my_label": "ambiguous",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6.700000002980232,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.5127597210776702,
+          "evidence": "Gifts, Coins, and Purchase Refunds — Gifts and purchases"
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.35470432130599633,
+          "evidence": "Creator Payout Timing and Missing Deposits — Creator payouts"
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.3404759940571441,
+          "evidence": "Never ask a customer to send a password, one-time code, or recovery link to support."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.23796971915084075,
+          "evidence": "Do not disclose account changes or ask the customer to share credentials or codes."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.22243316906330848,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        }
+      ],
+      "scored": false,
+      "outcome": "ambiguous",
+      "category": null
+    },
+    {
+      "id": "rp-014",
+      "source_type": "public forum",
+      "my_label": "answerable",
+      "my_sop_id": "wc-gifts",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6.5,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.36457785738172876,
+          "evidence": "Gifts, Coins, and Purchase Refunds — Gifts and purchases"
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.31574969527087976,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2778077804042773,
+          "evidence": "Never ask a customer to send a password, one-time code, or recovery link to support."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.24314086871380997,
+          "evidence": "Direct the customer to secure the recovery email from a trusted device and create an urgent specialist handoff."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.21697673995179165,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-015",
+      "source_type": "public forum",
+      "my_label": "answerable",
+      "my_sop_id": "wc-appeal",
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "latencyMs": 9.299999997019768,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.5572209458766069,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.27742138043824655,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.25889048321060276,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.19474256690147262,
+          "evidence": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.13962833657957616,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "wrong_sop_answer"
+    },
+    {
+      "id": "rp-016",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 9.100000001490116,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.3432698606223741,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.21531598632067922,
+          "evidence": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.20281639777421184,
+          "evidence": "Si cumple todos los requisitos pero no aparece el botón LIVE, remite el caso a revisión de elegibilidad; no prometas el acceso."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.16471686380358666,
+          "evidence": "Si un creador no está de acuerdo con una medida sobre el contenido o una restricción de LIVE, debe abrir el aviso en la aplicación y presentar la apelación desde allí."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.15443706446990796,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a purchase settlement issue."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-017",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 10.299999997019768,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.350540118420155,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.1731129151516191,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.1678906811192598,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.12455381943344648,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.10136430734929365,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-018",
+      "source_type": "public forum",
+      "my_label": "answerable",
+      "my_sop_id": "wc-login",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6.300000004470348,
+      "candidates": [
+        {
+          "sopId": "wc-payout",
+          "score": 0.29392743479957545,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2645025085590391,
+          "evidence": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.2619350436633249,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a purchase settlement issue."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.2523031341995664,
+          "evidence": "For an isolated LIVE connection problem, confirm app version and network stability, then retry once after reconnecting."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.22164572924496992,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-019",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 12.699999995529652,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.40450855299979915,
+          "evidence": "For an isolated LIVE connection problem, confirm app version and network stability, then retry once after reconnecting."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.2705931914706521,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.2445638834920801,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.1935551866256137,
+          "evidence": "Check that the recovery email or phone is still available and install the current app version."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.17703923247806885,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a purchase settlement issue."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-020",
+      "source_type": "public forum",
+      "my_label": "answerable",
+      "my_sop_id": "wc-appeal",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 5.800000004470348,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.33873153291030444,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2835199461212043,
+          "evidence": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.2822761438727328,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.27426877241299397,
+          "evidence": "Direct the customer to secure the recovery email from a trusted device and create an urgent specialist handoff."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.25229723990671293,
+          "evidence": "If several creators report the same regional failure, route it as a possible service incident rather than treating each report as an individual device fault."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-021",
+      "source_type": "public forum",
+      "my_label": "ambiguous",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6.399999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.3585733024520524,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2935086759076814,
+          "evidence": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.21255101770640913,
+          "evidence": "Las monedas se usan para enviar regalos en WaveCast y no se pueden transferir entre cuentas."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.15120242912332169,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.13011653235793846,
+          "evidence": "Ne révélez aucune modification et ne demandez aucun identifiant ni code."
+        }
+      ],
+      "scored": false,
+      "outcome": "ambiguous",
+      "category": null
+    },
+    {
+      "id": "rp-022",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "latencyMs": 10,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.5087034335415386,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2793833253934796,
+          "evidence": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.18537281020222401,
+          "evidence": "LIVE Eligibility Requirements — Creator eligibility"
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.17877786107810173,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.1345358006033395,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "unsafe_answer"
+    },
+    {
+      "id": "rp-023",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "latencyMs": 7.199999995529652,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.5722410309980136,
+          "evidence": "LIVE Connection and Stream Stability — LIVE technical support"
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.3048122114845454,
+          "evidence": "LIVE Eligibility Requirements — Creator eligibility"
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.28923323843854476,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.19303196189803595,
+          "evidence": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.12429405793864523,
+          "evidence": "Las monedas se usan para enviar regalos en WaveCast y no se pueden transferir entre cuentas."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "unsafe_answer"
+    },
+    {
+      "id": "rp-024",
+      "source_type": "public forum",
+      "my_label": "answerable",
+      "my_sop_id": "wc-eligibility",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6.100000001490116,
+      "candidates": [
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.37937114990660586,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.3364309519411596,
+          "evidence": "Suspected Account Takeover — Account security"
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.322356794907351,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.32024232880702835,
+          "evidence": "Never ask a customer to send a password, one-time code, or recovery link to support."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.30243450208029926,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-025",
+      "source_type": "public forum",
+      "my_label": "ambiguous",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "latencyMs": 6.100000001490116,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.5512249623828286,
+          "evidence": "LIVE Connection and Stream Stability — LIVE technical support"
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.2691588713580401,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.26638726055629786,
+          "evidence": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.2182659246437768,
+          "evidence": "Si cumple todos los requisitos pero no aparece el botón LIVE, remite el caso a revisión de elegibilidad; no prometas el acceso."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.13854137297449598,
+          "evidence": "Las monedas se usan para enviar regalos en WaveCast y no se pueden transferir entre cuentas."
+        }
+      ],
+      "scored": false,
+      "outcome": "ambiguous",
+      "category": null
+    },
+    {
+      "id": "rp-026",
+      "source_type": "public forum",
+      "my_label": "ambiguous",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "latencyMs": 4.899999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.7055041584729508,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.2880009096620638,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.2648513556363989,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.20111486155646988,
+          "evidence": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.10263872816035795,
+          "evidence": "Creator Payout Timing and Missing Deposits — Creator payouts"
+        }
+      ],
+      "scored": false,
+      "outcome": "ambiguous",
+      "category": null
+    },
+    {
+      "id": "rp-027",
+      "source_type": "public forum",
+      "my_label": "answerable",
+      "my_sop_id": "wc-eligibility",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 5.799999997019768,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.5610568141611,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.39302615753668185,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.3915446218499883,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2952509990860861,
+          "evidence": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.17594763789399834,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-028",
+      "source_type": "public forum",
+      "my_label": "ambiguous",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.19473060380529023,
+          "evidence": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.19466914834464571,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.1701547565126646,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.10726332584719217,
+          "evidence": "Suspected Account Takeover — Account security"
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.10472541134285426,
+          "evidence": "Creator Payout Timing and Missing Deposits — Creator payouts"
+        }
+      ],
+      "scored": false,
+      "outcome": "ambiguous",
+      "category": null
+    },
+    {
+      "id": "rp-029",
+      "source_type": "public forum",
+      "my_label": "answerable",
+      "my_sop_id": "wc-appeal",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 5.300000004470348,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.28633110841596887,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.16780455139288206,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.13776860191533513,
+          "evidence": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.11154203222061258,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.10985860559935762,
+          "evidence": "Suspected Account Takeover — Account security"
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-030",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 7.399999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.3135431767136275,
+          "evidence": "Region availability can change."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.3011271372287096,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.2848630201515274,
+          "evidence": "LIVE Connection and Stream Stability — LIVE technical support"
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.18799829001220636,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.14377487160143998,
+          "evidence": "A suspected account takeover requires specialist Account Security review."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-031",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 10.899999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-appeal",
+          "score": 0.3479590859478517,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.3224751100620536,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.3131098981175956,
+          "evidence": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.282185838843732,
+          "evidence": "A suspected account takeover requires specialist Account Security review."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.2650300715167391,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-032",
+      "source_type": "public forum",
+      "my_label": "answerable",
+      "my_sop_id": "wc-appeal",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 5.700000002980232,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.3374244813805271,
+          "evidence": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.21468773368427063,
+          "evidence": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.1429320113146589,
+          "evidence": "Region availability can change."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.12932761275578375,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.12383587636468008,
+          "evidence": "Trust & Safety reviews the original content and decision; frontline support must not promise that an appeal will succeed or manually reverse a restriction."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-033",
+      "source_type": "public forum",
+      "my_label": "ambiguous",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 8,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.2931031030587216,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a purchase settlement issue."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.27069099897718,
+          "evidence": "Check that the recovery email or phone is still available and install the current app version."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.27031121110143763,
+          "evidence": "Si un créateur conteste une mesure concernant son contenu ou une restriction LIVE, il doit ouvrir la notification dans l’application et envoyer son appel depuis celle-ci."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.25646698721711775,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.2012143569430978,
+          "evidence": "If several creators report the same regional failure, route it as a possible service incident rather than treating each report as an individual device fault."
+        }
+      ],
+      "scored": false,
+      "outcome": "ambiguous",
+      "category": null
+    },
+    {
+      "id": "rp-034",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 3.899999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-appeal",
+          "score": 0.26878505733709046,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.22021264321793532,
+          "evidence": "Suspected Account Takeover — Account security"
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.18322873333826112,
+          "evidence": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.16298972424412944,
+          "evidence": "Para un problema habitual de inicio de sesión, usa «Olvidé mi contraseña» y solicita un código de recuperación nuevo."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.15237067649550923,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-035",
+      "source_type": "public forum",
+      "my_label": "answerable",
+      "my_sop_id": "wc-appeal",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 7.799999997019768,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.34398549579155163,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.2722449550391516,
+          "evidence": "Content and LIVE restriction appeals require Trust & Safety review."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.2676629888717086,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.2649823194130715,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.23155599250644687,
+          "evidence": "A suspected account takeover requires specialist Account Security review."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-036",
+      "source_type": "public forum",
+      "my_label": "answerable",
+      "my_sop_id": "wc-appeal",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 5.300000004470348,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.2954466682428851,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.1560798375699587,
+          "evidence": "Check that the recovery email or phone is still available and install the current app version."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.14911523392187773,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.13996294278103194,
+          "evidence": "Region availability can change."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.09629345665120519,
+          "evidence": "Suspected Account Takeover — Account security"
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-037",
+      "source_type": "public forum",
+      "my_label": "answerable",
+      "my_sop_id": "wc-appeal",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 4.5,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.4510679981326365,
+          "evidence": "For an isolated LIVE connection problem, confirm app version and network stability, then retry once after reconnecting."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.3817932459699057,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.36722164277174474,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.29946499051353237,
+          "evidence": "Never ask a customer to send a password, one-time code, or recovery link to support."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.19820715968422817,
+          "evidence": "Direct the customer to secure the recovery email from a trusted device and create an urgent specialist handoff."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-038",
+      "source_type": "public forum",
+      "my_label": "answerable",
+      "my_sop_id": "wc-appeal",
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "latencyMs": 5.100000001490116,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.5065970990451788,
+          "evidence": "LIVE Connection and Stream Stability — LIVE technical support"
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.28660256261298345,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.2698361186780815,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.15454717712325455,
+          "evidence": "Las monedas se usan para enviar regalos en WaveCast y no se pueden transferir entre cuentas."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.12303123139529161,
+          "evidence": "Ne demandez jamais le mot de passe ni le code."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "wrong_sop_answer"
+    },
+    {
+      "id": "rp-039",
+      "source_type": "public forum",
+      "my_label": "answerable",
+      "my_sop_id": "wc-gifts",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.42531665795591345,
+          "evidence": "Gift balances update after the purchase settles."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.3717946975949956,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.3107227069841976,
+          "evidence": "Never ask a customer to send a password, one-time code, or recovery link to support."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.3034907183724521,
+          "evidence": "Suspected Account Takeover — Account security"
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.256808653206239,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-040",
+      "source_type": "public forum",
+      "my_label": "ambiguous",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "latencyMs": 11,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.37410720692403465,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.11429113644352563,
+          "evidence": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.09434958237077944,
+          "evidence": "Region availability can change."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.08181062137559722,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.08151813426732643,
+          "evidence": "Las monedas se usan para enviar regalos en WaveCast y no se pueden transferir entre cuentas."
+        }
+      ],
+      "scored": false,
+      "outcome": "ambiguous",
+      "category": null
+    },
+    {
+      "id": "rp-041",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 7.300000004470348,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.39849298774258857,
+          "evidence": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.3512334345661422,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.2988025623130189,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a purchase settlement issue."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.23817288610737303,
+          "evidence": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.22558262622851427,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-042",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 8.100000001490116,
+      "candidates": [
+        {
+          "sopId": "wc-payout",
+          "score": 0.3655546839052333,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.3321809907417397,
+          "evidence": "Trust & Safety reviews the original content and decision; frontline support must not promise that an appeal will succeed or manually reverse a restriction."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.2871241074160732,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.2657276473571219,
+          "evidence": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.26140753971900155,
+          "evidence": "Coins are used to send Gifts inside WaveCast and cannot be transferred between accounts."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-043",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 8.399999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.3470540613806447,
+          "evidence": "Gifts, Coins, and Purchase Refunds — Gifts and purchases"
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.3296634327404544,
+          "evidence": "Trust & Safety reviews the original content and decision; frontline support must not promise that an appeal will succeed or manually reverse a restriction."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.3238540113628649,
+          "evidence": "Creator Payout Timing and Missing Deposits — Creator payouts"
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.27078810613074433,
+          "evidence": "A suspected account takeover requires specialist Account Security review."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.2623394604954252,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-044",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 8,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.2723965739960746,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.25102499569457243,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.2501091923281063,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.21042640245850355,
+          "evidence": "Coins are used to send Gifts inside WaveCast and cannot be transferred between accounts."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.20099499221031333,
+          "evidence": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-045",
+      "source_type": "help center FAQ title",
+      "my_label": "answerable",
+      "my_sop_id": "wc-appeal",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6.199999995529652,
+      "candidates": [
+        {
+          "sopId": "wc-security",
+          "score": 0.44631699364525207,
+          "evidence": "Suspected Account Takeover — Account security"
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.38270330004297304,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.3126880267966709,
+          "evidence": "Routine Account Login Recovery — Account access"
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.28057743079812936,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.26952040973286373,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-046",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 7,
+      "candidates": [
+        {
+          "sopId": "wc-payout",
+          "score": 0.31429447866714844,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.2234585104282641,
+          "evidence": "LIVE Eligibility Requirements — Creator eligibility"
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.18599226057980572,
+          "evidence": "Coins are used to send Gifts inside WaveCast and cannot be transferred between accounts."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.15945781575967866,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.13266898256264328,
+          "evidence": "A suspected account takeover requires specialist Account Security review."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-047",
+      "source_type": "help center FAQ title",
+      "my_label": "answerable",
+      "my_sop_id": "wc-login",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 5.800000004470348,
+      "candidates": [
+        {
+          "sopId": "wc-login",
+          "score": 0.3812734048961461,
+          "evidence": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.2911563973984736,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.2195567672601694,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.21539052399997577,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.16711392611031164,
+          "evidence": "Suspected Account Takeover — Account security"
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-048",
+      "source_type": "help center FAQ title",
+      "my_label": "answerable",
+      "my_sop_id": "wc-login",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 5.199999995529652,
+      "candidates": [
+        {
+          "sopId": "wc-security",
+          "score": 0.4274871138747483,
+          "evidence": "Direct the customer to secure the recovery email from a trusted device and create an urgent specialist handoff."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.3632806197617682,
+          "evidence": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.23200065312625057,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.19166113961592807,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.13429841293830272,
+          "evidence": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-049",
+      "source_type": "help center FAQ title",
+      "my_label": "answerable",
+      "my_sop_id": "wc-login",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 5.800000004470348,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.33581632676948003,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.22557217859562007,
+          "evidence": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.164150687477703,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.11068434429183036,
+          "evidence": "Direct the customer to secure the recovery email from a trusted device and create an urgent specialist handoff."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.10197232390047609,
+          "evidence": "Content and LIVE restriction appeals require Trust & Safety review."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-050",
+      "source_type": "help center FAQ title",
+      "my_label": "answerable",
+      "my_sop_id": "wc-security",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 5.899999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-security",
+          "score": 0.3315959738531423,
+          "evidence": "Suspected Account Takeover — Account security"
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2944095222586369,
+          "evidence": "Never ask a customer to send a password, one-time code, or recovery link to support."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.19154290724335943,
+          "evidence": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.18238485547374422,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.14834759368247433,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-051",
+      "source_type": "help center FAQ title",
+      "my_label": "answerable",
+      "my_sop_id": "wc-security",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 5.600000001490116,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.3312606623722196,
+          "evidence": "LIVE Connection and Stream Stability — LIVE technical support"
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.2599286462653475,
+          "evidence": "Content and LIVE restriction appeals require Trust & Safety review."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.24636746010271526,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.24102906428114712,
+          "evidence": "Never ask a customer to send a password, one-time code, or recovery link to support."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.21539362819320163,
+          "evidence": "Do not disclose account changes or ask the customer to share credentials or codes."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    },
+    {
+      "id": "rp-052",
+      "source_type": "help center FAQ title",
+      "my_label": "ambiguous",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 7.299999997019768,
+      "candidates": [
+        {
+          "sopId": "wc-security",
+          "score": 0.2873964496426299,
+          "evidence": "Do not disclose account changes or ask the customer to share credentials or codes."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.22696382328915862,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.15596067811918998,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.14443464999686562,
+          "evidence": "Never ask a customer to send a password, one-time code, or recovery link to support."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.14395882972700944,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        }
+      ],
+      "scored": false,
+      "outcome": "ambiguous",
+      "category": null
+    },
+    {
+      "id": "rp-053",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 8.299999997019768,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.28289690255507316,
+          "evidence": "For an isolated LIVE connection problem, confirm app version and network stability, then retry once after reconnecting."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.24693773482974363,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.21293061338699407,
+          "evidence": "Check that the recovery email or phone is still available and install the current app version."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.13278957551064474,
+          "evidence": "Direct the customer to secure the recovery email from a trusted device and create an urgent specialist handoff."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.12080015673211204,
+          "evidence": "Coins are used to send Gifts inside WaveCast and cannot be transferred between accounts."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-054",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 7.700000002980232,
+      "candidates": [
+        {
+          "sopId": "wc-security",
+          "score": 0.27306267973083775,
+          "evidence": "Suspected Account Takeover — Account security"
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.2026886169229934,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.17998177186680941,
+          "evidence": "Routine Account Login Recovery — Account access"
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.17938368488374287,
+          "evidence": "Coins are used to send Gifts inside WaveCast and cannot be transferred between accounts."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.1455540676450196,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-055",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6.100000001490116,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.3055497598960314,
+          "evidence": "For an isolated LIVE connection problem, confirm app version and network stability, then retry once after reconnecting."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2048394955677312,
+          "evidence": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.20409104632869643,
+          "evidence": "Region availability can change."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.17299145204627933,
+          "evidence": "Do not disclose account changes or ask the customer to share credentials or codes."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.14191104721433553,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-056",
+      "source_type": "help center FAQ title",
+      "my_label": "answerable",
+      "my_sop_id": "wc-appeal",
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "latencyMs": 7.600000001490116,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.35423434239853135,
+          "evidence": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.1563508386678336,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.13000520004188507,
+          "evidence": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.12977588454151714,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.12334638949902407,
+          "evidence": "Indica a la persona que proteja el correo de recuperación desde un dispositivo de confianza y remite el caso urgentemente."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "wrong_sop_answer"
+    },
+    {
+      "id": "rp-057",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6.299999997019768,
+      "candidates": [
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.200778014736478,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.16486651727302698,
+          "evidence": "Routine Account Login Recovery — Account access"
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.14301579638160944,
+          "evidence": "LIVE Connection and Stream Stability — LIVE technical support"
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.13168376832348133,
+          "evidence": "A suspected account takeover requires specialist Account Security review."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.12286106879779189,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-058",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6.5,
+      "candidates": [
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.283699557635845,
+          "evidence": "LIVE Eligibility Requirements — Creator eligibility"
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.26657079084003127,
+          "evidence": "LIVE Connection and Stream Stability — LIVE technical support"
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.20045199442901798,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.17916789514425882,
+          "evidence": "Creator Payout Timing and Missing Deposits — Creator payouts"
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.1652745920286633,
+          "evidence": "Do not disclose account changes or ask the customer to share credentials or codes."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-059",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6.399999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.1814863869408261,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a purchase settlement issue."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.12023502608385941,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.09278041814437084,
+          "evidence": "For an isolated LIVE connection problem, confirm app version and network stability, then retry once after reconnecting."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.08935964400334902,
+          "evidence": "Check that the recovery email or phone is still available and install the current app version."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.08287057641438889,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-060",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-payout"
+      },
+      "latencyMs": 8.399999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-payout",
+          "score": 0.49809809981867803,
+          "evidence": "Creator Payout Timing and Missing Deposits — Creator payouts"
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.31123112784096785,
+          "evidence": "LIVE Eligibility Requirements — Creator eligibility"
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.2630726833274732,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.2288075987837488,
+          "evidence": "Coins are used to send Gifts inside WaveCast and cannot be transferred between accounts."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.22364065854504575,
+          "evidence": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "unsafe_answer"
+    },
+    {
+      "id": "rp-061",
+      "source_type": "help center FAQ title",
+      "my_label": "ambiguous",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 4.600000001490116,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.43357666650983484,
+          "evidence": "If several creators report the same regional failure, route it as a possible service incident rather than treating each report as an individual device fault."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.26743998681959197,
+          "evidence": "Direct the customer to secure the recovery email from a trusted device and create an urgent specialist handoff."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.24703325607057872,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.23532931778690896,
+          "evidence": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.16070045801976957,
+          "evidence": "Si el recibo confirma la compra pero las monedas aún no aparecen, comprueba el estado del pago y del saldo."
+        }
+      ],
+      "scored": false,
+      "outcome": "ambiguous",
+      "category": null
+    },
+    {
+      "id": "rp-062",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 3.7999999970197678,
+      "candidates": [
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.2741618113171016,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.24785534948637317,
+          "evidence": "Suspected Account Takeover — Account security"
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.1973791733072105,
+          "evidence": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.14845701825277544,
+          "evidence": "Trust & Safety reviews the original content and decision; frontline support must not promise that an appeal will succeed or manually reverse a restriction."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.13182551152094768,
+          "evidence": "Las monedas se usan para enviar regalos en WaveCast y no se pueden transferir entre cuentas."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-063",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 4.5,
+      "candidates": [
+        {
+          "sopId": "wc-appeal",
+          "score": 0.23221241662153916,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.21807043223992445,
+          "evidence": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.18156636335994827,
+          "evidence": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.17623810847586585,
+          "evidence": "Suspected Account Takeover — Account security"
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.1714698676073244,
+          "evidence": "Un pago marcado como procesado que aún no aparece en la cuenta bancaria es una consulta sobre el plazo del pago; comprueba cuántos días hábiles han pasado."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-064",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6.100000001490116,
+      "candidates": [
+        {
+          "sopId": "wc-security",
+          "score": 0.46753508076685246,
+          "evidence": "Suspected account takeover requires specialist identity verification."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.41102834198561566,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.33526232786425136,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2998807519787036,
+          "evidence": "Routine Account Login Recovery — Account access"
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.2778793015248786,
+          "evidence": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-065",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 3.899999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-appeal",
+          "score": 0.29715739545871983,
+          "evidence": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.2797528701806547,
+          "evidence": "LIVE Connection and Stream Stability — LIVE technical support"
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.21193187382821668,
+          "evidence": "Se o código não chega após a troca de telefone, trata-se de recuperação de acesso, a menos que alguém tenha alterado o contato sem autorização."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.1491969108019825,
+          "evidence": "Un pago estándar al creador puede tardar de dos a cinco días hábiles después de figurar como procesado."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.14561102115665905,
+          "evidence": "Si toutes les conditions semblent réunies mais que le bouton LIVE est absent, transmettez le dossier pour examen de l’éligibilité sans promettre l’accès."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-066",
+      "source_type": "help center FAQ title",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6.4000000059604645,
+      "candidates": [
+        {
+          "sopId": "wc-appeal",
+          "score": 0.3626051261346114,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.35318608320871614,
+          "evidence": "Gifts, Coins, and Purchase Refunds — Gifts and purchases"
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.2862244983684491,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.24644155776531268,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.23596292126381058,
+          "evidence": "A suspected account takeover requires specialist Account Security review."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-067",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 13.199999995529652,
+      "candidates": [
+        {
+          "sopId": "wc-payout",
+          "score": 0.4334836416061691,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.3848163679293601,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.3165378732193982,
+          "evidence": "Do not disclose account changes or ask the customer to share credentials or codes."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.30883587900380094,
+          "evidence": "Never ask a customer to send a password, one-time code, or recovery link to support."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.27670041304978754,
+          "evidence": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-068",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 7.899999998509884,
+      "candidates": [
+        {
+          "sopId": "wc-login",
+          "score": 0.3294554709149648,
+          "evidence": "Routine Account Login Recovery — Account access"
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.3195381803675994,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.3053858930449006,
+          "evidence": "Direct the customer to secure the recovery email from a trusted device and create an urgent specialist handoff."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.2896852553924403,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.2589848160852374,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-069",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 6.800000004470348,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.22092205446630037,
+          "evidence": "Las monedas se usan para enviar regalos en WaveCast y no se pueden transferir entre cuentas."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.20755310805464322,
+          "evidence": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.19301951310151877,
+          "evidence": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.19267130093915247,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.17318887863160787,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-070",
+      "source_type": "public forum",
+      "my_label": "ambiguous",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 3.6999999955296516,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.34732518969405946,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.3327316988866806,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.28384433659928665,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.2650937425629002,
+          "evidence": "Do not disclose account changes or ask the customer to share credentials or codes."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.2504534068150327,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        }
+      ],
+      "scored": false,
+      "outcome": "ambiguous",
+      "category": null
+    },
+    {
+      "id": "rp-071",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 7.700000002980232,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.3392744868365397,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.3381634406566869,
+          "evidence": "Suspected Account Takeover — Account security"
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.31185788207555565,
+          "evidence": "Routine Account Login Recovery — Account access"
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.28964839329267184,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.27898693305576827,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "rp-072",
+      "source_type": "public forum",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 5.200000002980232,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.3760574514604788,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a purchase settlement issue."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.3536042517841869,
+          "evidence": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.3383604788800066,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2832505692726681,
+          "evidence": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.2620445429504386,
+          "evidence": "For an isolated LIVE connection problem, confirm app version and network stability, then retry once after reconnecting."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    }
+  ]
+}
