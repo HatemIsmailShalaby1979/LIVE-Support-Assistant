@@ -2341,3 +2341,79 @@ the largest failure category) and needs a schema change, so it is deferred.
 task). The earlier `(7,7)` extraction from `wc-payout`'s escalation sentence is
 pre-existing lint behaviour, not a regression, and does not create a conflict
 because only cross-procedure pairs are compared.
+
+## Deployed-vs-local parity — 2026-09-28
+
+Branch `exp/deployed-local-parity`. **Merged 2026-09-28.** Test tooling only:
+no product code, gate, threshold, model or corpus was changed. The one product
+observation below is a *finding*, not a change.
+
+**No product change was needed for per-candidate recording.** The app already
+persists `topCandidates` (sopId, score, passage) in the telemetry payload for every
+query — answered or escalated (`apps/web/src/App.tsx:371-375`) — the column is
+`payload jsonb` (`supabase/migrations/20260925000400_telemetry.sql:21`), and the
+ingest RPC requires the key (`.../20260925001300_ingest_write_boundary.sql:97-99`).
+The deployed harness therefore reads the deployed gate's own top-1/top-2/margin back
+from the tagged row instead of inferring it from a DOM that deliberately shows no
+scores.
+
+**Harness changes (tooling only).** `SIMULATION_BATCH` selects a batch other than the
+approved `chaos-500.json` (whose 500/15% constants are still enforced for that file);
+`candidateEvidence` records per-ticket top-1/top-2/margin, gate reason, applied margin
+and candidate count; `bundleIdentity` records the bundle's model id/revision/
+quantization; `runtime` records the execution provider; and database SOP ids are
+mapped back to corpus slugs so the two paths can be compared by identity rather than
+by UUID. `build-parity-batch.mjs` assembles the 40-ticket batch from the approved
+batch plus the six real-phrased false accepts — **every ticket copied verbatim; no
+label authored.**
+
+**Result: exact parity on the current deployed build.** 39 of 39 comparable tickets
+produced identical decisions, identical top-1 and top-2 procedures, and margins
+identical to four decimal places (Δ min 0.0000, median 0.0000, mean 0.0000, max
+0.0000). Corpus SHA-256 `e9e058685d25…` on both paths. Report:
+`tooling/eval/simulated-tenant/parity-results.md`.
+
+**The contradiction case is now blocked at publish, not answered.** `SIM-TICKET-00272`
+is the ticket that produced the one recorded unsafe answer. Publishing a bundle
+containing its injected `wc-payout-conflict` procedure returns **HTTP 422,
+"publication blocked: the tenant corpus contains contradictory procedures"**. The
+publish block is therefore **live in the development Supabase project**, and
+branch `feat/publish-conflict-block` is now merged. The deployed run had to be re-run on
+a 39-ticket variant (`parity-39.json`) because the refusal aborts the run before it
+writes a report. The local harness still escalates that ticket correctly (margin
+0.167715) because it injects the conflicting procedure into the ticket rather than
+publishing it through the guarded path.
+
+**The 2026-09-28 divergence is not reproduced and is not explained.** Deployed run
+`0aec9773442c4282` answered that ticket at margin 0.180757 against local 0.167715 —
+same batch SHA, same corpus SHA, same applied margin, same query text. Its candidate
+vector differed at every rank and **swapped ranks 4 and 5**, so the original deployed
+run indexed the corpus differently across the board, not only in the injected
+procedure. Two things would have settled it and neither exists: that report predates
+the `bundleIdentity` capture, and **the web client never verifies its loaded model
+against the bundle manifest** — `apps/web/src/bundle-client.ts:233-234` reads only
+`manifest.bundleVersion` and `sops`, and `apps/web/src/App.tsx:385-386` uses the
+build-time `EMBEDDING_MODEL`. The manifest `model_revision` is publisher-side evidence
+and does not prove what the app loaded. **This contradicts the claim in
+`packages/embedder/src/model.ts:6-7`** that a client refuses to serve when its loaded
+model does not match the bundle manifest; that check is not implemented in the web
+client. Recorded as a finding; no fix attempted here.
+
+**Verified identical:** model id/revision/dtype (the deployed JS bundle's pin is the
+same literal as `model.ts:57-67`), query text, corpus SHA, runtime (both
+browser/WASM). **Not verifiable:** tokenizer (same pinned revision by construction,
+not separately checked), and the deployed commit — the deployed CSS asset hash matches
+a HEAD build exactly while the JS asset hash, chunk count and size do not.
+
+**Hypothesis, labelled as such:** the original deployed run served a different app
+build. The current build reproduces the local harness exactly, which is consistent
+with a redeploy since.
+
+**Does the local zero-unsafe result support deployed claims?** More strongly than
+before — 39/39 paired identical outcomes — but not completely: the set is 39 tickets on
+a 7-procedure corpus, the one divergent ticket can no longer be re-tested, and nothing
+enforces that the deployed build matches this repository. Closing it needs a full
+500-ticket paired run, a recorded deployed commit, and the manifest model check the
+embedder documentation already promises.
+
+**Gates.** `pnpm run verify` **7/7**, eslint **0**, 500-ticket validator **OK**.
