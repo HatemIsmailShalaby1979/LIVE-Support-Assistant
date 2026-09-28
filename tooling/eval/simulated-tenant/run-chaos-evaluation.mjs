@@ -216,6 +216,8 @@ try {
 
   const totals = report.totals;
   const rows = report.perTicket;
+  const labelFix = report.labelFix;
+  const pct = (value) => `${(value * 100).toFixed(1)}%`;
   const markdown = [
     `# ${runLabel} — simulated chaos-batch evaluation`,
     '',
@@ -224,12 +226,34 @@ try {
     `Evaluated ${report.batch.tickets} synthetic tickets (${report.batch.chaosTickets} flagged, ${report.batch.chaosRateActual * 100}% chaos) using seed ${report.batch.seed}.`,
     `Query text: ${report.queryInputMode}.`,
     '',
-    `Decision-path accuracy: **${(totals.accuracy * 100).toFixed(1)}%** (${totals.correct}/${totals.tickets}). Failure rate: **${(totals.failureRate * 100).toFixed(1)}%** (${totals.failures}/${totals.tickets}).`,
+    `Decision-path accuracy against the batch's own labels: **${(totals.accuracy * 100).toFixed(1)}%** (${totals.correct}/${totals.tickets}). Failure rate: **${(totals.failureRate * 100).toFixed(1)}%** (${totals.failures}/${totals.tickets}).`,
     `Latency per query decision: mean ${(totals.latencyMs.mean).toFixed(2)} ms; median ${totals.latencyMs.median.toFixed(2)} ms; p95 ${totals.latencyMs.p95.toFixed(2)} ms; max ${totals.latencyMs.max.toFixed(2)} ms.`,
     '',
     `- Chaos subset: ${(report.cohorts.chaos.accuracy * 100).toFixed(1)}% accurate (${report.cohorts.chaos.correct}/${report.cohorts.chaos.tickets}).`,
     `- Baseline subset: ${(report.cohorts.baseline.accuracy * 100).toFixed(1)}% accurate (${report.cohorts.baseline.correct}/${report.cohorts.baseline.tickets}).`,
     `- False escalations: ${totals.falseEscalations}; unsafe/wrong-SOP answers: ${totals.unsafeAnswers}; runtime errors: ${totals.runtimeErrors}.`,
+    '',
+    '## Label fix — expectedOutcome (before / after)',
+    '',
+    'A labelling correction, not a product change. No shipped code, gate logic, or threshold is touched.',
+    `Rule, encoded in \`expected-outcome.ts\`: ${labelFix.rule}.`,
+    '',
+    `Truncated queries detected: ${labelFix.truncatedDetected}. Queries reclassified: ${labelFix.reclassified}${labelFix.reclassified > 0 ? ` (${labelFix.reclassifiedTicketIds.join(', ')})` : ''}.`,
+    '',
+    '| Measure | Before (batch labels) | After (label fix) |',
+    '|---|---:|---:|',
+    `| Correct | ${labelFix.before.correct}/${labelFix.before.tickets} (${pct(labelFix.before.accuracy)}) | ${labelFix.after.correct}/${labelFix.after.tickets} (${pct(labelFix.after.accuracy)}) |`,
+    `| False escalations | ${labelFix.before.falseEscalations} | ${labelFix.after.falseEscalations} |`,
+    `| Unsafe answers | ${labelFix.before.unsafeAnswers} | ${labelFix.after.unsafeAnswers} |`,
+    `| Runtime errors | ${labelFix.before.runtimeErrors} | ${labelFix.after.runtimeErrors} |`,
+    '',
+    '### Per technique (before / after)',
+    '',
+    '| Technique | Tickets | Before correct | Before false escalations | After correct | After false escalations | Reclassified |',
+    '|---|---:|---:|---:|---:|---:|---:|',
+    ...Object.entries(labelFix.byTechnique).map(([technique, row]) =>
+      `| ${technique} | ${row.tickets} | ${row.before.correct}/${row.before.tickets} (${pct(row.before.accuracy)}) | ${row.before.falseEscalations} | ${row.after.correct}/${row.after.tickets} (${pct(row.after.accuracy)}) | ${row.after.falseEscalations} | ${row.reclassified} |`,
+    ),
     '',
     '## Failure categories (ranked)',
     '',

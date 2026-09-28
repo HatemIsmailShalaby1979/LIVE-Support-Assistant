@@ -5,19 +5,30 @@ import {
 } from '../../../packages/core/dist/index.js';
 import { EMBEDDING_MODEL, createEmbedder } from '../../../packages/embedder/dist/index.js';
 import { buildCorpusPassages, searchTopK } from '../../../packages/vector-store/dist/index.js';
+import { labelQuery, type ExpectedOutcome } from './expected-outcome';
 import type batchType from './chaos-500.json';
 import type corpusType from './corpus.json';
 
 type Batch = typeof batchType;
 type Corpus = typeof corpusType;
 type Ticket = Batch['tickets'][number];
+type Expected = { decision: ExpectedOutcome; sopId: string | null };
 type EvaluationRow = {
   data_mode: 'simulated';
   ticket: Ticket;
   expected: Ticket['expected'];
+  /** The batch's own label, carried unchanged. */
+  expectedOutcome: ExpectedOutcome;
+  /** The label-fixed outcome scored against. Equal to `expected.decision` unless the label fix fires. */
+  expectedOutcomeAfter: ExpectedOutcome;
+  labelTruncated: boolean;
+  labelReason: string;
+  reclassified: boolean;
   actual: { decision: 'answer'; sopId: string } | { decision: 'escalate'; reason: string };
   correct: boolean;
   failureCategory: string | null;
+  correctAfter: boolean;
+  failureCategoryAfter: string | null;
   latencyMs: number | null;
   candidates: { sopId: string; score: number; evidence: string }[];
   error?: string;
@@ -75,7 +86,7 @@ function errorMessage(error: unknown): string {
 }
 
 function classifyFailure(
-  expected: Ticket['expected'],
+  expected: Expected,
   actual: EvaluationRow['actual'],
   correct: boolean,
 ): string | null {
@@ -83,6 +94,12 @@ function classifyFailure(
   if (actual.decision === 'escalate') return 'false_escalation';
   if (expected.decision === 'escalate') return 'unsafe_answer_on_escalation_case';
   return 'wrong_sop_answer';
+}
+
+/** Whether the assistant's decision satisfies an expected outcome and procedure. */
+function isCorrect(expected: Expected, actual: EvaluationRow['actual']): boolean {
+  return actual.decision === expected.decision
+    && (actual.decision === 'escalate' || actual.sopId === expected.sopId);
 }
 
 function percentile(values: readonly number[], percentileValue: number): number {
@@ -111,6 +128,8 @@ async function run(): Promise<void> {
   if (batch.ticketCount === 500 && batch.chaosRateConfigured !== 0.15) {
     throw new Error('the evaluation input is not the approved 500-ticket, 15% batch');
   }
+
+  const keywordsBySop = new Map(corpus.sops.map((sop) => [sop.id, sop.triggerKeywords]));
 
   setStatus('loading pinned MiniLM in the browser');
   const loadStarted = performance.now();
@@ -157,6 +176,16 @@ async function run(): Promise<void> {
           !injectedIds.has(entry.sopId) || ticketInjectedIds.has(entry.sopId),
         )
       : baseEntries;
+    const label = labelQuery({
+      message: inputText,
+      language: ticket.language,
+      expectedDecision: ticket.expected.decision,
+      procedureKeywords: keywordsBySop.get(ticket.expected.sopId ?? '') ?? [],
+    });
+    const expectedAfter: Expected = {
+      decision: label.expectedOutcome,
+      sopId: ticket.expected.sopId,
+    };
     const started = performance.now();
 
     try {
@@ -173,15 +202,22 @@ async function run(): Promise<void> {
       const actual: EvaluationRow['actual'] = agentView.kind === 'answer'
         ? { decision: 'answer', sopId: agentView.sop.id }
         : { decision: 'escalate', reason: agentView.reason };
-      const correct = actual.decision === ticket.expected.decision
-        && (actual.decision === 'escalate' || actual.sopId === ticket.expected.sopId);
+      const correct = isCorrect(ticket.expected, actual);
+      const correctAfter = isCorrect(expectedAfter, actual);
       rows.push({
         data_mode: 'simulated',
         ticket,
         expected: ticket.expected,
+        expectedOutcome: ticket.expected.decision,
+        expectedOutcomeAfter: label.expectedOutcome,
+        labelTruncated: label.truncated,
+        labelReason: label.reason,
+        reclassified: label.reclassified,
         actual,
         correct,
         failureCategory: classifyFailure(ticket.expected, actual, correct),
+        correctAfter,
+        failureCategoryAfter: classifyFailure(expectedAfter, actual, correctAfter),
         latencyMs,
         candidates: decision.evidence.map((candidate) => ({
           sopId: candidate.sopId,
@@ -194,9 +230,16 @@ async function run(): Promise<void> {
         data_mode: 'simulated',
         ticket,
         expected: ticket.expected,
+        expectedOutcome: ticket.expected.decision,
+        expectedOutcomeAfter: label.expectedOutcome,
+        labelTruncated: label.truncated,
+        labelReason: label.reason,
+        reclassified: label.reclassified,
         actual: { decision: 'escalate', reason: 'evaluation_error' },
         correct: false,
         failureCategory: 'runtime_error',
+        correctAfter: false,
+        failureCategoryAfter: 'runtime_error',
         latencyMs: performance.now() - started,
         candidates: [],
         error: errorMessage(error),
@@ -228,21 +271,38 @@ async function run(): Promise<void> {
       ).length])
       .sort((left, right) => right[1] - left[1]),
   );
-  const byCohort = (cohort: 'all' | 'chaos' | 'baseline') => {
-    const selected = cohort === 'all'
-      ? rows
-      : rows.filter((row) => row.ticket.isChaos === (cohort === 'chaos'));
+  const summarize = (selected: readonly EvaluationRow[], phase: 'before' | 'after') => {
+    const correctOf = (row: EvaluationRow) => phase === 'before' ? row.correct : row.correctAfter;
+    const categoryOf = (row: EvaluationRow) => phase === 'before' ? row.failureCategory : row.failureCategoryAfter;
+    const correct = selected.filter(correctOf).length;
     return {
       tickets: selected.length,
-      correct: selected.filter((row) => row.correct).length,
-      accuracy: selected.length === 0 ? 0 : selected.filter((row) => row.correct).length / selected.length,
-      falseEscalations: selected.filter((row) => row.failureCategory === 'false_escalation').length,
+      correct,
+      accuracy: selected.length === 0 ? 0 : correct / selected.length,
+      falseEscalations: selected.filter((row) => categoryOf(row) === 'false_escalation').length,
       unsafeAnswers: selected.filter((row) =>
-        row.failureCategory === 'unsafe_answer_on_escalation_case' || row.failureCategory === 'wrong_sop_answer',
+        categoryOf(row) === 'unsafe_answer_on_escalation_case' || categoryOf(row) === 'wrong_sop_answer',
       ).length,
-      runtimeErrors: selected.filter((row) => row.failureCategory === 'runtime_error').length,
+      runtimeErrors: selected.filter((row) => categoryOf(row) === 'runtime_error').length,
     };
   };
+  const byCohort = (cohort: 'all' | 'chaos' | 'baseline', phase: 'before' | 'after' = 'before') =>
+    summarize(
+      cohort === 'all' ? rows : rows.filter((row) => row.ticket.isChaos === (cohort === 'chaos')),
+      phase,
+    );
+  const techniqueOf = (row: EvaluationRow) => row.ticket.chaosMutation?.type ?? 'baseline';
+  const byTechnique = Object.fromEntries(
+    [...new Set(rows.map(techniqueOf))].sort().map((technique) => {
+      const selected = rows.filter((row) => techniqueOf(row) === technique);
+      return [technique, {
+        tickets: selected.length,
+        before: summarize(selected, 'before'),
+        after: summarize(selected, 'after'),
+        reclassified: selected.filter((row) => row.reclassified).length,
+      }];
+    }),
+  );
   const worstFailures = [...failures]
     .sort((left, right) => {
       const rank = (row: EvaluationRow) => row.failureCategory === 'runtime_error' ? 0
@@ -291,7 +351,17 @@ async function run(): Promise<void> {
         max: Math.max(...decisionLatencyMs),
       },
     },
+    labelFix: {
+      rule: 'a truncated query is expected to escalate when it has fewer than four words or no surviving procedure trigger keyword; the keyword test is language-scoped',
+      truncatedDetected: rows.filter((row) => row.labelTruncated).length,
+      reclassified: rows.filter((row) => row.reclassified).length,
+      reclassifiedTicketIds: rows.filter((row) => row.reclassified).map((row) => row.ticket.ticketId),
+      before: byCohort('all', 'before'),
+      after: byCohort('all', 'after'),
+      byTechnique,
+    },
     cohorts: { chaos: byCohort('chaos'), baseline: byCohort('baseline') },
+    cohortsAfter: { chaos: byCohort('chaos', 'after'), baseline: byCohort('baseline', 'after') },
     topFailures: worstFailures,
     perTicket: rows,
   };
