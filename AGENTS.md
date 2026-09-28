@@ -2142,3 +2142,62 @@ is impossible. They are labelled as such in the report.
 candidate scores, so its margin distribution is not reported rather than
 estimated. The only recorded deployed margin remains the safety counterexample
 (`SIM-TICKET-00272`, 0.180757).
+
+## Cross-encoder reranker measurement — branch `exp/reranker-measurement` — 2026-09-28
+
+**Not merged. No product code changed** — `apps/` and `packages/` are untouched.
+
+**1. The shipped path is the bi-encoder alone.** Four statements in
+`apps/web/src/App.tsx`: `:337` `index.embedQuery(queryText)`, `:342`
+`searchTopK(vector, index.entries, 5)`, `:343` `evaluateGate(...)`, `:351`
+`buildAgentView(...)`. `createReranker` (`packages/embedder/src/reranker.ts:49`)
+has exactly two callers, both evaluation scripts (`semantic-eval.mjs:298`,
+`reranker-sanity.mjs:29`). `searchTopK` (`packages/vector-store/src/cosine.ts:93`)
+also collapses passages to one candidate per procedure (`:103`–`:111`).
+
+**2. Cost to add.** Model **23.8 MB** (23.1 MB ONNX + 0.71 MB tokenizer),
+against the embedder's own 23.7 MB — it roughly **doubles the download**. Rerank
+stage measured here: **862 ms mean / 1109 ms p95** per query, against ~18 ms for
+the whole bi-encoder decision; the recorded golden-set figure is 79.6–82.8 ms p95
+against 2.6 ms (`docs/SYSTEM_DESIGN.md` §11A). Code touched: between
+`App.tsx:342` and `:343`, plus a second model load, the bundle manifest and the
+device model cache.
+
+**3. Measured** (before = bi-encoder, after = with the reranker over a
+20-passage shortlist):
+
+| Configuration | Correct | False escalations | Answered | Unsafe |
+|---|---:|---:|---:|---:|
+| chaos-500 @ 0.17 — bi-encoder | 362/500 (72.4%) | 138 | 238 | 0 |
+| chaos-500 @ 0.17 — reranker | 403/500 (80.6%) | 83 | 307 | **14** |
+| chaos-500 @ 0.18 — bi-encoder | 335/500 (67.0%) | 165 | 211 | 0 |
+| chaos-500 @ 0.18 — reranker | 403/500 (80.6%) | 83 | 307 | **14** |
+| holdout @ 0.17 — bi-encoder | 379/500 (75.8%) | 121 | 246 | 0 |
+| holdout @ 0.17 — reranker | 386/500 (77.2%) | 99 | 283 | **15** |
+| holdout @ 0.18 — bi-encoder | 359/500 (71.8%) | 141 | 226 | 0 |
+| holdout @ 0.18 — reranker | 386/500 (77.2%) | 99 | 283 | **15** |
+
+The 14 and 15 unsafe answers come from **5 distinct messages** on chaos-500 and
+4 on the holdout. The two margins produce identical decisions on each batch,
+because the reranker's margins do not fall between 0.17 and 0.18.
+
+**4. The decisive number.** Reranker scores are sigmoid outputs
+(`packages/embedder/src/reranker.ts:90`) on a different scale from cosine:
+median margin **0.6503** against **0.1750**. A threshold of 0.17 or 0.18 is far
+below the reranker's median, so it accepts almost everything. Its lowest
+**zero-unsafe** margin is **0.9903**, where it answers **77** tickets. The
+bi-encoder at the shipped 0.18 answers **211** with 0 unsafe and 335 correct.
+At its safest point the reranker delivers about a third of the answers the
+bi-encoder already delivers safely.
+
+**5. Recommendation: do not add it.** It is not a separation improvement; it is
+a recall/precision trade that pays for its extra answers in unsafe ones. This
+re-confirms the Phase 1 second-pass rejection on two larger batches and
+quantifies the cost. No threshold was shipped or proposed.
+
+**Harness change.** `tooling/eval/simulated-tenant/chaos-runner.ts` gains an
+opt-in `rerank=1` flag (plus `SIMULATION_RERANK=1` in the runner script); the
+default path is unchanged.
+
+**Artifacts.** `reranker-measurement-report.md`, `compare-reranker-measurement.mjs`,
+and the four `exp-rerank-*` result files.
