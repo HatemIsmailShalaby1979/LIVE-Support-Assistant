@@ -27,6 +27,10 @@
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { importWrappingPublicKey, publishBundle } from '../../../packages/sync/dist/index.js';
+// Single source of truth for contradictory-procedure detection, shared with the
+// lint CLI and the verification harnesses. A bundle whose corpus carries a
+// same-category numeric conflict is blocked here, before it is signed.
+import { lintCorpusForPublish } from '../../../tooling/conflicts/conflict-core.mjs';
 
 const ALGORITHMS = { signing: { name: 'Ed25519' }, wrapping: { name: 'X25519' } };
 
@@ -123,6 +127,25 @@ Deno.serve(async (request) => {
     return json(
       { error: 'this tenant has no published procedure, so there is nothing to publish' },
       409,
+    );
+  }
+
+  // Contradictory-policy guard (decision doc option (a)). The Confidence Gate
+  // measures how decisive a match is, not whether the corpus agrees with itself,
+  // so a same-category numeric conflict would be served to agents. We block the
+  // publish before any signing happens and name the conflict precisely. This is
+  // a publishing-process check only; the gate, thresholds and scoring are
+  // untouched. `conflict-core.mjs` carries no node built-ins, so it loads in Deno.
+  const conflictCheck = lintCorpusForPublish(corpus as unknown as Array<Record<string, unknown>>);
+  if (!conflictCheck.ok) {
+    return json(
+      {
+        error: 'publication blocked: the tenant corpus contains contradictory procedures',
+        detail: conflictCheck.message,
+        conflicts: conflictCheck.conflicts,
+        data_mode: 'simulated',
+      },
+      422,
     );
   }
 

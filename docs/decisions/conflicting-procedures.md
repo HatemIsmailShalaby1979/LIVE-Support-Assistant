@@ -1,9 +1,21 @@
 # Decision required: contradictory procedures can be answered
 
-**Status:** open — awaiting the owner's decision.
+**Status:** accepted (a) / (b) deferred — decision taken 2026-09-28.
 **Date:** 2026-09-28.
-**Scope:** `tooling/conflicts/` (implemented, report-only), `packages/core` gate (unchanged).
+**Scope:** `tooling/conflicts/` (wired into the publish path), `packages/core` gate (unchanged).
 **data_mode: "simulated"** — every ticket, procedure and measurement below is fictional evaluation data.
+
+**Decision and reason.** Option (a) is accepted: a bundle whose corpus carries a
+same-category numeric conflict is blocked at publish time, before signing. The
+publisher runs the lint (`conflict-core.mjs` -> `lintCorpusForPublish`) and
+refuses with a 422 naming the two procedures, the field, and both conflicting
+values. Option (b) is deferred: it changes gate behaviour and would raise the
+false-escalation rate, which is already the largest failure category, and it
+needs a schema change across `packages/core`, the bundle format, the publisher
+and the database. (a) removes the failure class at the source with no product
+behaviour change, so it is the lower-risk first move. Doing both remains
+defensible later; (b) is not precluded, only not taken now. The shipped 0.18
+threshold and the gate logic are untouched.
 
 ## 1. The problem
 
@@ -71,7 +83,13 @@ The regression test `tooling/conflicts/verify-conflict-lint.mjs` reproduces the
 case from the pinned batch itself and asserts the lint catches it. No threshold
 was tuned to make the case pass; the lint has no threshold, only disjointness.
 
-**Nothing in shipped code uses this lint yet.** It reports; it does not block.
+**The lint now blocks publication (option (a), accepted).**
+`supabase/functions/publish-bundle/index.ts` runs `lintCorpusForPublish` on the
+tenant's decrypted corpus before signing and returns HTTP 422 on any conflict,
+naming the two procedures, the field, and both conflicting values. The detection
+logic is single-sourced in `tooling/conflicts/conflict-core.mjs`, imported by the
+lint CLI, the publish gate, and the verification harness. The gate, thresholds
+and scoring are unchanged.
 
 ## 4. Two proposed fixes — for decision
 

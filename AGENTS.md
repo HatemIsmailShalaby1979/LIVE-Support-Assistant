@@ -2142,3 +2142,39 @@ is impossible. They are labelled as such in the report.
 candidate scores, so its margin distribution is not reported rather than
 estimated. The only recorded deployed margin remains the safety counterexample
 (`SIM-TICKET-00272`, 0.180757).
+
+## Publish-path conflict block — decision option (a) — 2026-09-28
+
+**Decision (owner): accepted (a) / (b) deferred.** Branch `feat/publish-conflict-block`,
+based on `origin/main`; not merged. `docs/decisions/conflicting-procedures.md`
+status updated with the reason: (a) removes the failure class at the source with
+no product-behaviour change; (b) would raise the false-escalation rate (already
+the largest failure category) and needs a schema change, so it is deferred.
+
+**What changed.**
+- `supabase/functions/publish-bundle/index.ts` now runs the conflict check on the
+  tenant's decrypted corpus *before* signing. On any same-category numeric
+  conflict it returns HTTP **422** with `detail` naming the two procedures, the
+  field (`window_days`, …), and both asserted values. No change to the gate, the
+  0.18 threshold, or scoring.
+- Detection logic is single-sourced in the new `tooling/conflicts/conflict-core.mjs`
+  (pure, no `node:` built-ins), imported by the lint CLI, the Deno publish gate,
+  and the harness. `lint-procedure-conflicts.mjs` was refactored to import it; its
+  `runCli`/`findConflicts`/`extractPolicyFacts`/`loadCorpus` exports are unchanged,
+  so `verify-conflict-lint.mjs` still passes.
+- New harness `tooling/conflicts/verify-publish-conflict-block.mjs`, registered as
+  the `publish-block` suite in `tooling/run-verification.mjs`.
+
+**Tests, all passing.**
+- (a) a conflicting corpus is blocked; (b) the clean 7-procedure corpus publishes;
+- (c) the `SIM-TICKET-00272` payout case is blocked and names `wc-payout` vs
+  `wc-payout-conflict`, field `window_days`, values 2–5 vs 1 business day;
+- (d) negative control — two procedures stating the same window are not flagged;
+- (e) the lint's stated limitation (English number words only) is locked: a
+  Spanish-only conflicting pair is NOT flagged while the English equivalent IS.
+
+**Verification.** `pnpm run verify` 8/8 suites pass (incl. `publish-block`); the
+500-ticket validator passes; `pnpm run lint` passes (only `@sop/web` ships a lint
+task). The earlier `(7,7)` extraction from `wc-payout`'s escalation sentence is
+pre-existing lint behaviour, not a regression, and does not create a conflict
+because only cross-procedure pairs are compared.
