@@ -43,6 +43,24 @@ device records; the detailed report is under
 The failure-rate target remains unmet; no product threshold or code was
 changed.
 
+**SIMULATED DATA — label fix and conflict lint, 2026-09-28.** A labelling
+correction added an `expectedOutcome` field to every query in the batch. The
+rule lives in code (`tooling/eval/simulated-tenant/expected-outcome.ts`): a
+truncated query — one cut before any procedure keyword or meaning survived — is
+expected to escalate rather than counted as a false escalation. Rescored on the
+same 500-ticket local path at the same evaluation-only 0.17 margin, the
+correction reclassified **0** queries, because the batch contains no truncated
+query (shortest message: 14 words). Before and after are therefore identical:
+362/500 (72.4%), 138 false escalations, 0 unsafe answers. The deployed path was
+not re-run, because the expected-decision counts did not change. Separately, a
+report-only conflict lint (`tooling/conflicts/lint-procedure-conflicts.mjs`)
+scans a corpus for same-category procedures whose numeric policy values
+disagree; it reports 0 conflicts on the clean corpus and 1 (the payout-window
+conflict) when the conflicting procedure is present, exiting non-zero. Nothing
+in shipped code uses it yet — the two candidate fixes are awaiting a decision in
+`docs/decisions/conflicting-procedures.md`. There is no design partner, and none
+is referenced.
+
 **Limits.** There is no public sign-up, a new device only receives procedures
 after a fresh bundle is published, the authoring screen is not enabled from this
 address, and the address itself is an auto-generated deployment name.

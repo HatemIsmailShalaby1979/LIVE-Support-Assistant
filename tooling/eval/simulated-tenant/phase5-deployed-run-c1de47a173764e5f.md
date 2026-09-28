@@ -98,6 +98,6 @@ Local same-batch baseline at margin 0.17: 72.4% (362/500), 138 failures, 0 unsaf
 
 ## Interpretation
 
-**The low-failure criterion is not met.** This run measures the deployed UI, bundle, local model, gate, and tagged ingest path. It does not establish real-world correctness. Design-partner comparison remains pending their anonymized examples; no partner data is included.
+**The low-failure criterion is not met.** This run measures the deployed UI, bundle, local model, gate, and tagged ingest path. It does not establish real-world correctness. There is no design partner, so no partner comparison was performed and none is claimed.
 
 All generated records remain isolated to the clearly named SIMULATED DATA tenants. No real tenant was used.

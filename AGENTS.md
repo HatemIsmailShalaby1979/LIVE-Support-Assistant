@@ -18,10 +18,11 @@ this first in any new session; update it at the end of every completed step.
 | `packages/embedder` | `@sop/embedder` — pinned local embedding (transformers.js, ONNX) |
 | `packages/vector-store` | `@sop/vector-store` — passage extraction, cosine retrieval |
 | `packages/sync` | `@sop/sync` — encrypted bundle protocol: canonical JSON, crypto, install pipeline, server publish |
-| `tooling/eval` | Parity harness, golden set, retrieval evaluation |
+| `tooling/eval` | Parity harness, golden set, retrieval evaluation, simulated-tenant evaluation (label fix, real-phrased scorer) |
+| `tooling/conflicts` | `lint-procedure-conflicts.mjs` — same-category numeric policy conflicts; `verify-conflict-lint.mjs` — regression test |
 | `tooling/sync` | `verify-sync.mjs` — the 31-check sync verification |
 | `tooling/db` | `verify-phase7.sh` — brings up PostgreSQL, applies everything, runs all three SQL suites. `verify-phase2.sh` and `verify-phase5.sh` are subsets of it, kept for focused reruns |
-| `tooling/run-verification.mjs` | **The gate.** Runs all six JS harnesses and requires both exit 0 and each suite's own verdict line |
+| `tooling/run-verification.mjs` | **The gate.** Runs all seven JS harnesses and requires both exit 0 and each suite's own verdict line |
 | `tooling/audit-gate.mjs` | Dependency gate: fails on new or escalated advisories vs `tooling/audit-baseline.json` |
 | `tooling/db/verify-hosted.sh` | Runs all three SQL suites against a real Supabase project over the session pooler, and removes the probe functions afterwards |
 | `tooling/db/provision-hosted-fixtures.mjs` | Creates the seven fixture principals through the Auth Admin API, because a hosted project will not let us choose their UUIDs |
@@ -1914,8 +1915,9 @@ synthetic examples, and lowering the gate further has a measured safety cost;
 no claim of production accuracy or readiness is supported. See
 `tooling/eval/simulated-tenant/phase5-comparison.md` and the round-1, round-2,
 round-3, and stability JSON/Markdown reports. The subsequent deployed-path
-validation and Phase 6 package are recorded below. Phase 7 remains pending
-partner examples; publication of these changes has not yet been performed.
+validation and Phase 6 package are recorded below. Phase 7 is redefined below,
+because there is no design partner; publication of these changes has not yet
+been performed.
 
 ## Phase 5 margin safety probe — 2026-09-28
 
@@ -1930,8 +1932,8 @@ evaluation baseline remains 0.17.
 
 The results, including the two synthetic examples, are in
 `tooling/eval/simulated-tenant/phase5-original-margin-016.json` and `.md`.
-The 0.17 baseline also remains unchanged. No real customer or design-partner
-data is used.
+The 0.17 baseline also remains unchanged. No real customer data is used, and
+there is no design partner.
 
 ## Deployed-path simulation and Phase 6 package — 2026-09-28
 
@@ -1993,11 +1995,11 @@ visible one-ticket workflow and credential/privacy precautions. Its two Enter
 checkpoints were exercised in a visible-browser near-duplicate smoke
 (`5c77413c866f4b10`); this was not counted as batch accuracy evidence.
 
-**Phase 7 is blocked on the owner.** No anonymized design-partner examples have
-been supplied. No partner data was created, stored, logged, or transmitted.
-Request redacted examples before doing the comparison; retain only abstract
-patterns and create synthetic analogues. The proof document explicitly marks
-this comparison pending.
+**Phase 7 has no design partner.** No partner examples exist to compare against,
+and none will be requested: there is no design partner, and no partner data was
+created, stored, logged, or transmitted. The comparison is therefore redefined as
+a real-phrased query set collected from public sources and labelled by the owner.
+Stage 1 of that redefinition is recorded in the section below.
 
 Reproduce the batch validator with:
 
@@ -2009,3 +2011,86 @@ The valid deployed run report and detailed comparison are in
 `tooling/eval/simulated-tenant/phase5-deployed-run-0aec9773442c4282.json`,
 `.md`, and `phase5-comparison.md`. The public-app backend remains the development
 Supabase project; do not describe these results as production-customer usage.
+
+## Label fix, conflict lint, and Phase 7 without a partner — 2026-09-28
+
+**data_mode: "simulated"** for the ticket batch and corpus. The real-phrased
+query set is public wording, tagged `public-wording`. No design partner exists
+and none is referenced anywhere in this work.
+
+**Task A — label fix (`expectedOutcome`).** Added
+`tooling/eval/simulated-tenant/expected-outcome.ts`. Every query now carries an
+`expectedOutcome` of `answer` or `escalate`, derived in code from the batch's own
+expected decision plus a code-encoded rule: a truncated query is expected to
+escalate when it has fewer than four words or no surviving procedure trigger
+keyword, and the keyword test is scoped to the query's own language. The pinned
+batch was **not** modified, so `chaos-500.json` keeps its SHA `717c40dc…`; the
+field is computed into every report row.
+
+Measured on the same 500-ticket local path at the evaluation-only 0.17 margin
+(`phase5-label-fix-margin-017.json` / `.md`):
+
+| Measure | Before (batch labels) | After (label fix) |
+|---|---:|---:|
+| Correct | 362/500 (72.4%) | 362/500 (72.4%) |
+| False escalations | 138 | 138 |
+| Unsafe answers | 0 | 0 |
+| Runtime errors | 0 | 0 |
+| Queries reclassified | — | **0** |
+
+The correction reclassifies **0** queries, because the batch contains no
+truncated query: the shortest message is 14 words, no message ends in an
+ellipsis, and none ends on a dangling article, preposition or conjunction. The
+deployed path was therefore **not** re-run — the expected-decision counts did not
+change. Two findings are recorded rather than hidden: the keyword test would
+mislabel 112 non-English queries if it were not language-scoped (the corpus's
+`triggerKeywords` are English while the corpus is four-language), and 2 English
+typo-mutation queries lose their keyword to the mutation while keeping their
+meaning. Both are left as `answer`.
+
+**Task B — conflict lint.** Added `tooling/conflicts/lint-procedure-conflicts.mjs`
+(report-only: exit 0 clean, 1 on conflict, 2 usage/input) and
+`tooling/conflicts/verify-conflict-lint.mjs` (regression test, now a suite in
+`pnpm run verify`). The lint extracts the numeric policy facts a procedure
+asserts (payout/processing windows, minimum age, minimum followers, fees, payout
+minimums), skips sentences that explicitly reject a value rather than assert it,
+and reports same-category pairs whose asserted values are disjoint.
+
+| Corpus | Procedures | Conflicts | Exit |
+|---|---:|---:|---:|
+| `corpus.json` | 7 | 0 | 0 |
+| `corpus.json` + injected `wc-payout-conflict` | 8 | 1 | 1 |
+
+The flagged pair is `Creator payouts / window_days`: `wc-payout` asserts 2–5
+business days, `wc-payout-conflict` asserts 1 business day. The regression test
+reproduces the case from `chaos-500.json` `SIM-TICKET-00272` itself and asserts
+the lint catches it; no threshold was tuned to make it pass. **No shipped code
+uses the lint.** `docs/decisions/conflicting-procedures.md` records the problem,
+the measured case (top-one/top-two margin 0.180757 against a shipped default of
+0.18), and two proposed fixes with trade-offs, awaiting the owner's decision.
+
+**Task C — Phase 7, stage 1 (prepare).**
+`tooling/eval/simulated-tenant/real-phrased-queries.csv` holds **72** real support
+questions quoted from public sources — 46 public-forum thread titles and 26
+help-centre FAQ titles — with the wording only, no usernames and no personal
+details, and `my_label` / `my_sop_id` left empty. `my-floor-queries.template.csv`
+carries 5 clearly marked EXAMPLE rows for the owner's own 40–60 patterns.
+`tooling/eval/score-real-phrased.mjs` scores the filled CSVs through the same
+browser-local MiniLM → retrieval → gate → agent-view path, reports accuracy,
+false escalations, unsafe answers and a per-source breakdown, and refuses to run
+while any row is unlabelled: verified, it exits 2 and names all 72 rows. A 5-row
+smoke run exercised the path end to end (`real-phrased-smoke.json` / `.md`: 4
+scored, 1 ambiguous, 3/4 correct, 1 false escalation, 0 unsafe); it is a path
+check, not a result. **Stage 1 stops here. The agent labelled nothing.**
+
+**Task D — documents.** `proof-of-concept.md` rewritten: no partner wording, the
+development Supabase project named as such, the before/after label fix, the one
+unsafe answer and its measured margin, a "What this proves / what it does not
+prove" section, and an explicit statement that production readiness is not
+proven. Added `docs/SIMULATED_TENANT_BRIEF.md`. Updated `docs/PRODUCTION_STATUS.md`
+and the README status claim. The README claim reads exactly: "Validated on 500
+simulated tickets through the deployed path with tenant isolation audited; one
+unsafe answer found and documented."
+
+**Gate change.** `tooling/run-verification.mjs` now runs seven JS harnesses; the
+conflicting-procedure lint is the seventh.

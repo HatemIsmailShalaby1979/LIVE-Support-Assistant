@@ -44,6 +44,8 @@ demo does not reach:
 
 - Encrypted sync protocol — 31/0 · Persistence adapters — 33/0 · Key rotation — 13/0
   · Telemetry queue — 35/0 (`tooling/sync/*`, `tooling/telemetry/*`).
+- Conflicting-procedure lint — reproduces the contradictory-payout case and catches
+  it (`tooling/conflicts/*`). Report-only; not wired into publishing.
 - PostgreSQL Command Center backend: RBAC 99/0 · Telemetry ingest 27/0 · RLS bypass
   40/0 · Retention 16/0 (`supabase/migrations`, `pnpm verify:db`).
 
@@ -75,7 +77,7 @@ SQL ingest contracts. No generative model in query, gate, answer, or escalation.
 ## Production status & test coverage
 
 > [!WARNING]
-> This is a prototype, not a production deployment. The on-device retrieval + confidence gate flow was re-verified on current HEAD on 2026-09-27. The backend verification suites (RBAC, RLS, telemetry, retention, encrypted sync, key rotation, telemetry queue) pass independently, but the hosted transport that would connect them to the running client is not wired into the standalone demo — a query's telemetry or escalation is not actually delivered there. No external security audit, no certified data isolation, no signed installer. No revenue and no paying users. The latest tagged release is **v1.0.1** (2026-08-29); it predates the current HEAD. In-sample prototype results (e.g. the 0.18 margin auto-answers 8 of 50 in-scope queries) are not a production SLA; threshold calibration remains a per-tenant onboarding task.
+> This is a prototype, not a production deployment. **Validated on 500 simulated tickets through the deployed path with tenant isolation audited; one unsafe answer found and documented.** The on-device retrieval + confidence gate flow was re-verified on current HEAD on 2026-09-27. The backend verification suites (RBAC, RLS, telemetry, retention, encrypted sync, key rotation, telemetry queue, conflicting-procedure lint) pass independently, but the hosted transport that would connect them to the running client is not wired into the standalone demo — a query's telemetry or escalation is not actually delivered there. No external security audit, no certified data isolation, no signed installer. No revenue and no paying users. The latest tagged release is **v1.0.1** (2026-08-29); it predates the current HEAD. In-sample prototype results (e.g. the 0.18 margin auto-answers 8 of 50 in-scope queries) are not a production SLA; threshold calibration remains a per-tenant onboarding task. There is no design partner.
 
 ## Run it
 

@@ -1,6 +1,6 @@
 # Simulated client brief: WaveCast Creator Care
 
-**data_mode: "simulated" — fictional profile; no real partner or customer data.**
+**data_mode: "simulated" — fictional profile; no real customer data, and there is no design partner.**
 
 ## Operating profile
 

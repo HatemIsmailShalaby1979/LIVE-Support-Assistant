@@ -1,7 +1,7 @@
 # SIMULATED DATA screen-recording instructions
 
 This records one synthetic ticket in the deployed-path evaluation harness. It
-does not record or use a real customer or design-partner ticket. The browser
+does not record or use a real customer ticket; there is no design partner. The browser
 targets the public Vercel app and the development Supabase project; describe the
 result as deployed-path validation, not production-customer evidence.
 
@@ -55,5 +55,5 @@ To record a different chaos example, replace `near_duplicate` with one of
 `wrong_category_tag`, `off_hours_volume_spike`, `missing_fields`,
 `contradicting_sops`, `wrong_fields`, `no_correct_answer`, `agent_handoff`,
 `mixed_language_typos_sarcasm`, or `reopened_ticket`. Each recording run gets
-its own tenant and run ID. Do not use a real partner example as a selector or
+its own tenant and run ID. Do not use a real customer example as a selector; there is no design partner or
 input.

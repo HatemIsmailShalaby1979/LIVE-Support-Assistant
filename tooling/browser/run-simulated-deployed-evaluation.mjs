@@ -1017,7 +1017,7 @@ report.limitations = [
   'Both isolated tenants, users, synthetic SOPs, query telemetry, and escalation evidence remain in the development database and are visibly tagged data_mode: simulated.',
   'The batch uses the approved template-based synthetic messages; the holdout is another seed from the same generator, not independently authored customer language.',
   'The 0.17 margin is a test-only browser control. The shipped default remains 0.18; at 0.16 the approved batch produced two unsafe answers.',
-  'The low-failure stopping criterion remains unmet. All outcome labels derive from synthetic batch expectations, not human-annotated partner outcomes.',
+  'The low-failure stopping criterion remains unmet. All outcome labels derive from synthetic batch expectations, not human-annotated outcomes.',
 ];
 
 const reportBody = JSON.stringify(report, null, 2);
@@ -1063,7 +1063,7 @@ const markdown = [
   ])),
   '## Interpretation',
   '',
-  '**The low-failure criterion is not met.** This run measures the deployed UI, bundle, local model, gate, and tagged ingest path. It does not establish real-world correctness. Design-partner comparison remains pending their anonymized examples; no partner data is included.',
+  '**The low-failure criterion is not met.** This run measures the deployed UI, bundle, local model, gate, and tagged ingest path. It does not establish real-world correctness. There is no design partner, so no partner comparison was performed and none is claimed.',
   '',
   'All generated records remain isolated to the clearly named SIMULATED DATA tenants. No real tenant was used.',
 ].join('\n');
