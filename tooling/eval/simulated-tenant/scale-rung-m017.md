@@ -2,13 +2,13 @@
 
 **data_mode: "simulated" — all tickets, corpus content, and outcomes in this report are fictional.**
 
-Evaluated 408 synthetic tickets (8 flagged, 2% chaos) using seed 20260928.
+Evaluated 414 synthetic tickets (14 flagged, 3.4000000000000004% chaos) using seed 20260928.
 Query text: message.
 
-Decision-path accuracy against the batch's own labels: **48.5%** (198/408). Failure rate: **51.5%** (210/408).
-Latency per query decision: mean 9.36 ms; median 8.70 ms; p95 14.50 ms; max 27.10 ms.
+Decision-path accuracy against the batch's own labels: **49.3%** (204/414). Failure rate: **50.7%** (210/414).
+Latency per query decision: mean 8.73 ms; median 8.20 ms; p95 12.90 ms; max 16.00 ms.
 
-- Chaos subset: 12.5% accurate (1/8).
+- Chaos subset: 50.0% accurate (7/14).
 - Baseline subset: 49.3% accurate (197/400).
 - False escalations: 209; unsafe/wrong-SOP answers: 1; runtime errors: 0.
 
@@ -21,7 +21,7 @@ Truncated queries detected: 5. Queries reclassified: 1 (SCALE-0081).
 
 | Measure | Before (batch labels) | After (label fix) |
 |---|---:|---:|
-| Correct | 198/408 (48.5%) | 199/408 (48.8%) |
+| Correct | 204/414 (49.3%) | 205/414 (49.5%) |
 | False escalations | 209 | 208 |
 | Unsafe answers | 1 | 1 |
 | Runtime errors | 0 | 0 |
@@ -31,6 +31,7 @@ Truncated queries detected: 5. Queries reclassified: 1 (SCALE-0081).
 | Technique | Tickets | Before correct | Before false escalations | After correct | After false escalations | Reclassified |
 |---|---:|---:|---:|---:|---:|---:|
 | baseline | 400 | 197/400 (49.3%) | 202 | 198/400 (49.5%) | 201 | 1 |
+| contradicting_sops | 6 | 6/6 (100.0%) | 0 | 6/6 (100.0%) | 0 | 0 |
 | mixed_language_typos_sarcasm | 2 | 1/2 (50.0%) | 1 | 1/2 (50.0%) | 1 | 0 |
 | near_duplicate | 6 | 0/6 (0.0%) | 6 | 0/6 (0.0%) | 6 | 0 |
 
@@ -53,7 +54,7 @@ Truncated queries detected: 5. Queries reclassified: 1 (SCALE-0081).
 
 ## Up to 10 worst failures
 
-### 1. SCALE-0328 — wrong_sop_answer (8.20 ms)
+### 1. SCALE-0328 — wrong_sop_answer (8.50 ms)
 
 **data_mode: "simulated"**
 - Expected: answer (sc-prem-cancel)
@@ -61,47 +62,15 @@ Truncated queries detected: 5. Queries reclassified: 1 (SCALE-0081).
 - Subject: desactivar la renovacion automatica
 - Message: desactivar la renovacion automatica
 
-### 2. SCALE-0040 — false_escalation (27.10 ms)
+### 2. SCALE-0011 — false_escalation (14.60 ms)
 
 **data_mode: "simulated"**
-- Expected: answer (sc-gift-refund)
+- Expected: answer (sc-payout-missing)
 - Actual: escalate — insufficient_margin
-- Subject: compra de monedas no autorizada, revisen
-- Message: compra de monedas no autorizada, revisen por favor
+- Subject: el pago figura como pagado pero
+- Message: el pago figura como pagado pero nunca llego, pueden rastrearlo
 
-### 3. SCALE-0023 — false_escalation (25.60 ms)
-
-**data_mode: "simulated"**
-- Expected: answer (sc-payout-method)
-- Actual: escalate — insufficient_margin
-- Subject: mudei de banco, o saque atual
-- Message: mudei de banco, o saque atual vai para qual conta
-
-### 4. SCALE-0021 — false_escalation (25.40 ms)
-
-**data_mode: "simulated"**
-- Expected: answer (sc-payout-method)
-- Actual: escalate — insufficient_margin
-- Subject: changed my bank, will this payout
-- Message: changed my bank, will this payout go to the new one or the old one
-
-### 5. SCALE-0020 — false_escalation (22.40 ms)
-
-**data_mode: "simulated"**
-- Expected: answer (sc-payout-method)
-- Actual: escalate — insufficient_margin
-- Subject: como altero a conta bancaria que
-- Message: como altero a conta bancaria que recebe os saques
-
-### 6. SCALE-0019 — false_escalation (20.50 ms)
-
-**data_mode: "simulated"**
-- Expected: answer (sc-payout-method)
-- Actual: escalate — insufficient_margin
-- Subject: como cambio la cuenta bancaria donde
-- Message: como cambio la cuenta bancaria donde recibo los pagos
-
-### 7. SCALE-0004 — false_escalation (20.00 ms)
+### 3. SCALE-0004 — false_escalation (14.20 ms)
 
 **data_mode: "simulated"**
 - Expected: answer (sc-payout-timing)
@@ -109,28 +78,60 @@ Truncated queries detected: 5. Queries reclassified: 1 (SCALE-0081).
 - Subject: mi pago figura como procesado pero
 - Message: mi pago figura como procesado pero no llega al banco, cuanto tarda
 
-### 8. SCALE-0024 — false_escalation (19.80 ms)
+### 4. SCALE-0005 — false_escalation (14.10 ms)
 
 **data_mode: "simulated"**
-- Expected: answer (sc-payout-method)
+- Expected: answer (sc-payout-timing)
 - Actual: escalate — insufficient_margin
-- Subject: cambie de banco, el pago en
-- Message: cambie de banco, el pago en curso a donde va
+- Subject: el pago aparece completado y mi
+- Message: el pago aparece completado y mi cuenta sigue en cero
 
-### 9. SCALE-0312 — false_escalation (16.50 ms)
-
-**data_mode: "simulated"**
-- Expected: answer (sc-up-thumbnail)
-- Actual: escalate — insufficient_margin
-- Subject: los cambios de metadatos no se
-- Message: los cambios de metadatos no se guardan
-
-### 10. SCALE-0011 — false_escalation (15.10 ms)
+### 5. SCALE-0015 — false_escalation (13.90 ms)
 
 **data_mode: "simulated"**
 - Expected: answer (sc-payout-missing)
 - Actual: escalate — insufficient_margin
-- Subject: el pago figura como pagado pero
-- Message: el pago figura como pagado pero nunca llego, pueden rastrearlo
+- Subject: saque processado mas banco nao tem
+- Message: saque processado mas banco nao tem registro, preciso de rastreio
+
+### 6. SCALE-0139 — false_escalation (13.80 ms)
+
+**data_mode: "simulated"**
+- Expected: answer (sc-live-lag)
+- Actual: escalate — insufficient_margin
+- Subject: mi transmision va con mucho retraso,
+- Message: mi transmision va con mucho retraso, se quejan los espectadores
+
+### 7. SCALE-0140 — false_escalation (13.70 ms)
+
+**data_mode: "simulated"**
+- Expected: answer (sc-live-lag)
+- Actual: escalate — insufficient_margin
+- Subject: minha transmissao esta travando muito, espectadores
+- Message: minha transmissao esta travando muito, espectadores reclamam
+
+### 8. SCALE-0076 — false_escalation (13.60 ms)
+
+**data_mode: "simulated"**
+- Expected: answer (sc-login-code)
+- Actual: escalate — insufficient_margin
+- Subject: o codigo nao chega no meu
+- Message: o codigo nao chega no meu telefone, nao consigo entrar
+
+### 9. SCALE-0012 — false_escalation (13.60 ms)
+
+**data_mode: "simulated"**
+- Expected: answer (sc-payout-missing)
+- Actual: escalate — insufficient_margin
+- Subject: o saque consta como pago mas
+- Message: o saque consta como pago mas nunca chegou, podem rastrear
+
+### 10. SCALE-0006 — false_escalation (13.40 ms)
+
+**data_mode: "simulated"**
+- Expected: answer (sc-payout-timing)
+- Actual: escalate — insufficient_margin
+- Subject: meu saque aparece como processado mas
+- Message: meu saque aparece como processado mas nao caiu na conta
 
 The evaluation runs the browser-local MiniLM → passage retrieval → Confidence Gate → agent-view path. It does not sign in, use a tenant bundle, write telemetry, or call the live database. See the JSON report for per-ticket candidates and results.

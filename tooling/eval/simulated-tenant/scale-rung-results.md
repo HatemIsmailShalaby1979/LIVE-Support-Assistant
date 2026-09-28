@@ -1,9 +1,16 @@
 # Scale-rung evaluation — a 48-procedure simulated tenant
 
 **data_mode: "simulated".** A larger fictional WaveCast corpus (48 procedures, 13 categories,
-English + Spanish + Portuguese) and a batch of **408 distinct messages** (each used once, so the
+English + Spanish + Portuguese) and a batch of **414 distinct messages** (each used once, so the
 distinct-message count equals the ticket count — unlike the 500-ticket batch, which carries only
 47 distinct messages). The corpus passes the conflict lint (0 same-category numeric conflicts).
+
+Escalation coverage is deliberate: **112 of 414** messages expect escalation — the
+**no procedure** and **safety** cases (account takeover, suspicious logins, compromised recovery email,
+harassment, legal requests) plus **6 contradiction** messages where two active procedures
+give conflicting payout timing. The conflicting procedure is injected into the ticket, as the approved
+500-ticket batch does, so the corpus itself stays lint-clean. Near-duplicate topics are present too:
+6 `near_duplicate` messages and the corpus's own near-topic procedure pairs.
 
 Corpus: `scale-rung-corpus.json` · Batch: `scale-rung-batch.json` · Runs: `scale-rung-m018` / `-m017`.
 Gate, threshold, model and corpus logic unchanged; only the evaluation corpus and batch are new.
@@ -12,13 +19,13 @@ Gate, threshold, model and corpus logic unchanged; only the evaluation corpus an
 
 | Margin | Messages | Correct | Accuracy | False escalations | Wrong-first | Unsafe answers | Runtime errors |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| 0.18 | 408 | 190 | 46.6% | 218 | 86 | 0 | 0 |
-| 0.17 | 408 | 199 | 48.8% | 208 | 86 | 1 | 0 |
+| 0.18 | 414 | 196 | 47.3% | 218 | 86 | 0 | 0 |
+| 0.17 | 414 | 205 | 49.5% | 208 | 86 | 1 | 0 |
 
-Answerable messages: 302 of 408 (the rest expect escalation).
-Margin (0.18): median 0.0900, min 0.0001, max 0.4833.
+Answerable messages: 302 of 414 (the rest expect escalation).
+Margin (0.18): median 0.0893, min 0.0001, max 0.4833.
 
-Figures are the label-fixed outcomes (`expectedOutcome`); **1 of 408** messages was reclassified by that rule (SCALE-0081). The raw batch label gives 189/408 (46.3%) at 0.18.
+Figures are the label-fixed outcomes (`expectedOutcome`); **1 of 414** messages was reclassified by that rule (SCALE-0081). The raw batch label gives 195/414 (47.1%) at 0.18.
 
 ## Unsafe answers first
 
@@ -29,9 +36,9 @@ Figures are the label-fixed outcomes (`expectedOutcome`); **1 of 408** messages 
 
 | Language | Messages | Correct | Accuracy | False escalations | Unsafe |
 |---|---:|---:|---:|---:|---:|
-| en | 211 | 130 | 61.6% | 81 | 0 |
-| es | 98 | 30 | 30.6% | 68 | 0 |
-| pt | 99 | 30 | 30.3% | 69 | 0 |
+| en | 214 | 133 | 62.1% | 81 | 0 |
+| es | 100 | 32 | 32.0% | 68 | 0 |
+| pt | 100 | 31 | 31.0% | 69 | 0 |
 
 ## Confusion pairs (0.18) — expected procedure → top-1 procedure
 
@@ -96,12 +103,13 @@ margin risk, not a predictor of query behaviour.
 |---|---:|---:|---:|---:|---:|
 | 7 procedures (`chaos-500.json`) | 47 distinct / 500 tickets | 0.17 | 72.4% | 138 | 0 |
 | 7 procedures (`chaos-500.json`) | 47 distinct / 500 tickets | 0.18 | 48.4% | 258 | 0 |
-| 48 procedures (scale-rung) | 408 distinct | 0.17 | 48.8% | 208 | 1 |
-| 48 procedures (scale-rung) | 408 distinct | 0.18 | 46.6% | 218 | 0 |
+| 48 procedures (scale-rung) | 414 distinct | 0.17 | 49.5% | 208 | 1 |
+| 48 procedures (scale-rung) | 414 distinct | 0.18 | 47.3% | 218 | 0 |
 
 ## Did margin behaviour change with corpus size?
 
-- **The trade-off held.** At 0.18: 0 unsafe, 218 false escalations, 46.6% accurate. At 0.17: 1 unsafe, 208 false escalations, 48.8% accurate. Lowering the margin answered more and introduced an unsafe answer — the same direction as the 7-procedure corpus.
-- **The operating point moved, and it is confounded.** The 7-procedure corpus scored 72.4% at 0.17 (138/500 false escalations); this 48-procedure corpus scores 48.8% at 0.17 (208/408). It is a *different, larger* corpus with new procedures, so the change is content and size together — this experiment cannot attribute it to size alone.
-- **Language drove more of it than size.** English 61.6% accurate, Spanish 30.6%, Portuguese 30.3%: the shorter translated summaries and queries false-escalate far more.
+- **The trade-off held.** At 0.18: 0 unsafe, 218 false escalations, 47.3% accurate. At 0.17: 1 unsafe, 208 false escalations, 49.5% accurate. Lowering the margin answered more and introduced an unsafe answer — the same direction as the 7-procedure corpus.
+- **The operating point moved, and it is confounded.** The 7-procedure corpus scored 72.4% at 0.17 (138/500 false escalations); this 48-procedure corpus scores 49.5% at 0.17 (208/414). It is a *different, larger* corpus with new procedures, so the change is content and size together — this experiment cannot attribute it to size alone.
+- **Language drove more of it than size.** English 62.1% accurate, Spanish 32.0%, Portuguese 31.0%: the shorter translated summaries and queries false-escalate far more.
 - **Still synthetic and in-sample.** It does not establish behaviour at a 5,000-procedure tenant. Each message is used once, so the distinct-message figures equal the ticket figures here.
+- **Escalation rows pass by construction when the gate escalates.** At 0.18, no escalation-expected message was answered, so every escalation row is a correct escalation. Those rows test that the gate does not over-answer; they carry no retrieval signal, and they are not independent evidence about ranking.

@@ -1,20 +1,21 @@
 {
   "data_mode": "simulated",
   "evaluation": "Local browser decision-path evaluation; no live tenant, hosted database, or telemetry transport used.",
-  "evaluatedAt": "2026-09-28T10:10:24.297Z",
+  "evaluatedAt": "2026-09-28T10:34:37.241Z",
   "sourceBatch": "tooling/eval/simulated-tenant/scale-rung-batch.json",
   "sourceCorpus": "tooling/eval/simulated-tenant/scale-rung-corpus.json",
   "queryInputMode": "message",
   "batch": {
-    "tickets": 408,
+    "tickets": 414,
     "seed": 20260928,
-    "chaosRateConfigured": 0.02,
-    "chaosRateActual": 0.02,
-    "chaosTickets": 8,
+    "chaosRateConfigured": 0.034,
+    "chaosRateActual": 0.034,
+    "chaosTickets": 14,
     "chaosTypes": {
       "baseline": 400,
       "mixed_language_typos_sarcasm": 2,
-      "near_duplicate": 6
+      "near_duplicate": 6,
+      "contradicting_sops": 6
     }
   },
   "implementation": {
@@ -25,18 +26,18 @@
     "thresholdAccept": 0,
     "minMargin": 0.18,
     "topK": 5,
-    "modelLoadMs": 13082.10000000149,
-    "indexBuildMs": 11602.30000000447
+    "modelLoadMs": 14662.29999999702,
+    "indexBuildMs": 12479.60000000149
   },
   "totals": {
-    "tickets": 408,
-    "correct": 189,
-    "accuracy": 0.4632352941176471,
+    "tickets": 414,
+    "correct": 195,
+    "accuracy": 0.47101449275362317,
     "falseEscalations": 219,
     "unsafeAnswers": 0,
     "runtimeErrors": 0,
     "failures": 219,
-    "failureRate": 0.5367647058823529,
+    "failureRate": 0.5289855072463768,
     "failureCategories": {
       "false_escalation": 219
     },
@@ -50,10 +51,10 @@
       "mixed_language_typos_sarcasm": 1
     },
     "latencyMs": {
-      "mean": 8.712990196202608,
-      "median": 8.300000004470348,
-      "p95": 12.700000002980232,
-      "max": 23.299999997019768
+      "mean": 9.261352657048024,
+      "median": 8.600000001490116,
+      "p95": 14.399999998509884,
+      "max": 29.5
     }
   },
   "labelFix": {
@@ -64,17 +65,17 @@
       "SCALE-0081"
     ],
     "before": {
-      "tickets": 408,
-      "correct": 189,
-      "accuracy": 0.4632352941176471,
+      "tickets": 414,
+      "correct": 195,
+      "accuracy": 0.47101449275362317,
       "falseEscalations": 219,
       "unsafeAnswers": 0,
       "runtimeErrors": 0
     },
     "after": {
-      "tickets": 408,
-      "correct": 190,
-      "accuracy": 0.46568627450980393,
+      "tickets": 414,
+      "correct": 196,
+      "accuracy": 0.47342995169082125,
       "falseEscalations": 218,
       "unsafeAnswers": 0,
       "runtimeErrors": 0
@@ -99,6 +100,26 @@
           "runtimeErrors": 0
         },
         "reclassified": 1
+      },
+      "contradicting_sops": {
+        "tickets": 6,
+        "before": {
+          "tickets": 6,
+          "correct": 6,
+          "accuracy": 1,
+          "falseEscalations": 0,
+          "unsafeAnswers": 0,
+          "runtimeErrors": 0
+        },
+        "after": {
+          "tickets": 6,
+          "correct": 6,
+          "accuracy": 1,
+          "falseEscalations": 0,
+          "unsafeAnswers": 0,
+          "runtimeErrors": 0
+        },
+        "reclassified": 0
       },
       "mixed_language_typos_sarcasm": {
         "tickets": 2,
@@ -144,9 +165,9 @@
   },
   "cohorts": {
     "chaos": {
-      "tickets": 8,
-      "correct": 1,
-      "accuracy": 0.125,
+      "tickets": 14,
+      "correct": 7,
+      "accuracy": 0.5,
       "falseEscalations": 7,
       "unsafeAnswers": 0,
       "runtimeErrors": 0
@@ -162,9 +183,9 @@
   },
   "cohortsAfter": {
     "chaos": {
-      "tickets": 8,
-      "correct": 1,
-      "accuracy": 0.125,
+      "tickets": 14,
+      "correct": 7,
+      "accuracy": 0.5,
       "falseEscalations": 7,
       "unsafeAnswers": 0,
       "runtimeErrors": 0
@@ -179,124 +200,6 @@
     }
   },
   "topFailures": [
-    {
-      "data_mode": "simulated",
-      "ticket": {
-        "ticketId": "SCALE-0006",
-        "subject": "meu saque aparece como processado mas",
-        "message": "meu saque aparece como processado mas nao caiu na conta",
-        "language": "pt",
-        "isChaos": false,
-        "expected": {
-          "decision": "answer",
-          "sopId": "sc-payout-timing"
-        }
-      },
-      "expected": {
-        "decision": "answer",
-        "sopId": "sc-payout-timing"
-      },
-      "expectedOutcome": "answer",
-      "expectedOutcomeAfter": "answer",
-      "labelTruncated": false,
-      "labelReason": "query is complete",
-      "reclassified": false,
-      "actual": {
-        "decision": "escalate",
-        "reason": "insufficient_margin"
-      },
-      "correct": false,
-      "failureCategory": "false_escalation",
-      "correctAfter": false,
-      "failureCategoryAfter": "false_escalation",
-      "latencyMs": 23.299999997019768,
-      "candidates": [
-        {
-          "sopId": "sc-rest-strike",
-          "score": 0.68342695133476,
-          "evidence": "Explique o processo geral mas nunca afirme se será removida; essa decisão é de Confiança e Segurança."
-        },
-        {
-          "sopId": "sc-payout-method",
-          "score": 0.6463446893277012,
-          "evidence": "Uma alteração feita depois de o saque ser processado vale para o próximo ciclo, não para o saque em andamento."
-        },
-        {
-          "sopId": "sc-rest-copyright",
-          "score": 0.6116661244971373,
-          "evidence": "Uma reivindicação de direitos autorais é tratada pelo processo de disputa, não pelo suporte."
-        },
-        {
-          "sopId": "sc-login-email",
-          "score": 0.602577224894888,
-          "evidence": "Se a senha atual for desconhecida, trate como recuperação comum, não como alteração de conta."
-        },
-        {
-          "sopId": "sc-payout-timing",
-          "score": 0.6022535647378311,
-          "evidence": "Um saque padrão costuma chegar alguns dias úteis depois de aparecer como processado."
-        }
-      ]
-    },
-    {
-      "data_mode": "simulated",
-      "ticket": {
-        "ticketId": "SCALE-0001",
-        "subject": "my payout says processed three days",
-        "message": "my payout says processed three days ago but nothing in my bank yet",
-        "language": "en",
-        "isChaos": false,
-        "expected": {
-          "decision": "answer",
-          "sopId": "sc-payout-timing"
-        }
-      },
-      "expected": {
-        "decision": "answer",
-        "sopId": "sc-payout-timing"
-      },
-      "expectedOutcome": "answer",
-      "expectedOutcomeAfter": "answer",
-      "labelTruncated": false,
-      "labelReason": "query is complete",
-      "reclassified": false,
-      "actual": {
-        "decision": "escalate",
-        "reason": "insufficient_margin"
-      },
-      "correct": false,
-      "failureCategory": "false_escalation",
-      "correctAfter": false,
-      "failureCategoryAfter": "false_escalation",
-      "latencyMs": 19.600000001490116,
-      "candidates": [
-        {
-          "sopId": "sc-payout-missing",
-          "score": 0.6093830640264197,
-          "evidence": "When a payout is marked processed but never reaches the bank, open a trace with Payments using the payout reference and status."
-        },
-        {
-          "sopId": "sc-payout-method",
-          "score": 0.5271708713292084,
-          "evidence": "A change made after a payout is marked processed applies to the next cycle, not the payout already in flight."
-        },
-        {
-          "sopId": "sc-payout-timing",
-          "score": 0.5253523012994514,
-          "evidence": "A standard creator payout usually arrives a few business days after it is marked processed."
-        },
-        {
-          "sopId": "sc-gift-missing",
-          "score": 0.49012854147581636,
-          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a settlement issue, not a refund."
-        },
-        {
-          "sopId": "sc-prem-billing",
-          "score": 0.4226104352203084,
-          "evidence": "Confirm the masked payment method and the charge date; never request full card details."
-        }
-      ]
-    },
     {
       "data_mode": "simulated",
       "ticket": {
@@ -327,7 +230,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 17.700000002980232,
+      "latencyMs": 29.5,
       "candidates": [
         {
           "sopId": "sc-payout-missing",
@@ -386,7 +289,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 15.299999997019768,
+      "latencyMs": 28.100000001490116,
       "candidates": [
         {
           "sopId": "sc-sec-2fa",
@@ -418,10 +321,69 @@
     {
       "data_mode": "simulated",
       "ticket": {
-        "ticketId": "SCALE-0011",
-        "subject": "el pago figura como pagado pero",
-        "message": "el pago figura como pagado pero nunca llego, pueden rastrearlo",
-        "language": "es",
+        "ticketId": "SCALE-0006",
+        "subject": "meu saque aparece como processado mas",
+        "message": "meu saque aparece como processado mas nao caiu na conta",
+        "language": "pt",
+        "isChaos": false,
+        "expected": {
+          "decision": "answer",
+          "sopId": "sc-payout-timing"
+        }
+      },
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-timing"
+      },
+      "expectedOutcome": "answer",
+      "expectedOutcomeAfter": "answer",
+      "labelTruncated": false,
+      "labelReason": "query is complete",
+      "reclassified": false,
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "correctAfter": false,
+      "failureCategoryAfter": "false_escalation",
+      "latencyMs": 24.899999998509884,
+      "candidates": [
+        {
+          "sopId": "sc-rest-strike",
+          "score": 0.68342695133476,
+          "evidence": "Explique o processo geral mas nunca afirme se será removida; essa decisão é de Confiança e Segurança."
+        },
+        {
+          "sopId": "sc-payout-method",
+          "score": 0.6463446893277012,
+          "evidence": "Uma alteração feita depois de o saque ser processado vale para o próximo ciclo, não para o saque em andamento."
+        },
+        {
+          "sopId": "sc-rest-copyright",
+          "score": 0.6116661244971373,
+          "evidence": "Uma reivindicação de direitos autorais é tratada pelo processo de disputa, não pelo suporte."
+        },
+        {
+          "sopId": "sc-login-email",
+          "score": 0.602577224894888,
+          "evidence": "Se a senha atual for desconhecida, trate como recuperação comum, não como alteração de conta."
+        },
+        {
+          "sopId": "sc-payout-timing",
+          "score": 0.6022535647378311,
+          "evidence": "Um saque padrão costuma chegar alguns dias úteis depois de aparecer como processado."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "ticketId": "SCALE-0009",
+        "subject": "payout says paid but it never",
+        "message": "payout says paid but it never arrived, can you trace it?",
+        "language": "en",
         "isChaos": false,
         "expected": {
           "decision": "answer",
@@ -445,32 +407,91 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 14.899999998509884,
+      "latencyMs": 24.200000002980232,
       "candidates": [
         {
-          "sopId": "sc-payout-timing",
-          "score": 0.6604581263638551,
-          "evidence": "Un pago estándar suele llegar unos días hábiles después de figurar como procesado."
+          "sopId": "sc-payout-missing",
+          "score": 0.7342618064132224,
+          "evidence": "When a payout is marked processed but never reaches the bank, open a trace with Payments using the payout reference and status."
         },
         {
-          "sopId": "sc-payout-method",
-          "score": 0.643325254320104,
-          "evidence": "Un cambio hecho tras marcar un pago como procesado se aplica al siguiente ciclo, no al pago en curso."
+          "sopId": "sc-payout-timing",
+          "score": 0.5873028287113053,
+          "evidence": "Ask the creator to confirm the payout date and the masked destination; never request full bank credentials."
         },
         {
           "sopId": "sc-gift-send-error",
-          "score": 0.5985561411672654,
-          "evidence": "Un cargo sin regalo entregado lo revisa Pagos."
+          "score": 0.5252538510462722,
+          "evidence": "A charge that appears without a delivered Gift is reviewed by Payments."
         },
+        {
+          "sopId": "sc-gift-missing",
+          "score": 0.5144209327651168,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a settlement issue, not a refund."
+        },
+        {
+          "sopId": "sc-payout-method",
+          "score": 0.4953968679676226,
+          "evidence": "A change made after a payout is marked processed applies to the next cycle, not the payout already in flight."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "ticketId": "SCALE-0010",
+        "subject": "the payout reference shows processed but",
+        "message": "the payout reference shows processed but no deposit, please investigate",
+        "language": "en",
+        "isChaos": false,
+        "expected": {
+          "decision": "answer",
+          "sopId": "sc-payout-missing"
+        }
+      },
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-missing"
+      },
+      "expectedOutcome": "answer",
+      "expectedOutcomeAfter": "answer",
+      "labelTruncated": false,
+      "labelReason": "query is complete",
+      "reclassified": false,
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "correctAfter": false,
+      "failureCategoryAfter": "false_escalation",
+      "latencyMs": 21.899999998509884,
+      "candidates": [
         {
           "sopId": "sc-payout-missing",
-          "score": 0.5547551751236947,
-          "evidence": "Cuando un pago figura como procesado pero no llega al banco, abre una investigación con Pagos usando la referencia y el estado."
+          "score": 0.6583863723942833,
+          "evidence": "When a payout is marked processed but never reaches the bank, open a trace with Payments using the payout reference and status."
         },
         {
-          "sopId": "sc-gift-refund",
-          "score": 0.5526101115049402,
-          "evidence": "Una compra completada normalmente es definitiva; un cargo duplicado o no autorizado lo revisa Pagos."
+          "sopId": "sc-gift-missing",
+          "score": 0.5441538397569424,
+          "evidence": "If a successful purchase receipt is present but Coins have not appeared, check the purchase and balance status; this is a settlement issue, not a refund."
+        },
+        {
+          "sopId": "sc-payout-timing",
+          "score": 0.5223273178101305,
+          "evidence": "Ask the creator to confirm the payout date and the masked destination; never request full bank credentials."
+        },
+        {
+          "sopId": "sc-payout-method",
+          "score": 0.5102312688380535,
+          "evidence": "A change made after a payout is marked processed applies to the next cycle, not the payout already in flight."
+        },
+        {
+          "sopId": "sc-payout-tax",
+          "score": 0.46911653533965764,
+          "evidence": "Payouts may require a completed tax form before they are released."
         }
       ]
     },
@@ -504,7 +525,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 14.200000002980232,
+      "latencyMs": 21.299999997019768,
       "candidates": [
         {
           "sopId": "sc-payout-timing",
@@ -536,186 +557,9 @@
     {
       "data_mode": "simulated",
       "ticket": {
-        "ticketId": "SCALE-0012",
-        "subject": "o saque consta como pago mas",
-        "message": "o saque consta como pago mas nunca chegou, podem rastrear",
-        "language": "pt",
-        "isChaos": false,
-        "expected": {
-          "decision": "answer",
-          "sopId": "sc-payout-missing"
-        }
-      },
-      "expected": {
-        "decision": "answer",
-        "sopId": "sc-payout-missing"
-      },
-      "expectedOutcome": "answer",
-      "expectedOutcomeAfter": "answer",
-      "labelTruncated": false,
-      "labelReason": "query is complete",
-      "reclassified": false,
-      "actual": {
-        "decision": "escalate",
-        "reason": "insufficient_margin"
-      },
-      "correct": false,
-      "failureCategory": "false_escalation",
-      "correctAfter": false,
-      "failureCategoryAfter": "false_escalation",
-      "latencyMs": 14.199999995529652,
-      "candidates": [
-        {
-          "sopId": "sc-an-export",
-          "score": 0.6479598181556343,
-          "evidence": "Uma que não chega é encaminhada."
-        },
-        {
-          "sopId": "sc-payout-method",
-          "score": 0.5839665024233455,
-          "evidence": "Un cambio hecho tras marcar un pago como procesado se aplica al siguiente ciclo, no al pago en curso."
-        },
-        {
-          "sopId": "sc-payout-missing",
-          "score": 0.557309250973324,
-          "evidence": "Não prometa um novo pagamento antes de concluir a investigação."
-        },
-        {
-          "sopId": "sc-login-recovery",
-          "score": 0.552340949687161,
-          "evidence": "Nunca peça a senha, um código de uso único nem um link de recuperação."
-        },
-        {
-          "sopId": "sc-login-code",
-          "score": 0.5283404939740648,
-          "evidence": "Verifique o contato e peça um novo código."
-        }
-      ]
-    },
-    {
-      "data_mode": "simulated",
-      "ticket": {
-        "ticketId": "SCALE-0139",
-        "subject": "mi transmision va con mucho retraso,",
-        "message": "mi transmision va con mucho retraso, se quejan los espectadores",
-        "language": "es",
-        "isChaos": false,
-        "expected": {
-          "decision": "answer",
-          "sopId": "sc-live-lag"
-        }
-      },
-      "expected": {
-        "decision": "answer",
-        "sopId": "sc-live-lag"
-      },
-      "expectedOutcome": "answer",
-      "expectedOutcomeAfter": "answer",
-      "labelTruncated": false,
-      "labelReason": "query is complete",
-      "reclassified": false,
-      "actual": {
-        "decision": "escalate",
-        "reason": "insufficient_margin"
-      },
-      "correct": false,
-      "failureCategory": "false_escalation",
-      "correctAfter": false,
-      "failureCategoryAfter": "false_escalation",
-      "latencyMs": 13.799999997019768,
-      "candidates": [
-        {
-          "sopId": "sc-live-key",
-          "score": 0.6764769514482822,
-          "evidence": "Um aviso de várias transmissões com a mesma chave significa que a chave está sendo reutilizada."
-        },
-        {
-          "sopId": "sc-live-disconnect",
-          "score": 0.671023814259066,
-          "evidence": "Una transmisión que se corta para varios espectadores es un posible incidente del servicio."
-        },
-        {
-          "sopId": "sc-live-lag",
-          "score": 0.6454476243355223,
-          "evidence": "Se todos os espectadores de uma região relatarem, trate como incidente."
-        },
-        {
-          "sopId": "sc-an-watchtime",
-          "score": 0.5943835170681053,
-          "evidence": "Explica el retraso y pide comprobar más tarde; una cifra que nunca se actualiza se deriva a revisión."
-        },
-        {
-          "sopId": "sc-comm-comments",
-          "score": 0.5835542572579137,
-          "evidence": "Los comentarios pueden retenerse por filtros de moderación."
-        }
-      ]
-    },
-    {
-      "data_mode": "simulated",
-      "ticket": {
-        "ticketId": "SCALE-0015",
-        "subject": "saque processado mas banco nao tem",
-        "message": "saque processado mas banco nao tem registro, preciso de rastreio",
-        "language": "pt",
-        "isChaos": false,
-        "expected": {
-          "decision": "answer",
-          "sopId": "sc-payout-missing"
-        }
-      },
-      "expected": {
-        "decision": "answer",
-        "sopId": "sc-payout-missing"
-      },
-      "expectedOutcome": "answer",
-      "expectedOutcomeAfter": "answer",
-      "labelTruncated": false,
-      "labelReason": "query is complete",
-      "reclassified": false,
-      "actual": {
-        "decision": "escalate",
-        "reason": "insufficient_margin"
-      },
-      "correct": false,
-      "failureCategory": "false_escalation",
-      "correctAfter": false,
-      "failureCategoryAfter": "false_escalation",
-      "latencyMs": 13.700000002980232,
-      "candidates": [
-        {
-          "sopId": "sc-payout-missing",
-          "score": 0.6597816132679063,
-          "evidence": "Quando um saque aparece como processado mas não chega ao banco, abra uma investigação com Pagamentos usando a referência e o status."
-        },
-        {
-          "sopId": "sc-monet-review",
-          "score": 0.5467237948709405,
-          "evidence": "Uma análise de monetização não tem data fixa."
-        },
-        {
-          "sopId": "sc-rest-removed",
-          "score": 0.5308606393924458,
-          "evidence": "Confiança e Segurança analisa a decisão original; o suporte não deve prometer sucesso."
-        },
-        {
-          "sopId": "sc-gift-missing",
-          "score": 0.5219700176369524,
-          "evidence": "Se o recibo confirma a compra mas as Moedas não aparecem, verifique o status da compra e do saldo; é um problema de liquidação."
-        },
-        {
-          "sopId": "sc-rest-live",
-          "score": 0.5063769426030855,
-          "evidence": "O suporte não deve reverter a restrição nem prometer reativação; Confiança e Segurança analisa a decisão."
-        }
-      ]
-    },
-    {
-      "data_mode": "simulated",
-      "ticket": {
-        "ticketId": "SCALE-0076",
-        "subject": "o codigo nao chega no meu",
-        "message": "o codigo nao chega no meu telefone, nao consigo entrar",
+        "ticketId": "SCALE-0079",
+        "subject": "codigo de recuperacao nao chega apos",
+        "message": "codigo de recuperacao nao chega apos trocar de celular",
         "language": "pt",
         "isChaos": false,
         "expected": {
@@ -740,32 +584,209 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 13.700000002980232,
+      "latencyMs": 21,
       "candidates": [
         {
+          "sopId": "sc-payout-missing",
+          "score": 0.553519671695414,
+          "evidence": "Quando um saque aparece como processado mas não chega ao banco, abra uma investigação com Pagamentos usando a referência e o status."
+        },
+        {
           "sopId": "sc-login-code",
-          "score": 0.7163987865519343,
+          "score": 0.541224232841528,
           "evidence": "Um código que não chega após trocar de telefone é um problema de acesso comum, a menos que o contato de recuperação tenha sido alterado sem permissão."
         },
         {
-          "sopId": "sc-an-export",
-          "score": 0.6069690794858981,
-          "evidence": "Uma que não chega é encaminhada."
-        },
-        {
-          "sopId": "sc-live-audio",
-          "score": 0.5449151119745869,
-          "evidence": "Confirme a permissão do microfone, o dispositivo de entrada e a versão, e tente uma vez."
-        },
-        {
-          "sopId": "sc-login-loop",
-          "score": 0.5253912799416399,
-          "evidence": "Confirme a versão do app e os requisitos, e tente uma vez."
+          "sopId": "sc-payout-timing",
+          "score": 0.5269419869805901,
+          "evidence": "Um saque padrão costuma chegar alguns dias úteis depois de aparecer como processado."
         },
         {
           "sopId": "sc-login-email",
-          "score": 0.5248026794327595,
-          "evidence": "Alterar o e-mail de acesso exige confirmar a senha atual e verificar o novo endereço."
+          "score": 0.49227235581076473,
+          "evidence": "Se a senha atual for desconhecida, trate como recuperação comum, não como alteração de conta."
+        },
+        {
+          "sopId": "sc-sec-takeover",
+          "score": 0.4853105915754858,
+          "evidence": "No reveles cambios ni pidas credenciales; indica proteger el correo de recuperación desde un dispositivo de confianza."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "ticketId": "SCALE-0080",
+        "subject": "el codigo no llega despues de",
+        "message": "el codigo no llega despues de cambiar de movil",
+        "language": "es",
+        "isChaos": false,
+        "expected": {
+          "decision": "answer",
+          "sopId": "sc-login-code"
+        }
+      },
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-login-code"
+      },
+      "expectedOutcome": "answer",
+      "expectedOutcomeAfter": "answer",
+      "labelTruncated": false,
+      "labelReason": "query is complete",
+      "reclassified": false,
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "correctAfter": false,
+      "failureCategoryAfter": "false_escalation",
+      "latencyMs": 18.30000000447035,
+      "candidates": [
+        {
+          "sopId": "sc-login-code",
+          "score": 0.5851336512352211,
+          "evidence": "Un código que no llega tras cambiar de teléfono es un problema de acceso habitual, salvo que el contacto de recuperación se haya cambiado sin permiso."
+        },
+        {
+          "sopId": "sc-login-email",
+          "score": 0.5714239378803012,
+          "evidence": "Cambiar el correo de acceso requiere confirmar la contraseña actual y verificar la nueva dirección."
+        },
+        {
+          "sopId": "sc-elig-missing",
+          "score": 0.5647942785876281,
+          "evidence": "La disponibilidad por región puede cambiar."
+        },
+        {
+          "sopId": "sc-monet-pause",
+          "score": 0.5307029568645426,
+          "evidence": "Explica la categoría general y deriva el caso; no prometas restauración ni aconsejes cómo cambiarlo."
+        },
+        {
+          "sopId": "sc-sec-email",
+          "score": 0.5235706894283336,
+          "evidence": "No intentes revertir el cambio desde soporte; deriva a un especialista."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "ticketId": "SCALE-0007",
+        "subject": "quanto tempo depois de processado o",
+        "message": "quanto tempo depois de processado o dinheiro chega",
+        "language": "pt",
+        "isChaos": false,
+        "expected": {
+          "decision": "answer",
+          "sopId": "sc-payout-timing"
+        }
+      },
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-timing"
+      },
+      "expectedOutcome": "answer",
+      "expectedOutcomeAfter": "answer",
+      "labelTruncated": false,
+      "labelReason": "query is complete",
+      "reclassified": false,
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "correctAfter": false,
+      "failureCategoryAfter": "false_escalation",
+      "latencyMs": 17.099999994039536,
+      "candidates": [
+        {
+          "sopId": "sc-an-export",
+          "score": 0.6192559582640544,
+          "evidence": "Uma que não chega é encaminhada."
+        },
+        {
+          "sopId": "sc-payout-method",
+          "score": 0.5913271182160719,
+          "evidence": "Uma alteração feita depois de o saque ser processado vale para o próximo ciclo, não para o saque em andamento."
+        },
+        {
+          "sopId": "sc-payout-timing",
+          "score": 0.5791656816840955,
+          "evidence": "Um saque padrão costuma chegar alguns dias úteis depois de aparecer como processado."
+        },
+        {
+          "sopId": "sc-payout-missing",
+          "score": 0.5757015164314637,
+          "evidence": "Quando um saque aparece como processado mas não chega ao banco, abra uma investigação com Pagamentos usando a referência e o status."
+        },
+        {
+          "sopId": "sc-an-watchtime",
+          "score": 0.5439127125120234,
+          "evidence": "As cifras de tempo de exibição podem atrasar."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "ticketId": "SCALE-0011",
+        "subject": "el pago figura como pagado pero",
+        "message": "el pago figura como pagado pero nunca llego, pueden rastrearlo",
+        "language": "es",
+        "isChaos": false,
+        "expected": {
+          "decision": "answer",
+          "sopId": "sc-payout-missing"
+        }
+      },
+      "expected": {
+        "decision": "answer",
+        "sopId": "sc-payout-missing"
+      },
+      "expectedOutcome": "answer",
+      "expectedOutcomeAfter": "answer",
+      "labelTruncated": false,
+      "labelReason": "query is complete",
+      "reclassified": false,
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "correctAfter": false,
+      "failureCategoryAfter": "false_escalation",
+      "latencyMs": 16.399999998509884,
+      "candidates": [
+        {
+          "sopId": "sc-payout-timing",
+          "score": 0.6604581263638551,
+          "evidence": "Un pago estándar suele llegar unos días hábiles después de figurar como procesado."
+        },
+        {
+          "sopId": "sc-payout-method",
+          "score": 0.643325254320104,
+          "evidence": "Un cambio hecho tras marcar un pago como procesado se aplica al siguiente ciclo, no al pago en curso."
+        },
+        {
+          "sopId": "sc-gift-send-error",
+          "score": 0.5985561411672654,
+          "evidence": "Un cargo sin regalo entregado lo revisa Pagos."
+        },
+        {
+          "sopId": "sc-payout-missing",
+          "score": 0.5547551751236947,
+          "evidence": "Cuando un pago figura como procesado pero no llega al banco, abre una investigación con Pagos usando la referencia y el estado."
+        },
+        {
+          "sopId": "sc-gift-refund",
+          "score": 0.5526101115049402,
+          "evidence": "Una compra completada normalmente es definitiva; un cargo duplicado o no autorizado lo revisa Pagos."
         }
       ]
     }
@@ -801,7 +822,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 19.600000001490116,
+      "latencyMs": 12.399999998509884,
       "candidates": [
         {
           "sopId": "sc-payout-missing",
@@ -860,7 +881,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 14.200000002980232,
+      "latencyMs": 21.299999997019768,
       "candidates": [
         {
           "sopId": "sc-payout-timing",
@@ -919,7 +940,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.699999995529652,
+      "latencyMs": 16.100000001490116,
       "candidates": [
         {
           "sopId": "sc-payout-missing",
@@ -978,7 +999,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 17.700000002980232,
+      "latencyMs": 29.5,
       "candidates": [
         {
           "sopId": "sc-payout-missing",
@@ -1037,7 +1058,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 15.299999997019768,
+      "latencyMs": 28.100000001490116,
       "candidates": [
         {
           "sopId": "sc-sec-2fa",
@@ -1096,7 +1117,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 23.299999997019768,
+      "latencyMs": 24.899999998509884,
       "candidates": [
         {
           "sopId": "sc-rest-strike",
@@ -1155,7 +1176,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 13.300000004470348,
+      "latencyMs": 17.099999994039536,
       "candidates": [
         {
           "sopId": "sc-an-export",
@@ -1217,7 +1238,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.399999998509884,
+      "latencyMs": 16.30000000447035,
       "candidates": [
         {
           "sopId": "sc-payout-missing",
@@ -1276,7 +1297,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.899999998509884,
+      "latencyMs": 24.200000002980232,
       "candidates": [
         {
           "sopId": "sc-payout-missing",
@@ -1335,7 +1356,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.899999998509884,
+      "latencyMs": 21.899999998509884,
       "candidates": [
         {
           "sopId": "sc-payout-missing",
@@ -1394,7 +1415,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 14.899999998509884,
+      "latencyMs": 16.399999998509884,
       "candidates": [
         {
           "sopId": "sc-payout-timing",
@@ -1453,7 +1474,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 14.199999995529652,
+      "latencyMs": 15,
       "candidates": [
         {
           "sopId": "sc-an-export",
@@ -1512,7 +1533,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 10.400000005960464,
+      "latencyMs": 11.399999998509884,
       "candidates": [
         {
           "sopId": "sc-payout-missing",
@@ -1571,7 +1592,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.799999997019768,
+      "latencyMs": 8.899999998509884,
       "candidates": [
         {
           "sopId": "sc-payout-missing",
@@ -1630,7 +1651,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 13.700000002980232,
+      "latencyMs": 15.299999997019768,
       "candidates": [
         {
           "sopId": "sc-payout-missing",
@@ -1689,7 +1710,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.5,
+      "latencyMs": 9.899999998509884,
       "candidates": [
         {
           "sopId": "sc-payout-missing",
@@ -1748,7 +1769,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 13.600000001490116,
+      "latencyMs": 11,
       "candidates": [
         {
           "sopId": "sc-payout-method",
@@ -1807,7 +1828,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.600000001490116,
+      "latencyMs": 15.400000005960464,
       "candidates": [
         {
           "sopId": "sc-payout-method",
@@ -1866,7 +1887,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 12.100000001490116,
+      "latencyMs": 14.899999998509884,
       "candidates": [
         {
           "sopId": "sc-login-email",
@@ -1925,7 +1946,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.899999998509884,
+      "latencyMs": 12.799999997019768,
       "candidates": [
         {
           "sopId": "sc-live-lag",
@@ -1984,7 +2005,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.899999998509884,
+      "latencyMs": 12.300000004470348,
       "candidates": [
         {
           "sopId": "sc-payout-method",
@@ -2043,7 +2064,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.700000002980232,
+      "latencyMs": 7,
       "candidates": [
         {
           "sopId": "sc-payout-method",
@@ -2102,7 +2123,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.299999997019768,
+      "latencyMs": 12.700000002980232,
       "candidates": [
         {
           "sopId": "sc-payout-missing",
@@ -2161,7 +2182,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.5,
+      "latencyMs": 10.399999998509884,
       "candidates": [
         {
           "sopId": "sc-payout-missing",
@@ -2220,7 +2241,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 10.700000002980232,
+      "latencyMs": 12.200000002980232,
       "candidates": [
         {
           "sopId": "sc-payout-tax",
@@ -2279,7 +2300,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.199999995529652,
+      "latencyMs": 8.199999995529652,
       "candidates": [
         {
           "sopId": "sc-payout-tax",
@@ -2338,7 +2359,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.300000004470348,
+      "latencyMs": 11.400000005960464,
       "candidates": [
         {
           "sopId": "sc-payout-tax",
@@ -2397,7 +2418,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.700000002980232,
+      "latencyMs": 13.099999994039536,
       "candidates": [
         {
           "sopId": "sc-payout-tax",
@@ -2456,7 +2477,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.799999997019768,
+      "latencyMs": 8.800000004470348,
       "candidates": [
         {
           "sopId": "sc-payout-tax",
@@ -2515,7 +2536,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7,
+      "latencyMs": 7.600000001490116,
       "candidates": [
         {
           "sopId": "sc-payout-tax",
@@ -2574,7 +2595,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.100000001490116,
+      "latencyMs": 11.699999995529652,
       "candidates": [
         {
           "sopId": "sc-an-watchtime",
@@ -2633,7 +2654,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.600000001490116,
+      "latencyMs": 7.800000004470348,
       "candidates": [
         {
           "sopId": "sc-payout-tax",
@@ -2751,7 +2772,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.299999997019768,
+      "latencyMs": 7.199999995529652,
       "candidates": [
         {
           "sopId": "sc-gift-refund",
@@ -2810,7 +2831,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 12,
+      "latencyMs": 12.300000004470348,
       "candidates": [
         {
           "sopId": "sc-gift-membership",
@@ -2869,7 +2890,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 13.5,
+      "latencyMs": 14.399999998509884,
       "candidates": [
         {
           "sopId": "sc-prem-billing",
@@ -2928,7 +2949,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.600000001490116,
+      "latencyMs": 8.199999995529652,
       "candidates": [
         {
           "sopId": "sc-gift-refund",
@@ -2987,7 +3008,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.899999998509884,
+      "latencyMs": 11.100000001490116,
       "candidates": [
         {
           "sopId": "sc-gift-missing",
@@ -3046,7 +3067,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.100000001490116,
+      "latencyMs": 10.800000004470348,
       "candidates": [
         {
           "sopId": "sc-prem-billing",
@@ -3164,7 +3185,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.699999995529652,
+      "latencyMs": 9.599999994039536,
       "candidates": [
         {
           "sopId": "sc-gift-missing",
@@ -3223,7 +3244,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.700000002980232,
+      "latencyMs": 9.200000002980232,
       "candidates": [
         {
           "sopId": "sc-gift-missing",
@@ -3282,7 +3303,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10,
+      "latencyMs": 11.600000001490116,
       "candidates": [
         {
           "sopId": "sc-gift-refund",
@@ -3341,7 +3362,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.199999995529652,
+      "latencyMs": 10.799999997019768,
       "candidates": [
         {
           "sopId": "sc-gift-missing",
@@ -3400,7 +3421,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.200000002980232,
+      "latencyMs": 7.600000001490116,
       "candidates": [
         {
           "sopId": "sc-gift-missing",
@@ -3459,7 +3480,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.899999998509884,
+      "latencyMs": 7.5,
       "candidates": [
         {
           "sopId": "sc-gift-missing",
@@ -3518,7 +3539,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.600000001490116,
+      "latencyMs": 9.899999998509884,
       "candidates": [
         {
           "sopId": "sc-gift-missing",
@@ -3577,7 +3598,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 12.700000002980232,
+      "latencyMs": 14,
       "candidates": [
         {
           "sopId": "sc-gift-missing",
@@ -3636,7 +3657,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 10.899999998509884,
+      "latencyMs": 12.100000001490116,
       "candidates": [
         {
           "sopId": "sc-gift-send-error",
@@ -3695,7 +3716,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.100000001490116,
+      "latencyMs": 7,
       "candidates": [
         {
           "sopId": "sc-gift-send-error",
@@ -3754,7 +3775,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.400000005960464,
+      "latencyMs": 11.899999998509884,
       "candidates": [
         {
           "sopId": "sc-gift-send-error",
@@ -3813,7 +3834,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 12.099999994039536,
+      "latencyMs": 12.5,
       "candidates": [
         {
           "sopId": "sc-gift-membership",
@@ -3872,7 +3893,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.800000004470348,
+      "latencyMs": 7.700000002980232,
       "candidates": [
         {
           "sopId": "sc-gift-send-error",
@@ -3931,7 +3952,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.299999997019768,
+      "latencyMs": 6.299999997019768,
       "candidates": [
         {
           "sopId": "sc-gift-send-error",
@@ -3990,7 +4011,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.100000001490116,
+      "latencyMs": 11.700000002980232,
       "candidates": [
         {
           "sopId": "sc-gift-send-error",
@@ -4049,7 +4070,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.399999998509884,
+      "latencyMs": 12.5,
       "candidates": [
         {
           "sopId": "sc-gift-membership",
@@ -4108,7 +4129,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.800000004470348,
+      "latencyMs": 8.200000002980232,
       "candidates": [
         {
           "sopId": "sc-gift-membership",
@@ -4167,7 +4188,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.199999995529652,
+      "latencyMs": 8,
       "candidates": [
         {
           "sopId": "sc-gift-membership",
@@ -4226,7 +4247,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.100000001490116,
+      "latencyMs": 9.799999997019768,
       "candidates": [
         {
           "sopId": "sc-gift-membership",
@@ -4344,7 +4365,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.799999997019768,
+      "latencyMs": 10.700000002980232,
       "candidates": [
         {
           "sopId": "sc-gift-membership",
@@ -4403,7 +4424,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.800000004470348,
+      "latencyMs": 6.899999998509884,
       "candidates": [
         {
           "sopId": "sc-gift-membership",
@@ -4462,7 +4483,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.899999998509884,
+      "latencyMs": 11,
       "candidates": [
         {
           "sopId": "sc-gift-membership",
@@ -4521,7 +4542,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.299999997019768,
+      "latencyMs": 11.799999997019768,
       "candidates": [
         {
           "sopId": "sc-gift-membership",
@@ -4580,7 +4601,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.899999998509884,
+      "latencyMs": 8.800000004470348,
       "candidates": [
         {
           "sopId": "sc-login-email",
@@ -4639,7 +4660,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.100000001490116,
+      "latencyMs": 9.099999994039536,
       "candidates": [
         {
           "sopId": "sc-login-recovery",
@@ -4698,7 +4719,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.399999998509884,
+      "latencyMs": 10.5,
       "candidates": [
         {
           "sopId": "sc-login-recovery",
@@ -4816,7 +4837,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.600000001490116,
+      "latencyMs": 9.200000002980232,
       "candidates": [
         {
           "sopId": "sc-login-loop",
@@ -4875,7 +4896,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.199999995529652,
+      "latencyMs": 6.799999997019768,
       "candidates": [
         {
           "sopId": "sc-login-code",
@@ -4934,7 +4955,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.800000004470348,
+      "latencyMs": 12.5,
       "candidates": [
         {
           "sopId": "sc-sec-email",
@@ -4993,7 +5014,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 12.299999997019768,
+      "latencyMs": 12,
       "candidates": [
         {
           "sopId": "sc-login-email",
@@ -5052,7 +5073,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10,
+      "latencyMs": 9.900000005960464,
       "candidates": [
         {
           "sopId": "sc-login-recovery",
@@ -5111,7 +5132,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.5,
+      "latencyMs": 7.699999995529652,
       "candidates": [
         {
           "sopId": "sc-login-code",
@@ -5170,7 +5191,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 12.299999997019768,
+      "latencyMs": 11.700000002980232,
       "candidates": [
         {
           "sopId": "sc-login-code",
@@ -5229,7 +5250,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 13.700000002980232,
+      "latencyMs": 14.199999995529652,
       "candidates": [
         {
           "sopId": "sc-login-code",
@@ -5288,7 +5309,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.299999997019768,
+      "latencyMs": 7.100000001490116,
       "candidates": [
         {
           "sopId": "sc-login-code",
@@ -5347,7 +5368,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.600000001490116,
+      "latencyMs": 8.799999997019768,
       "candidates": [
         {
           "sopId": "sc-login-code",
@@ -5406,7 +5427,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 13,
+      "latencyMs": 21,
       "candidates": [
         {
           "sopId": "sc-payout-missing",
@@ -5465,7 +5486,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.200000002980232,
+      "latencyMs": 18.30000000447035,
       "candidates": [
         {
           "sopId": "sc-login-code",
@@ -5524,7 +5545,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.600000001490116,
+      "latencyMs": 11.600000001490116,
       "candidates": [
         {
           "sopId": "sc-live-key",
@@ -5583,7 +5604,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.600000001490116,
+      "latencyMs": 11.599999994039536,
       "candidates": [
         {
           "sopId": "sc-login-loop",
@@ -5642,7 +5663,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.199999995529652,
+      "latencyMs": 11.800000004470348,
       "candidates": [
         {
           "sopId": "sc-an-watchtime",
@@ -5701,7 +5722,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.600000001490116,
+      "latencyMs": 10.299999997019768,
       "candidates": [
         {
           "sopId": "sc-login-recovery",
@@ -5760,7 +5781,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.300000004470348,
+      "latencyMs": 6.799999997019768,
       "candidates": [
         {
           "sopId": "sc-login-loop",
@@ -5819,7 +5840,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 5.899999998509884,
+      "latencyMs": 6.200000002980232,
       "candidates": [
         {
           "sopId": "sc-login-loop",
@@ -5878,7 +5899,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.699999995529652,
+      "latencyMs": 10.100000001490116,
       "candidates": [
         {
           "sopId": "sc-login-loop",
@@ -5937,7 +5958,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.800000004470348,
+      "latencyMs": 8.899999998509884,
       "candidates": [
         {
           "sopId": "sc-login-loop",
@@ -5996,7 +6017,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.200000002980232,
+      "latencyMs": 8.599999994039536,
       "candidates": [
         {
           "sopId": "sc-login-email",
@@ -6055,7 +6076,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.100000001490116,
+      "latencyMs": 8.800000004470348,
       "candidates": [
         {
           "sopId": "sc-login-email",
@@ -6114,7 +6135,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.199999995529652,
+      "latencyMs": 14.899999998509884,
       "candidates": [
         {
           "sopId": "sc-login-email",
@@ -6173,7 +6194,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.400000005960464,
+      "latencyMs": 13,
       "candidates": [
         {
           "sopId": "sc-sec-suspicious",
@@ -6232,7 +6253,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.199999995529652,
+      "latencyMs": 8.200000002980232,
       "candidates": [
         {
           "sopId": "sc-login-email",
@@ -6291,7 +6312,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.600000001490116,
+      "latencyMs": 7.899999998509884,
       "candidates": [
         {
           "sopId": "sc-login-email",
@@ -6350,7 +6371,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.5,
+      "latencyMs": 9.399999998509884,
       "candidates": [
         {
           "sopId": "sc-login-email",
@@ -6409,7 +6430,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 12.799999997019768,
+      "latencyMs": 12.200000002980232,
       "candidates": [
         {
           "sopId": "sc-login-email",
@@ -6470,7 +6491,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.800000004470348,
+      "latencyMs": 8.5,
       "candidates": [
         {
           "sopId": "sc-sec-email",
@@ -6531,7 +6552,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.799999997019768,
+      "latencyMs": 8.299999997019768,
       "candidates": [
         {
           "sopId": "sc-sec-email",
@@ -6592,7 +6613,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.399999998509884,
+      "latencyMs": 7.799999997019768,
       "candidates": [
         {
           "sopId": "sc-sec-takeover",
@@ -6653,7 +6674,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 13.200000002980232,
+      "latencyMs": 13,
       "candidates": [
         {
           "sopId": "sc-monet-pause",
@@ -6714,7 +6735,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 12.200000002980232,
+      "latencyMs": 12,
       "candidates": [
         {
           "sopId": "sc-comm-report",
@@ -6775,7 +6796,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 13,
+      "latencyMs": 12.899999998509884,
       "candidates": [
         {
           "sopId": "sc-sec-takeover",
@@ -6836,7 +6857,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 11.5,
+      "latencyMs": 11.600000001490116,
       "candidates": [
         {
           "sopId": "sc-spec-access",
@@ -6900,7 +6921,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.100000001490116,
+      "latencyMs": 7.800000004470348,
       "candidates": [
         {
           "sopId": "sc-sec-takeover",
@@ -6961,7 +6982,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 10,
+      "latencyMs": 10.899999998509884,
       "candidates": [
         {
           "sopId": "sc-sec-suspicious",
@@ -7022,7 +7043,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.5,
+      "latencyMs": 7.5,
       "candidates": [
         {
           "sopId": "sc-sec-suspicious",
@@ -7083,7 +7104,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 12.600000001490116,
+      "latencyMs": 12.899999998509884,
       "candidates": [
         {
           "sopId": "sc-sec-email",
@@ -7144,7 +7165,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 11.5,
+      "latencyMs": 12.5,
       "candidates": [
         {
           "sopId": "sc-sec-suspicious",
@@ -7266,7 +7287,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.9000000059604645,
+      "latencyMs": 6.700000002980232,
       "candidates": [
         {
           "sopId": "sc-sec-suspicious",
@@ -7327,7 +7348,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 11.199999995529652,
+      "latencyMs": 12.399999998509884,
       "candidates": [
         {
           "sopId": "sc-elig-region",
@@ -7388,7 +7409,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 10.200000002980232,
+      "latencyMs": 9.899999998509884,
       "candidates": [
         {
           "sopId": "sc-comm-block",
@@ -7449,7 +7470,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.799999997019768,
+      "latencyMs": 8.299999997019768,
       "candidates": [
         {
           "sopId": "sc-sec-email",
@@ -7510,7 +7531,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.399999998509884,
+      "latencyMs": 9.800000004470348,
       "candidates": [
         {
           "sopId": "sc-sec-email",
@@ -7571,7 +7592,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 12.399999998509884,
+      "latencyMs": 14,
       "candidates": [
         {
           "sopId": "sc-sec-email",
@@ -7632,7 +7653,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 13.400000005960464,
+      "latencyMs": 13.699999995529652,
       "candidates": [
         {
           "sopId": "sc-sec-email",
@@ -7693,7 +7714,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.199999995529652,
+      "latencyMs": 7.5,
       "candidates": [
         {
           "sopId": "sc-sec-email",
@@ -7754,7 +7775,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.899999998509884,
+      "latencyMs": 7.399999998509884,
       "candidates": [
         {
           "sopId": "sc-sec-email",
@@ -7815,7 +7836,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 11.600000001490116,
+      "latencyMs": 11.700000002980232,
       "candidates": [
         {
           "sopId": "sc-sec-email",
@@ -7876,7 +7897,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 10.100000001490116,
+      "latencyMs": 10.399999998509884,
       "candidates": [
         {
           "sopId": "sc-login-code",
@@ -7935,7 +7956,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.399999998509884,
+      "latencyMs": 7.700000002980232,
       "candidates": [
         {
           "sopId": "sc-sec-2fa",
@@ -7994,7 +8015,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.899999998509884,
+      "latencyMs": 9.100000001490116,
       "candidates": [
         {
           "sopId": "sc-sec-2fa",
@@ -8053,7 +8074,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.300000004470348,
+      "latencyMs": 9.5,
       "candidates": [
         {
           "sopId": "sc-sec-suspicious",
@@ -8112,7 +8133,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.5,
+      "latencyMs": 10.099999994039536,
       "candidates": [
         {
           "sopId": "sc-sec-2fa",
@@ -8171,7 +8192,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.5999999940395355,
+      "latencyMs": 6.300000004470348,
       "candidates": [
         {
           "sopId": "sc-sec-2fa",
@@ -8230,7 +8251,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.4000000059604645,
+      "latencyMs": 8.600000001490116,
       "candidates": [
         {
           "sopId": "sc-sec-2fa",
@@ -8289,7 +8310,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.399999998509884,
+      "latencyMs": 10.299999997019768,
       "candidates": [
         {
           "sopId": "sc-sec-2fa",
@@ -8348,7 +8369,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.199999995529652,
+      "latencyMs": 9.200000002980232,
       "candidates": [
         {
           "sopId": "sc-elig-standing",
@@ -8407,7 +8428,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.899999998509884,
+      "latencyMs": 11.699999995529652,
       "candidates": [
         {
           "sopId": "sc-live-disconnect",
@@ -8466,7 +8487,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.300000004470348,
+      "latencyMs": 6.600000001490116,
       "candidates": [
         {
           "sopId": "sc-live-disconnect",
@@ -8525,7 +8546,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.5,
+      "latencyMs": 11.100000001490116,
       "candidates": [
         {
           "sopId": "sc-live-disconnect",
@@ -8584,7 +8605,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 12,
+      "latencyMs": 11.799999997019768,
       "candidates": [
         {
           "sopId": "sc-up-thumbnail",
@@ -8643,7 +8664,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.399999998509884,
+      "latencyMs": 6.800000004470348,
       "candidates": [
         {
           "sopId": "sc-live-disconnect",
@@ -8702,7 +8723,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.899999998509884,
+      "latencyMs": 6.299999997019768,
       "candidates": [
         {
           "sopId": "sc-live-disconnect",
@@ -8761,7 +8782,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.200000002980232,
+      "latencyMs": 10.299999997019768,
       "candidates": [
         {
           "sopId": "sc-elig-region",
@@ -8820,7 +8841,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.699999995529652,
+      "latencyMs": 8.100000001490116,
       "candidates": [
         {
           "sopId": "sc-gift-missing",
@@ -8879,7 +8900,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.899999998509884,
+      "latencyMs": 9.200000002980232,
       "candidates": [
         {
           "sopId": "sc-live-lag",
@@ -8938,7 +8959,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.700000002980232,
+      "latencyMs": 7,
       "candidates": [
         {
           "sopId": "sc-live-lag",
@@ -8997,7 +9018,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 13.799999997019768,
+      "latencyMs": 13.899999998509884,
       "candidates": [
         {
           "sopId": "sc-live-key",
@@ -9056,7 +9077,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 13.700000002980232,
+      "latencyMs": 14,
       "candidates": [
         {
           "sopId": "sc-live-key",
@@ -9115,7 +9136,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6,
+      "latencyMs": 5.799999997019768,
       "candidates": [
         {
           "sopId": "sc-live-lag",
@@ -9174,7 +9195,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 5.299999997019768,
+      "latencyMs": 6.300000004470348,
       "candidates": [
         {
           "sopId": "sc-live-audio",
@@ -9233,7 +9254,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8,
+      "latencyMs": 7.5,
       "candidates": [
         {
           "sopId": "sc-elig-region",
@@ -9292,7 +9313,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.299999997019768,
+      "latencyMs": 10,
       "candidates": [
         {
           "sopId": "sc-live-lag",
@@ -9351,7 +9372,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 10.200000002980232,
+      "latencyMs": 9.700000002980232,
       "candidates": [
         {
           "sopId": "sc-live-key",
@@ -9410,7 +9431,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8,
+      "latencyMs": 8.5,
       "candidates": [
         {
           "sopId": "sc-live-key",
@@ -9469,7 +9490,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 11,
+      "latencyMs": 11.799999997019768,
       "candidates": [
         {
           "sopId": "sc-live-key",
@@ -9528,7 +9549,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 11.299999997019768,
+      "latencyMs": 10.5,
       "candidates": [
         {
           "sopId": "sc-live-key",
@@ -9587,7 +9608,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.100000001490116,
+      "latencyMs": 9.100000001490116,
       "candidates": [
         {
           "sopId": "sc-live-key",
@@ -9646,7 +9667,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.100000001490116,
+      "latencyMs": 7.100000001490116,
       "candidates": [
         {
           "sopId": "sc-live-key",
@@ -9705,7 +9726,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.599999994039536,
+      "latencyMs": 12.299999997019768,
       "candidates": [
         {
           "sopId": "sc-live-key",
@@ -9823,7 +9844,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.299999997019768,
+      "latencyMs": 7.100000001490116,
       "candidates": [
         {
           "sopId": "sc-live-audio",
@@ -9882,7 +9903,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.700000002980232,
+      "latencyMs": 8.399999998509884,
       "candidates": [
         {
           "sopId": "sc-live-audio",
@@ -9941,7 +9962,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.5,
+      "latencyMs": 10,
       "candidates": [
         {
           "sopId": "sc-live-audio",
@@ -10000,7 +10021,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.5,
+      "latencyMs": 11,
       "candidates": [
         {
           "sopId": "sc-live-audio",
@@ -10059,7 +10080,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.399999998509884,
+      "latencyMs": 5.899999998509884,
       "candidates": [
         {
           "sopId": "sc-live-audio",
@@ -10118,7 +10139,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.899999998509884,
+      "latencyMs": 6.899999998509884,
       "candidates": [
         {
           "sopId": "sc-live-audio",
@@ -10236,7 +10257,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6,
+      "latencyMs": 8.200000002980232,
       "candidates": [
         {
           "sopId": "sc-live-audio",
@@ -10295,7 +10316,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.5,
+      "latencyMs": 10.5,
       "candidates": [
         {
           "sopId": "sc-elig-missing",
@@ -10354,7 +10375,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.799999997019768,
+      "latencyMs": 9.100000001490116,
       "candidates": [
         {
           "sopId": "sc-elig-missing",
@@ -10413,7 +10434,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 12,
+      "latencyMs": 14.300000004470348,
       "candidates": [
         {
           "sopId": "sc-login-loop",
@@ -10472,7 +10493,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.899999998509884,
+      "latencyMs": 13.899999998509884,
       "candidates": [
         {
           "sopId": "sc-gift-missing",
@@ -10531,7 +10552,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.300000004470348,
+      "latencyMs": 7.5,
       "candidates": [
         {
           "sopId": "sc-elig-standing",
@@ -10590,7 +10611,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 5.799999997019768,
+      "latencyMs": 6.600000001490116,
       "candidates": [
         {
           "sopId": "sc-elig-region",
@@ -10649,7 +10670,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.300000004470348,
+      "latencyMs": 8.099999994039536,
       "candidates": [
         {
           "sopId": "sc-live-audio",
@@ -10767,7 +10788,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.799999997019768,
+      "latencyMs": 9.200000002980232,
       "candidates": [
         {
           "sopId": "sc-elig-threshold",
@@ -10826,7 +10847,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6,
+      "latencyMs": 5.899999998509884,
       "candidates": [
         {
           "sopId": "sc-elig-region",
@@ -10885,7 +10906,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.5,
+      "latencyMs": 10.300000004470348,
       "candidates": [
         {
           "sopId": "sc-elig-region",
@@ -10944,7 +10965,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.100000001490116,
+      "latencyMs": 9.599999994039536,
       "candidates": [
         {
           "sopId": "sc-elig-region",
@@ -11003,7 +11024,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 5.799999997019768,
+      "latencyMs": 6.300000004470348,
       "candidates": [
         {
           "sopId": "sc-elig-region",
@@ -11062,7 +11083,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 5.899999998509884,
+      "latencyMs": 5.5999999940395355,
       "candidates": [
         {
           "sopId": "sc-elig-region",
@@ -11121,7 +11142,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8,
+      "latencyMs": 8.5,
       "candidates": [
         {
           "sopId": "sc-elig-threshold",
@@ -11180,7 +11201,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.800000004470348,
+      "latencyMs": 7.5,
       "candidates": [
         {
           "sopId": "sc-live-lag",
@@ -11239,7 +11260,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.899999998509884,
+      "latencyMs": 7.5,
       "candidates": [
         {
           "sopId": "sc-live-audio",
@@ -11298,7 +11319,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.899999998509884,
+      "latencyMs": 6.9000000059604645,
       "candidates": [
         {
           "sopId": "sc-elig-threshold",
@@ -11357,7 +11378,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 12,
+      "latencyMs": 9.899999998509884,
       "candidates": [
         {
           "sopId": "sc-an-export",
@@ -11416,7 +11437,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.299999997019768,
+      "latencyMs": 9.600000001490116,
       "candidates": [
         {
           "sopId": "sc-live-key",
@@ -11475,7 +11496,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.4000000059604645,
+      "latencyMs": 6.300000004470348,
       "candidates": [
         {
           "sopId": "sc-elig-threshold",
@@ -11534,7 +11555,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8,
+      "latencyMs": 7.600000001490116,
       "candidates": [
         {
           "sopId": "sc-elig-threshold",
@@ -11593,7 +11614,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.399999998509884,
+      "latencyMs": 9.800000004470348,
       "candidates": [
         {
           "sopId": "sc-elig-region",
@@ -11652,7 +11673,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.100000001490116,
+      "latencyMs": 9.699999995529652,
       "candidates": [
         {
           "sopId": "sc-gift-refund",
@@ -11711,7 +11732,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.599999994039536,
+      "latencyMs": 8.899999998509884,
       "candidates": [
         {
           "sopId": "sc-rest-live",
@@ -11770,7 +11791,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.9000000059604645,
+      "latencyMs": 6.300000004470348,
       "candidates": [
         {
           "sopId": "sc-elig-standing",
@@ -11829,7 +11850,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11,
+      "latencyMs": 10.799999997019768,
       "candidates": [
         {
           "sopId": "sc-login-email",
@@ -11888,7 +11909,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.599999994039536,
+      "latencyMs": 9.399999998509884,
       "candidates": [
         {
           "sopId": "sc-elig-standing",
@@ -11947,7 +11968,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.200000002980232,
+      "latencyMs": 6.600000001490116,
       "candidates": [
         {
           "sopId": "sc-rest-live",
@@ -12006,7 +12027,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7,
+      "latencyMs": 7.300000004470348,
       "candidates": [
         {
           "sopId": "sc-elig-standing",
@@ -12065,7 +12086,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.799999997019768,
+      "latencyMs": 9.399999998509884,
       "candidates": [
         {
           "sopId": "sc-elig-threshold",
@@ -12124,7 +12145,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.700000002980232,
+      "latencyMs": 8.799999997019768,
       "candidates": [
         {
           "sopId": "sc-gift-membership",
@@ -12185,7 +12206,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.5,
+      "latencyMs": 9.600000001490116,
       "candidates": [
         {
           "sopId": "sc-rest-removed",
@@ -12246,7 +12267,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.299999997019768,
+      "latencyMs": 8.100000001490116,
       "candidates": [
         {
           "sopId": "sc-up-processing",
@@ -12307,7 +12328,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.700000002980232,
+      "latencyMs": 8.599999994039536,
       "candidates": [
         {
           "sopId": "sc-up-processing",
@@ -12368,7 +12389,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.899999998509884,
+      "latencyMs": 10,
       "candidates": [
         {
           "sopId": "sc-rest-removed",
@@ -12429,7 +12450,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.899999998509884,
+      "latencyMs": 7.700000002980232,
       "candidates": [
         {
           "sopId": "sc-rest-removed",
@@ -12490,7 +12511,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.800000004470348,
+      "latencyMs": 5.699999995529652,
       "candidates": [
         {
           "sopId": "sc-rest-removed",
@@ -12551,7 +12572,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 10.899999998509884,
+      "latencyMs": 12.600000001490116,
       "candidates": [
         {
           "sopId": "sc-rest-strike",
@@ -12612,7 +12633,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.899999998509884,
+      "latencyMs": 10.399999998509884,
       "candidates": [
         {
           "sopId": "sc-gift-refund",
@@ -12673,7 +12694,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.5,
+      "latencyMs": 7.700000002980232,
       "candidates": [
         {
           "sopId": "sc-rest-strike",
@@ -12734,7 +12755,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.399999998509884,
+      "latencyMs": 8.399999998509884,
       "candidates": [
         {
           "sopId": "sc-rest-strike",
@@ -12795,7 +12816,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.5,
+      "latencyMs": 9.300000004470348,
       "candidates": [
         {
           "sopId": "sc-rest-strike",
@@ -12856,7 +12877,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.800000004470348,
+      "latencyMs": 9.699999995529652,
       "candidates": [
         {
           "sopId": "sc-rest-strike",
@@ -12917,7 +12938,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.899999998509884,
+      "latencyMs": 5.300000004470348,
       "candidates": [
         {
           "sopId": "sc-rest-strike",
@@ -12978,7 +12999,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.100000001490116,
+      "latencyMs": 5.5999999940395355,
       "candidates": [
         {
           "sopId": "sc-rest-strike",
@@ -13039,7 +13060,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.399999998509884,
+      "latencyMs": 7.9000000059604645,
       "candidates": [
         {
           "sopId": "sc-rest-strike",
@@ -13100,7 +13121,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 10.099999994039536,
+      "latencyMs": 9.399999998509884,
       "candidates": [
         {
           "sopId": "sc-login-email",
@@ -13161,7 +13182,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 10.400000005960464,
+      "latencyMs": 10.5,
       "candidates": [
         {
           "sopId": "sc-rest-live",
@@ -13222,7 +13243,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.799999997019768,
+      "latencyMs": 7.699999995529652,
       "candidates": [
         {
           "sopId": "sc-live-audio",
@@ -13344,7 +13365,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 11.299999997019768,
+      "latencyMs": 11.700000002980232,
       "candidates": [
         {
           "sopId": "sc-login-recovery",
@@ -13405,7 +13426,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.9000000059604645,
+      "latencyMs": 5.899999998509884,
       "candidates": [
         {
           "sopId": "sc-rest-live",
@@ -13466,7 +13487,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 4.699999995529652,
+      "latencyMs": 5.300000004470348,
       "candidates": [
         {
           "sopId": "sc-rest-live",
@@ -13527,7 +13548,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.800000004470348,
+      "latencyMs": 7.899999998509884,
       "candidates": [
         {
           "sopId": "sc-elig-standing",
@@ -13588,7 +13609,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.699999995529652,
+      "latencyMs": 7.899999998509884,
       "candidates": [
         {
           "sopId": "sc-rest-copyright",
@@ -13649,7 +13670,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.200000002980232,
+      "latencyMs": 9.899999998509884,
       "candidates": [
         {
           "sopId": "sc-rest-copyright",
@@ -13710,7 +13731,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.299999997019768,
+      "latencyMs": 5.100000001490116,
       "candidates": [
         {
           "sopId": "sc-rest-copyright",
@@ -13771,7 +13792,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 12.600000001490116,
+      "latencyMs": 13.200000002980232,
       "candidates": [
         {
           "sopId": "sc-rest-copyright",
@@ -13832,7 +13853,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 12.899999998509884,
+      "latencyMs": 14,
       "candidates": [
         {
           "sopId": "sc-rest-copyright",
@@ -13893,7 +13914,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.300000004470348,
+      "latencyMs": 5.799999997019768,
       "candidates": [
         {
           "sopId": "sc-rest-copyright",
@@ -13954,7 +13975,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.0999999940395355,
+      "latencyMs": 5.899999998509884,
       "candidates": [
         {
           "sopId": "sc-rest-copyright",
@@ -14015,7 +14036,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 11,
+      "latencyMs": 10.700000002980232,
       "candidates": [
         {
           "sopId": "sc-rest-copyright",
@@ -14076,7 +14097,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.900000005960464,
+      "latencyMs": 10.699999995529652,
       "candidates": [
         {
           "sopId": "sc-rest-copyright",
@@ -14135,7 +14156,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.5999999940395355,
+      "latencyMs": 7.700000002980232,
       "candidates": [
         {
           "sopId": "sc-monet-elig",
@@ -14194,7 +14215,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.5,
+      "latencyMs": 7.299999997019768,
       "candidates": [
         {
           "sopId": "sc-monet-elig",
@@ -14253,7 +14274,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.900000005960464,
+      "latencyMs": 8.700000002980232,
       "candidates": [
         {
           "sopId": "sc-login-loop",
@@ -14312,7 +14333,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.099999994039536,
+      "latencyMs": 8.699999995529652,
       "candidates": [
         {
           "sopId": "sc-monet-adsense",
@@ -14430,7 +14451,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.200000002980232,
+      "latencyMs": 8.299999997019768,
       "candidates": [
         {
           "sopId": "sc-monet-elig",
@@ -14489,7 +14510,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.099999994039536,
+      "latencyMs": 8.5,
       "candidates": [
         {
           "sopId": "sc-monet-elig",
@@ -14548,7 +14569,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.5,
+      "latencyMs": 8.300000004470348,
       "candidates": [
         {
           "sopId": "sc-monet-elig",
@@ -14607,7 +14628,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.899999998509884,
+      "latencyMs": 7.5,
       "candidates": [
         {
           "sopId": "sc-monet-review",
@@ -14666,7 +14687,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.600000001490116,
+      "latencyMs": 8.5,
       "candidates": [
         {
           "sopId": "sc-monet-review",
@@ -14725,7 +14746,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.300000004470348,
+      "latencyMs": 10.099999994039536,
       "candidates": [
         {
           "sopId": "sc-monet-review",
@@ -14784,7 +14805,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 12,
+      "latencyMs": 11.800000004470348,
       "candidates": [
         {
           "sopId": "sc-monet-elig",
@@ -14843,7 +14864,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.5,
+      "latencyMs": 6.5999999940395355,
       "candidates": [
         {
           "sopId": "sc-monet-review",
@@ -14902,7 +14923,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7,
+      "latencyMs": 7.399999998509884,
       "candidates": [
         {
           "sopId": "sc-monet-review",
@@ -14961,7 +14982,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.300000004470348,
+      "latencyMs": 9.5,
       "candidates": [
         {
           "sopId": "sc-monet-elig",
@@ -15020,7 +15041,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.299999997019768,
+      "latencyMs": 9.5,
       "candidates": [
         {
           "sopId": "sc-monet-adsense",
@@ -15079,7 +15100,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.5,
+      "latencyMs": 8.300000004470348,
       "candidates": [
         {
           "sopId": "sc-monet-adsense",
@@ -15138,7 +15159,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.700000002980232,
+      "latencyMs": 5.799999997019768,
       "candidates": [
         {
           "sopId": "sc-monet-adsense",
@@ -15197,7 +15218,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.899999998509884,
+      "latencyMs": 7.399999998509884,
       "candidates": [
         {
           "sopId": "sc-monet-adsense",
@@ -15256,7 +15277,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9,
+      "latencyMs": 9.600000001490116,
       "candidates": [
         {
           "sopId": "sc-monet-adsense",
@@ -15315,7 +15336,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.299999997019768,
+      "latencyMs": 5.800000004470348,
       "candidates": [
         {
           "sopId": "sc-monet-adsense",
@@ -15374,7 +15395,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.5,
+      "latencyMs": 8.599999994039536,
       "candidates": [
         {
           "sopId": "sc-monet-adsense",
@@ -15492,7 +15513,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.5,
+      "latencyMs": 9,
       "candidates": [
         {
           "sopId": "sc-monet-adsense",
@@ -15553,7 +15574,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.600000001490116,
+      "latencyMs": 7.699999995529652,
       "candidates": [
         {
           "sopId": "sc-monet-pause",
@@ -15614,7 +15635,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8,
+      "latencyMs": 8.400000005960464,
       "candidates": [
         {
           "sopId": "sc-monet-pause",
@@ -15675,7 +15696,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 11.200000002980232,
+      "latencyMs": 9.599999994039536,
       "candidates": [
         {
           "sopId": "sc-monet-pause",
@@ -15736,7 +15757,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 10.100000001490116,
+      "latencyMs": 10.399999998509884,
       "candidates": [
         {
           "sopId": "sc-monet-pause",
@@ -15797,7 +15818,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.199999995529652,
+      "latencyMs": 5.800000004470348,
       "candidates": [
         {
           "sopId": "sc-monet-pause",
@@ -15858,7 +15879,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5,
+      "latencyMs": 5.399999998509884,
       "candidates": [
         {
           "sopId": "sc-monet-pause",
@@ -15919,7 +15940,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.300000004470348,
+      "latencyMs": 6.299999997019768,
       "candidates": [
         {
           "sopId": "sc-login-recovery",
@@ -15980,7 +16001,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 10.199999995529652,
+      "latencyMs": 9.700000002980232,
       "candidates": [
         {
           "sopId": "sc-login-recovery",
@@ -16039,7 +16060,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.100000001490116,
+      "latencyMs": 7,
       "candidates": [
         {
           "sopId": "sc-comm-comments",
@@ -16098,7 +16119,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.600000001490116,
+      "latencyMs": 7.100000001490116,
       "candidates": [
         {
           "sopId": "sc-comm-comments",
@@ -16157,7 +16178,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.899999998509884,
+      "latencyMs": 10.699999995529652,
       "candidates": [
         {
           "sopId": "sc-comm-comments",
@@ -16216,7 +16237,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 11.200000002980232,
+      "latencyMs": 11.400000005960464,
       "candidates": [
         {
           "sopId": "sc-comm-comments",
@@ -16275,7 +16296,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.699999995529652,
+      "latencyMs": 7,
       "candidates": [
         {
           "sopId": "sc-comm-comments",
@@ -16334,7 +16355,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.600000001490116,
+      "latencyMs": 6.799999997019768,
       "candidates": [
         {
           "sopId": "sc-comm-comments",
@@ -16393,7 +16414,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.300000004470348,
+      "latencyMs": 8.799999997019768,
       "candidates": [
         {
           "sopId": "sc-comm-comments",
@@ -16452,7 +16473,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.900000005960464,
+      "latencyMs": 9.300000004470348,
       "candidates": [
         {
           "sopId": "sc-comm-comments",
@@ -16511,7 +16532,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.800000004470348,
+      "latencyMs": 5.5,
       "candidates": [
         {
           "sopId": "sc-comm-tab",
@@ -16570,7 +16591,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.299999997019768,
+      "latencyMs": 7.199999995529652,
       "candidates": [
         {
           "sopId": "sc-comm-tab",
@@ -16629,7 +16650,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.600000001490116,
+      "latencyMs": 7.899999998509884,
       "candidates": [
         {
           "sopId": "sc-comm-tab",
@@ -16688,7 +16709,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.899999998509884,
+      "latencyMs": 7,
       "candidates": [
         {
           "sopId": "sc-comm-tab",
@@ -16747,7 +16768,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.200000002980232,
+      "latencyMs": 6.100000001490116,
       "candidates": [
         {
           "sopId": "sc-comm-tab",
@@ -16806,7 +16827,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.100000001490116,
+      "latencyMs": 6.200000002980232,
       "candidates": [
         {
           "sopId": "sc-comm-tab",
@@ -16865,7 +16886,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.799999997019768,
+      "latencyMs": 8.199999995529652,
       "candidates": [
         {
           "sopId": "sc-comm-tab",
@@ -16924,7 +16945,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.299999997019768,
+      "latencyMs": 7.5,
       "candidates": [
         {
           "sopId": "sc-comm-tab",
@@ -16985,7 +17006,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.700000002980232,
+      "latencyMs": 10.100000001490116,
       "candidates": [
         {
           "sopId": "sc-comm-report",
@@ -17046,7 +17067,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7,
+      "latencyMs": 6.399999998509884,
       "candidates": [
         {
           "sopId": "sc-comm-report",
@@ -17107,7 +17128,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 11.399999998509884,
+      "latencyMs": 11.899999998509884,
       "candidates": [
         {
           "sopId": "sc-comm-comments",
@@ -17168,7 +17189,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 12,
+      "latencyMs": 12.300000004470348,
       "candidates": [
         {
           "sopId": "sc-comm-report",
@@ -17229,7 +17250,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.800000004470348,
+      "latencyMs": 12.100000001490116,
       "candidates": [
         {
           "sopId": "sc-comm-report",
@@ -17290,7 +17311,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.799999997019768,
+      "latencyMs": 10.699999995529652,
       "candidates": [
         {
           "sopId": "sc-comm-report",
@@ -17351,7 +17372,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.200000002980232,
+      "latencyMs": 11.899999998509884,
       "candidates": [
         {
           "sopId": "sc-comm-report",
@@ -17412,7 +17433,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.099999994039536,
+      "latencyMs": 12.900000005960464,
       "candidates": [
         {
           "sopId": "sc-comm-report",
@@ -17471,7 +17492,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 5.800000004470348,
+      "latencyMs": 12,
       "candidates": [
         {
           "sopId": "sc-comm-block",
@@ -17530,7 +17551,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.399999998509884,
+      "latencyMs": 10.700000002980232,
       "candidates": [
         {
           "sopId": "sc-comm-block",
@@ -17648,7 +17669,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.100000001490116,
+      "latencyMs": 7.899999998509884,
       "candidates": [
         {
           "sopId": "sc-an-watchtime",
@@ -17707,7 +17728,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.199999995529652,
+      "latencyMs": 6,
       "candidates": [
         {
           "sopId": "sc-comm-block",
@@ -17766,7 +17787,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 5.700000002980232,
+      "latencyMs": 6.300000004470348,
       "candidates": [
         {
           "sopId": "sc-comm-block",
@@ -17825,7 +17846,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.100000001490116,
+      "latencyMs": 9.699999995529652,
       "candidates": [
         {
           "sopId": "sc-comm-comments",
@@ -17884,7 +17905,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.799999997019768,
+      "latencyMs": 9.400000005960464,
       "candidates": [
         {
           "sopId": "sc-elig-standing",
@@ -17943,7 +17964,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.300000004470348,
+      "latencyMs": 7.199999995529652,
       "candidates": [
         {
           "sopId": "sc-up-upload",
@@ -18002,7 +18023,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 5.700000002980232,
+      "latencyMs": 5.600000001490116,
       "candidates": [
         {
           "sopId": "sc-up-upload",
@@ -18061,7 +18082,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.899999998509884,
+      "latencyMs": 9,
       "candidates": [
         {
           "sopId": "sc-comm-report",
@@ -18120,7 +18141,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.300000004470348,
+      "latencyMs": 9.100000001490116,
       "candidates": [
         {
           "sopId": "sc-up-upload",
@@ -18179,7 +18200,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.299999997019768,
+      "latencyMs": 8.700000002980232,
       "candidates": [
         {
           "sopId": "sc-up-upload",
@@ -18238,7 +18259,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 5.899999998509884,
+      "latencyMs": 5.399999998509884,
       "candidates": [
         {
           "sopId": "sc-up-upload",
@@ -18297,7 +18318,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.300000004470348,
+      "latencyMs": 8.200000002980232,
       "candidates": [
         {
           "sopId": "sc-rest-removed",
@@ -18356,7 +18377,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.5999999940395355,
+      "latencyMs": 5.899999998509884,
       "candidates": [
         {
           "sopId": "sc-rest-removed",
@@ -18415,7 +18436,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.700000002980232,
+      "latencyMs": 7.200000002980232,
       "candidates": [
         {
           "sopId": "sc-up-processing",
@@ -18474,7 +18495,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.600000001490116,
+      "latencyMs": 6.899999998509884,
       "candidates": [
         {
           "sopId": "sc-up-upload",
@@ -18533,7 +18554,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.399999998509884,
+      "latencyMs": 8.899999998509884,
       "candidates": [
         {
           "sopId": "sc-up-processing",
@@ -18592,7 +18613,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8,
+      "latencyMs": 8.299999997019768,
       "candidates": [
         {
           "sopId": "sc-up-processing",
@@ -18651,7 +18672,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.799999997019768,
+      "latencyMs": 6.600000001490116,
       "candidates": [
         {
           "sopId": "sc-up-processing",
@@ -18710,7 +18731,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.200000002980232,
+      "latencyMs": 7.800000004470348,
       "candidates": [
         {
           "sopId": "sc-up-processing",
@@ -18769,7 +18790,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10.199999995529652,
+      "latencyMs": 9,
       "candidates": [
         {
           "sopId": "sc-up-processing",
@@ -18828,7 +18849,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10,
+      "latencyMs": 10.599999994039536,
       "candidates": [
         {
           "sopId": "sc-up-processing",
@@ -18887,7 +18908,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.200000002980232,
+      "latencyMs": 6,
       "candidates": [
         {
           "sopId": "sc-up-thumbnail",
@@ -18946,7 +18967,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.600000001490116,
+      "latencyMs": 7.5,
       "candidates": [
         {
           "sopId": "sc-up-thumbnail",
@@ -19005,7 +19026,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.600000001490116,
+      "latencyMs": 7.300000004470348,
       "candidates": [
         {
           "sopId": "sc-up-thumbnail",
@@ -19064,7 +19085,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.699999995529652,
+      "latencyMs": 8.799999997019768,
       "candidates": [
         {
           "sopId": "sc-up-thumbnail",
@@ -19123,7 +19144,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.899999998509884,
+      "latencyMs": 6.800000004470348,
       "candidates": [
         {
           "sopId": "sc-up-thumbnail",
@@ -19182,7 +19203,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.9000000059604645,
+      "latencyMs": 7.200000002980232,
       "candidates": [
         {
           "sopId": "sc-up-thumbnail",
@@ -19241,7 +19262,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.200000002980232,
+      "latencyMs": 9,
       "candidates": [
         {
           "sopId": "sc-gift-missing",
@@ -19300,7 +19321,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.100000001490116,
+      "latencyMs": 9.299999997019768,
       "candidates": [
         {
           "sopId": "sc-login-email",
@@ -19359,7 +19380,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.700000002980232,
+      "latencyMs": 7,
       "candidates": [
         {
           "sopId": "sc-prem-billing",
@@ -19418,7 +19439,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.5,
+      "latencyMs": 6.300000004470348,
       "candidates": [
         {
           "sopId": "sc-prem-billing",
@@ -19477,7 +19498,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.600000001490116,
+      "latencyMs": 7.699999995529652,
       "candidates": [
         {
           "sopId": "sc-prem-billing",
@@ -19536,7 +19557,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.399999998509884,
+      "latencyMs": 9.300000004470348,
       "candidates": [
         {
           "sopId": "sc-prem-billing",
@@ -19595,7 +19616,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 5.799999997019768,
+      "latencyMs": 6,
       "candidates": [
         {
           "sopId": "sc-prem-billing",
@@ -19654,7 +19675,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.100000001490116,
+      "latencyMs": 4.5,
       "candidates": [
         {
           "sopId": "sc-prem-billing",
@@ -19713,7 +19734,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.200000002980232,
+      "latencyMs": 7.5999999940395355,
       "candidates": [
         {
           "sopId": "sc-prem-billing",
@@ -19772,7 +19793,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.299999997019768,
+      "latencyMs": 7,
       "candidates": [
         {
           "sopId": "sc-prem-billing",
@@ -19831,7 +19852,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.699999995529652,
+      "latencyMs": 6.700000002980232,
       "candidates": [
         {
           "sopId": "sc-prem-cancel",
@@ -19890,7 +19911,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.200000002980232,
+      "latencyMs": 6,
       "candidates": [
         {
           "sopId": "sc-prem-cancel",
@@ -19949,7 +19970,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.100000001490116,
+      "latencyMs": 5.299999997019768,
       "candidates": [
         {
           "sopId": "sc-prem-cancel",
@@ -20008,7 +20029,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6,
+      "latencyMs": 6.700000002980232,
       "candidates": [
         {
           "sopId": "sc-prem-cancel",
@@ -20067,7 +20088,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 5.699999995529652,
+      "latencyMs": 6.299999997019768,
       "candidates": [
         {
           "sopId": "sc-prem-cancel",
@@ -20126,7 +20147,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.899999998509884,
+      "latencyMs": 5.800000004470348,
       "candidates": [
         {
           "sopId": "sc-prem-cancel",
@@ -20185,7 +20206,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.5,
+      "latencyMs": 8.299999997019768,
       "candidates": [
         {
           "sopId": "sc-prem-cancel",
@@ -20244,7 +20265,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.600000001490116,
+      "latencyMs": 7.600000001490116,
       "candidates": [
         {
           "sopId": "sc-live-key",
@@ -20303,7 +20324,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.5,
+      "latencyMs": 7.700000002980232,
       "candidates": [
         {
           "sopId": "sc-prem-restore",
@@ -20362,7 +20383,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.800000004470348,
+      "latencyMs": 7.300000004470348,
       "candidates": [
         {
           "sopId": "sc-prem-restore",
@@ -20421,7 +20442,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.5,
+      "latencyMs": 8.899999998509884,
       "candidates": [
         {
           "sopId": "sc-prem-restore",
@@ -20480,7 +20501,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 10,
+      "latencyMs": 10.200000002980232,
       "candidates": [
         {
           "sopId": "sc-prem-restore",
@@ -20539,7 +20560,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.600000001490116,
+      "latencyMs": 6.5999999940395355,
       "candidates": [
         {
           "sopId": "sc-prem-restore",
@@ -20598,7 +20619,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6,
+      "latencyMs": 6.300000004470348,
       "candidates": [
         {
           "sopId": "sc-prem-restore",
@@ -20657,7 +20678,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.5,
+      "latencyMs": 7.800000004470348,
       "candidates": [
         {
           "sopId": "sc-prem-restore",
@@ -20716,7 +20737,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.399999998509884,
+      "latencyMs": 7.600000001490116,
       "candidates": [
         {
           "sopId": "sc-prem-restore",
@@ -20775,7 +20796,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.100000001490116,
+      "latencyMs": 9.099999994039536,
       "candidates": [
         {
           "sopId": "sc-an-viewcount",
@@ -20834,7 +20855,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.799999997019768,
+      "latencyMs": 6.300000004470348,
       "candidates": [
         {
           "sopId": "sc-an-viewcount",
@@ -20893,7 +20914,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.200000002980232,
+      "latencyMs": 8.099999994039536,
       "candidates": [
         {
           "sopId": "sc-an-viewcount",
@@ -20952,7 +20973,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.299999997019768,
+      "latencyMs": 9.5,
       "candidates": [
         {
           "sopId": "sc-an-watchtime",
@@ -21011,7 +21032,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7,
+      "latencyMs": 5.800000004470348,
       "candidates": [
         {
           "sopId": "sc-an-viewcount",
@@ -21070,7 +21091,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.700000002980232,
+      "latencyMs": 6.5999999940395355,
       "candidates": [
         {
           "sopId": "sc-an-viewcount",
@@ -21129,7 +21150,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.100000001490116,
+      "latencyMs": 8,
       "candidates": [
         {
           "sopId": "sc-an-viewcount",
@@ -21188,7 +21209,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.5,
+      "latencyMs": 9.700000002980232,
       "candidates": [
         {
           "sopId": "sc-payout-timing",
@@ -21247,7 +21268,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.699999995529652,
+      "latencyMs": 5.700000002980232,
       "candidates": [
         {
           "sopId": "sc-an-watchtime",
@@ -21306,7 +21327,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.100000001490116,
+      "latencyMs": 7.199999995529652,
       "candidates": [
         {
           "sopId": "sc-an-watchtime",
@@ -21365,7 +21386,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 12.100000001490116,
+      "latencyMs": 11.200000002980232,
       "candidates": [
         {
           "sopId": "sc-an-watchtime",
@@ -21424,7 +21445,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.200000002980232,
+      "latencyMs": 9.699999995529652,
       "candidates": [
         {
           "sopId": "sc-an-watchtime",
@@ -21483,7 +21504,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.200000002980232,
+      "latencyMs": 6.200000002980232,
       "candidates": [
         {
           "sopId": "sc-an-watchtime",
@@ -21542,7 +21563,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 5.700000002980232,
+      "latencyMs": 6.200000002980232,
       "candidates": [
         {
           "sopId": "sc-an-watchtime",
@@ -21601,7 +21622,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.700000002980232,
+      "latencyMs": 9.300000004470348,
       "candidates": [
         {
           "sopId": "sc-an-watchtime",
@@ -21660,7 +21681,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.299999997019768,
+      "latencyMs": 9.899999998509884,
       "candidates": [
         {
           "sopId": "sc-an-watchtime",
@@ -21719,7 +21740,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.300000004470348,
+      "latencyMs": 7.600000001490116,
       "candidates": [
         {
           "sopId": "sc-an-revenue",
@@ -21778,7 +21799,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6,
+      "latencyMs": 6.600000001490116,
       "candidates": [
         {
           "sopId": "sc-an-revenue",
@@ -21837,7 +21858,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.799999997019768,
+      "latencyMs": 7.5999999940395355,
       "candidates": [
         {
           "sopId": "sc-an-revenue",
@@ -21896,7 +21917,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.199999995529652,
+      "latencyMs": 10.200000002980232,
       "candidates": [
         {
           "sopId": "sc-an-revenue",
@@ -21955,7 +21976,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 4.700000002980232,
+      "latencyMs": 5.200000002980232,
       "candidates": [
         {
           "sopId": "sc-an-revenue",
@@ -22073,7 +22094,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.299999997019768,
+      "latencyMs": 10.299999997019768,
       "candidates": [
         {
           "sopId": "sc-an-revenue",
@@ -22191,7 +22212,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 5.699999995529652,
+      "latencyMs": 6.199999995529652,
       "candidates": [
         {
           "sopId": "sc-an-export",
@@ -22250,7 +22271,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.9000000059604645,
+      "latencyMs": 7,
       "candidates": [
         {
           "sopId": "sc-an-export",
@@ -22309,7 +22330,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.399999998509884,
+      "latencyMs": 8.200000002980232,
       "candidates": [
         {
           "sopId": "sc-gift-send-error",
@@ -22368,7 +22389,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.799999997019768,
+      "latencyMs": 8.299999997019768,
       "candidates": [
         {
           "sopId": "sc-comm-comments",
@@ -22427,7 +22448,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.200000002980232,
+      "latencyMs": 8.200000002980232,
       "candidates": [
         {
           "sopId": "sc-an-export",
@@ -22486,7 +22507,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 6.100000001490116,
+      "latencyMs": 8.699999995529652,
       "candidates": [
         {
           "sopId": "sc-an-export",
@@ -22545,7 +22566,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8,
+      "latencyMs": 9.399999998509884,
       "candidates": [
         {
           "sopId": "sc-an-export",
@@ -22604,7 +22625,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.4000000059604645,
+      "latencyMs": 7.700000002980232,
       "candidates": [
         {
           "sopId": "sc-an-export",
@@ -22665,7 +22686,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.699999995529652,
+      "latencyMs": 8.799999997019768,
       "candidates": [
         {
           "sopId": "sc-spec-access",
@@ -22726,7 +22747,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.399999998509884,
+      "latencyMs": 7,
       "candidates": [
         {
           "sopId": "sc-spec-access",
@@ -22787,7 +22808,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 11.399999998509884,
+      "latencyMs": 11.900000005960464,
       "candidates": [
         {
           "sopId": "sc-rest-strike",
@@ -22848,7 +22869,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 11.800000004470348,
+      "latencyMs": 11.5,
       "candidates": [
         {
           "sopId": "sc-rest-live",
@@ -22909,7 +22930,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.100000001490116,
+      "latencyMs": 4.699999995529652,
       "candidates": [
         {
           "sopId": "sc-spec-access",
@@ -22970,7 +22991,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.399999998509884,
+      "latencyMs": 5.100000001490116,
       "candidates": [
         {
           "sopId": "sc-spec-access",
@@ -23031,7 +23052,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.899999998509884,
+      "latencyMs": 9.700000002980232,
       "candidates": [
         {
           "sopId": "sc-spec-access",
@@ -23092,7 +23113,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 10.299999997019768,
+      "latencyMs": 9.099999994039536,
       "candidates": [
         {
           "sopId": "sc-spec-access",
@@ -23153,7 +23174,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.100000001490116,
+      "latencyMs": 7.5,
       "candidates": [
         {
           "sopId": "sc-spec-legal",
@@ -23214,7 +23235,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.100000001490116,
+      "latencyMs": 5.700000002980232,
       "candidates": [
         {
           "sopId": "sc-spec-legal",
@@ -23275,7 +23296,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.799999997019768,
+      "latencyMs": 9.600000001490116,
       "candidates": [
         {
           "sopId": "sc-spec-legal",
@@ -23336,7 +23357,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 10,
+      "latencyMs": 9.899999998509884,
       "candidates": [
         {
           "sopId": "sc-spec-legal",
@@ -23458,7 +23479,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.9000000059604645,
+      "latencyMs": 5.799999997019768,
       "candidates": [
         {
           "sopId": "sc-comm-report",
@@ -23519,7 +23540,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.200000002980232,
+      "latencyMs": 8.5,
       "candidates": [
         {
           "sopId": "sc-comm-report",
@@ -23580,7 +23601,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.700000002980232,
+      "latencyMs": 8.400000005960464,
       "candidates": [
         {
           "sopId": "sc-spec-access",
@@ -23641,7 +23662,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.399999998509884,
+      "latencyMs": 6.5999999940395355,
       "candidates": [
         {
           "sopId": "sc-login-email",
@@ -23702,7 +23723,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.299999997019768,
+      "latencyMs": 7,
       "candidates": [
         {
           "sopId": "sc-live-lag",
@@ -23763,7 +23784,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.899999998509884,
+      "latencyMs": 5.700000002980232,
       "candidates": [
         {
           "sopId": "sc-login-email",
@@ -23824,7 +23845,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.5,
+      "latencyMs": 7.700000002980232,
       "candidates": [
         {
           "sopId": "sc-rest-removed",
@@ -23885,7 +23906,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 4.9000000059604645,
+      "latencyMs": 4.5999999940395355,
       "candidates": [
         {
           "sopId": "sc-comm-comments",
@@ -23946,7 +23967,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.199999995529652,
+      "latencyMs": 6.200000002980232,
       "candidates": [
         {
           "sopId": "sc-live-disconnect",
@@ -24007,7 +24028,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.100000001490116,
+      "latencyMs": 7.5,
       "candidates": [
         {
           "sopId": "sc-comm-report",
@@ -24068,7 +24089,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.299999997019768,
+      "latencyMs": 7.399999998509884,
       "candidates": [
         {
           "sopId": "sc-monet-pause",
@@ -24129,7 +24150,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.400000005960464,
+      "latencyMs": 7.5,
       "candidates": [
         {
           "sopId": "sc-rest-strike",
@@ -24190,7 +24211,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.5,
+      "latencyMs": 8.100000001490116,
       "candidates": [
         {
           "sopId": "sc-an-watchtime",
@@ -24251,7 +24272,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.099999994039536,
+      "latencyMs": 8.100000001490116,
       "candidates": [
         {
           "sopId": "sc-rest-live",
@@ -24312,7 +24333,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 7.4000000059604645,
+      "latencyMs": 6.399999998509884,
       "candidates": [
         {
           "sopId": "sc-rest-strike",
@@ -24373,7 +24394,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.5999999940395355,
+      "latencyMs": 5.799999997019768,
       "candidates": [
         {
           "sopId": "sc-live-key",
@@ -24434,7 +24455,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 5.800000004470348,
+      "latencyMs": 6.600000001490116,
       "candidates": [
         {
           "sopId": "sc-payout-method",
@@ -24495,7 +24516,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 9.699999995529652,
+      "latencyMs": 8.700000002980232,
       "candidates": [
         {
           "sopId": "sc-elig-missing",
@@ -24556,7 +24577,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 11.200000002980232,
+      "latencyMs": 9.699999995529652,
       "candidates": [
         {
           "sopId": "sc-elig-missing",
@@ -24617,7 +24638,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 8.799999997019768,
+      "latencyMs": 7.600000001490116,
       "candidates": [
         {
           "sopId": "sc-up-thumbnail",
@@ -24678,7 +24699,7 @@
       "failureCategory": null,
       "correctAfter": true,
       "failureCategoryAfter": null,
-      "latencyMs": 6.4000000059604645,
+      "latencyMs": 7.100000001490116,
       "candidates": [
         {
           "sopId": "sc-rest-removed",
@@ -24740,7 +24761,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.899999998509884,
+      "latencyMs": 9.299999997019768,
       "candidates": [
         {
           "sopId": "sc-payout-missing",
@@ -24802,7 +24823,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.0999999940395355,
+      "latencyMs": 7.5,
       "candidates": [
         {
           "sopId": "sc-login-recovery",
@@ -24864,7 +24885,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.300000004470348,
+      "latencyMs": 7.5,
       "candidates": [
         {
           "sopId": "sc-rest-removed",
@@ -24926,7 +24947,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 7.600000001490116,
+      "latencyMs": 7.800000004470348,
       "candidates": [
         {
           "sopId": "sc-live-audio",
@@ -24988,7 +25009,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 9.100000001490116,
+      "latencyMs": 8,
       "candidates": [
         {
           "sopId": "sc-gift-missing",
@@ -25050,7 +25071,7 @@
       "failureCategory": "false_escalation",
       "correctAfter": false,
       "failureCategoryAfter": "false_escalation",
-      "latencyMs": 8.700000002980232,
+      "latencyMs": 9.099999994039536,
       "candidates": [
         {
           "sopId": "sc-live-disconnect",
@@ -25078,10 +25099,520 @@
           "evidence": "Check the contact is reachable and request one fresh code."
         }
       ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "ticketId": "SCALE-0409",
+        "subject": "your help page says payouts take",
+        "message": "your help page says payouts take days but an agent told me one day, which is right",
+        "language": "en",
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "contradicting_sops"
+        },
+        "expected": {
+          "decision": "escalate",
+          "sopId": null,
+          "reason": "conflicting_procedure_guidance"
+        },
+        "testEnvironment": {
+          "data_mode": "simulated",
+          "additionalSops": [
+            {
+              "data_mode": "simulated",
+              "id": "sc-payout-timing-legacy",
+              "title": "Payout Timing — Conflicting Legacy Guide",
+              "category": "Creator payouts",
+              "triggerKeywords": [
+                "payout",
+                "processed",
+                "bank",
+                "arrive"
+              ],
+              "summary": "A creator payout marked processed arrives on the next business day. Do not use the multi-day estimate in the standard payout procedure; this legacy guide conflicts with it and a lead must confirm which rule is current. Un pago marcado como procesado llega el siguiente día hábil; esta guía contradice el plazo estándar y un responsable debe confirmar qué regla rige. Um saque marcado como processado chega no próximo dia útil; este guia contradiz o prazo padrão e uma liderança deve confirmar qual regra vale.",
+              "suggestedReply": "The published payout guidance conflicts. I am escalating this for a lead to confirm the current timing.",
+              "escalationRequired": true,
+              "escalationReason": "Two active simulated procedures give contradictory payout timing."
+            }
+          ]
+        }
+      },
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "conflicting_procedure_guidance"
+      },
+      "expectedOutcome": "escalate",
+      "expectedOutcomeAfter": "escalate",
+      "labelTruncated": false,
+      "labelReason": "batch already expects escalation",
+      "reclassified": false,
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "correctAfter": true,
+      "failureCategoryAfter": null,
+      "latencyMs": 11.700000002980232,
+      "candidates": [
+        {
+          "sopId": "sc-payout-timing-legacy",
+          "score": 0.6221217214627115,
+          "evidence": "Do not use the multi-day estimate in the standard payout procedure; this legacy guide conflicts with it and a lead must confirm which rule is current."
+        },
+        {
+          "sopId": "sc-payout-timing",
+          "score": 0.6040939711022912,
+          "evidence": "Payout Timing — Creator payouts"
+        },
+        {
+          "sopId": "sc-payout-method",
+          "score": 0.5453669318144552,
+          "evidence": "A change made after a payout is marked processed applies to the next cycle, not the payout already in flight."
+        },
+        {
+          "sopId": "sc-payout-missing",
+          "score": 0.5039239310468413,
+          "evidence": "Missing Payout Trace — Creator payouts"
+        },
+        {
+          "sopId": "sc-payout-tax",
+          "score": 0.491898568442539,
+          "evidence": "Payouts may require a completed tax form before they are released."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "ticketId": "SCALE-0410",
+        "subject": "two different answers on payout timing,",
+        "message": "two different answers on payout timing, the guide and the chat disagree",
+        "language": "en",
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "contradicting_sops"
+        },
+        "expected": {
+          "decision": "escalate",
+          "sopId": null,
+          "reason": "conflicting_procedure_guidance"
+        },
+        "testEnvironment": {
+          "data_mode": "simulated",
+          "additionalSops": [
+            {
+              "data_mode": "simulated",
+              "id": "sc-payout-timing-legacy",
+              "title": "Payout Timing — Conflicting Legacy Guide",
+              "category": "Creator payouts",
+              "triggerKeywords": [
+                "payout",
+                "processed",
+                "bank",
+                "arrive"
+              ],
+              "summary": "A creator payout marked processed arrives on the next business day. Do not use the multi-day estimate in the standard payout procedure; this legacy guide conflicts with it and a lead must confirm which rule is current. Un pago marcado como procesado llega el siguiente día hábil; esta guía contradice el plazo estándar y un responsable debe confirmar qué regla rige. Um saque marcado como processado chega no próximo dia útil; este guia contradiz o prazo padrão e uma liderança deve confirmar qual regra vale.",
+              "suggestedReply": "The published payout guidance conflicts. I am escalating this for a lead to confirm the current timing.",
+              "escalationRequired": true,
+              "escalationReason": "Two active simulated procedures give contradictory payout timing."
+            }
+          ]
+        }
+      },
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "conflicting_procedure_guidance"
+      },
+      "expectedOutcome": "escalate",
+      "expectedOutcomeAfter": "escalate",
+      "labelTruncated": false,
+      "labelReason": "batch already expects escalation",
+      "reclassified": false,
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "correctAfter": true,
+      "failureCategoryAfter": null,
+      "latencyMs": 9.899999998509884,
+      "candidates": [
+        {
+          "sopId": "sc-payout-timing-legacy",
+          "score": 0.6402287932463645,
+          "evidence": "Payout Timing — Conflicting Legacy Guide — Creator payouts"
+        },
+        {
+          "sopId": "sc-payout-timing",
+          "score": 0.6048351155313246,
+          "evidence": "Payout Timing — Creator payouts"
+        },
+        {
+          "sopId": "sc-payout-method",
+          "score": 0.5467644976584712,
+          "evidence": "Changing Payout Method — Creator payouts"
+        },
+        {
+          "sopId": "sc-payout-missing",
+          "score": 0.4620967345483847,
+          "evidence": "Missing Payout Trace — Creator payouts"
+        },
+        {
+          "sopId": "sc-an-revenue",
+          "score": 0.40668163851743,
+          "evidence": "Explain the estimate nature; a specific revenue dispute is routed to Payments rather than adjusted by support."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "ticketId": "SCALE-0411",
+        "subject": "which payout timing rule is current,",
+        "message": "which payout timing rule is current, the help page contradicts what support said",
+        "language": "en",
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "contradicting_sops"
+        },
+        "expected": {
+          "decision": "escalate",
+          "sopId": null,
+          "reason": "conflicting_procedure_guidance"
+        },
+        "testEnvironment": {
+          "data_mode": "simulated",
+          "additionalSops": [
+            {
+              "data_mode": "simulated",
+              "id": "sc-payout-timing-legacy",
+              "title": "Payout Timing — Conflicting Legacy Guide",
+              "category": "Creator payouts",
+              "triggerKeywords": [
+                "payout",
+                "processed",
+                "bank",
+                "arrive"
+              ],
+              "summary": "A creator payout marked processed arrives on the next business day. Do not use the multi-day estimate in the standard payout procedure; this legacy guide conflicts with it and a lead must confirm which rule is current. Un pago marcado como procesado llega el siguiente día hábil; esta guía contradice el plazo estándar y un responsable debe confirmar qué regla rige. Um saque marcado como processado chega no próximo dia útil; este guia contradiz o prazo padrão e uma liderança deve confirmar qual regra vale.",
+              "suggestedReply": "The published payout guidance conflicts. I am escalating this for a lead to confirm the current timing.",
+              "escalationRequired": true,
+              "escalationReason": "Two active simulated procedures give contradictory payout timing."
+            }
+          ]
+        }
+      },
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "conflicting_procedure_guidance"
+      },
+      "expectedOutcome": "escalate",
+      "expectedOutcomeAfter": "escalate",
+      "labelTruncated": false,
+      "labelReason": "batch already expects escalation",
+      "reclassified": false,
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "correctAfter": true,
+      "failureCategoryAfter": null,
+      "latencyMs": 11.600000001490116,
+      "candidates": [
+        {
+          "sopId": "sc-payout-timing-legacy",
+          "score": 0.6535444313517997,
+          "evidence": "Payout Timing — Conflicting Legacy Guide — Creator payouts"
+        },
+        {
+          "sopId": "sc-payout-timing",
+          "score": 0.6352396833591679,
+          "evidence": "Payout Timing — Creator payouts"
+        },
+        {
+          "sopId": "sc-payout-method",
+          "score": 0.5927481297749017,
+          "evidence": "A change made after a payout is marked processed applies to the next cycle, not the payout already in flight."
+        },
+        {
+          "sopId": "sc-an-revenue",
+          "score": 0.45082203841896096,
+          "evidence": "Explain the estimate nature; a specific revenue dispute is routed to Payments rather than adjusted by support."
+        },
+        {
+          "sopId": "sc-payout-tax",
+          "score": 0.4469358503271499,
+          "evidence": "Payouts may require a completed tax form before they are released."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "ticketId": "SCALE-0412",
+        "subject": "la pagina de ayuda y el",
+        "message": "la pagina de ayuda y el agente dan plazos distintos para el pago, cual vale",
+        "language": "es",
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "contradicting_sops"
+        },
+        "expected": {
+          "decision": "escalate",
+          "sopId": null,
+          "reason": "conflicting_procedure_guidance"
+        },
+        "testEnvironment": {
+          "data_mode": "simulated",
+          "additionalSops": [
+            {
+              "data_mode": "simulated",
+              "id": "sc-payout-timing-legacy",
+              "title": "Payout Timing — Conflicting Legacy Guide",
+              "category": "Creator payouts",
+              "triggerKeywords": [
+                "payout",
+                "processed",
+                "bank",
+                "arrive"
+              ],
+              "summary": "A creator payout marked processed arrives on the next business day. Do not use the multi-day estimate in the standard payout procedure; this legacy guide conflicts with it and a lead must confirm which rule is current. Un pago marcado como procesado llega el siguiente día hábil; esta guía contradice el plazo estándar y un responsable debe confirmar qué regla rige. Um saque marcado como processado chega no próximo dia útil; este guia contradiz o prazo padrão e uma liderança deve confirmar qual regra vale.",
+              "suggestedReply": "The published payout guidance conflicts. I am escalating this for a lead to confirm the current timing.",
+              "escalationRequired": true,
+              "escalationReason": "Two active simulated procedures give contradictory payout timing."
+            }
+          ]
+        }
+      },
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "conflicting_procedure_guidance"
+      },
+      "expectedOutcome": "escalate",
+      "expectedOutcomeAfter": "escalate",
+      "labelTruncated": false,
+      "labelReason": "batch already expects escalation",
+      "reclassified": false,
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "correctAfter": true,
+      "failureCategoryAfter": null,
+      "latencyMs": 15.700000002980232,
+      "candidates": [
+        {
+          "sopId": "sc-payout-method",
+          "score": 0.5583409912098639,
+          "evidence": "Un cambio hecho tras marcar un pago como procesado se aplica al siguiente ciclo, no al pago en curso."
+        },
+        {
+          "sopId": "sc-prem-restore",
+          "score": 0.5559111316403812,
+          "evidence": "Si no se puede, deriva a Pagos en lugar de restaurar el acceso."
+        },
+        {
+          "sopId": "sc-gift-send-error",
+          "score": 0.5172860322351415,
+          "evidence": "Un cargo sin regalo entregado lo revisa Pagos."
+        },
+        {
+          "sopId": "sc-gift-refund",
+          "score": 0.4918915880912963,
+          "evidence": "Una compra completada normalmente es definitiva; un cargo duplicado o no autorizado lo revisa Pagos."
+        },
+        {
+          "sopId": "sc-an-revenue",
+          "score": 0.4847445080343877,
+          "evidence": "Explica su naturaleza; una disputa concreta se deriva a Pagos."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "ticketId": "SCALE-0413",
+        "subject": "a pagina de ajuda e o",
+        "message": "a pagina de ajuda e o atendente dao prazos diferentes para o saque, qual vale",
+        "language": "pt",
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "contradicting_sops"
+        },
+        "expected": {
+          "decision": "escalate",
+          "sopId": null,
+          "reason": "conflicting_procedure_guidance"
+        },
+        "testEnvironment": {
+          "data_mode": "simulated",
+          "additionalSops": [
+            {
+              "data_mode": "simulated",
+              "id": "sc-payout-timing-legacy",
+              "title": "Payout Timing — Conflicting Legacy Guide",
+              "category": "Creator payouts",
+              "triggerKeywords": [
+                "payout",
+                "processed",
+                "bank",
+                "arrive"
+              ],
+              "summary": "A creator payout marked processed arrives on the next business day. Do not use the multi-day estimate in the standard payout procedure; this legacy guide conflicts with it and a lead must confirm which rule is current. Un pago marcado como procesado llega el siguiente día hábil; esta guía contradice el plazo estándar y un responsable debe confirmar qué regla rige. Um saque marcado como processado chega no próximo dia útil; este guia contradiz o prazo padrão e uma liderança deve confirmar qual regra vale.",
+              "suggestedReply": "The published payout guidance conflicts. I am escalating this for a lead to confirm the current timing.",
+              "escalationRequired": true,
+              "escalationReason": "Two active simulated procedures give contradictory payout timing."
+            }
+          ]
+        }
+      },
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "conflicting_procedure_guidance"
+      },
+      "expectedOutcome": "escalate",
+      "expectedOutcomeAfter": "escalate",
+      "labelTruncated": false,
+      "labelReason": "batch already expects escalation",
+      "reclassified": false,
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "correctAfter": true,
+      "failureCategoryAfter": null,
+      "latencyMs": 16.200000002980232,
+      "candidates": [
+        {
+          "sopId": "sc-elig-region",
+          "score": 0.6021441764777039,
+          "evidence": "Se o país não é compatível, o acesso não pode ser ativado; não prometa uma data."
+        },
+        {
+          "sopId": "sc-an-revenue",
+          "score": 0.588576128546855,
+          "evidence": "Explique isso; uma disputa específica é encaminhada a Pagamentos."
+        },
+        {
+          "sopId": "sc-payout-method",
+          "score": 0.5567660529201004,
+          "evidence": "Uma alteração feita depois de o saque ser processado vale para o próximo ciclo, não para o saque em andamento."
+        },
+        {
+          "sopId": "sc-gift-send-error",
+          "score": 0.5505299612034229,
+          "evidence": "Uma cobrança sem Presente entregue é analisada por Pagamentos."
+        },
+        {
+          "sopId": "sc-gift-membership",
+          "score": 0.5359196091593968,
+          "evidence": "Uma cobrança de renovação nessa assinatura é uma questão de faturamento para Pagamentos."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticket": {
+        "ticketId": "SCALE-0414",
+        "subject": "dos respuestas distintas sobre el plazo",
+        "message": "dos respuestas distintas sobre el plazo del pago, la guia se contradice",
+        "language": "es",
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "contradicting_sops"
+        },
+        "expected": {
+          "decision": "escalate",
+          "sopId": null,
+          "reason": "conflicting_procedure_guidance"
+        },
+        "testEnvironment": {
+          "data_mode": "simulated",
+          "additionalSops": [
+            {
+              "data_mode": "simulated",
+              "id": "sc-payout-timing-legacy",
+              "title": "Payout Timing — Conflicting Legacy Guide",
+              "category": "Creator payouts",
+              "triggerKeywords": [
+                "payout",
+                "processed",
+                "bank",
+                "arrive"
+              ],
+              "summary": "A creator payout marked processed arrives on the next business day. Do not use the multi-day estimate in the standard payout procedure; this legacy guide conflicts with it and a lead must confirm which rule is current. Un pago marcado como procesado llega el siguiente día hábil; esta guía contradice el plazo estándar y un responsable debe confirmar qué regla rige. Um saque marcado como processado chega no próximo dia útil; este guia contradiz o prazo padrão e uma liderança deve confirmar qual regra vale.",
+              "suggestedReply": "The published payout guidance conflicts. I am escalating this for a lead to confirm the current timing.",
+              "escalationRequired": true,
+              "escalationReason": "Two active simulated procedures give contradictory payout timing."
+            }
+          ]
+        }
+      },
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "conflicting_procedure_guidance"
+      },
+      "expectedOutcome": "escalate",
+      "expectedOutcomeAfter": "escalate",
+      "labelTruncated": false,
+      "labelReason": "batch already expects escalation",
+      "reclassified": false,
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "correctAfter": true,
+      "failureCategoryAfter": null,
+      "latencyMs": 15.399999998509884,
+      "candidates": [
+        {
+          "sopId": "sc-payout-timing-legacy",
+          "score": 0.6539364262988635,
+          "evidence": "Un pago marcado como procesado llega el siguiente día hábil; esta guía contradice el plazo estándar y un responsable debe confirmar qué regla rige."
+        },
+        {
+          "sopId": "sc-payout-method",
+          "score": 0.6515211963677682,
+          "evidence": "Un cambio hecho tras marcar un pago como procesado se aplica al siguiente ciclo, no al pago en curso."
+        },
+        {
+          "sopId": "sc-gift-refund",
+          "score": 0.6263839807098447,
+          "evidence": "Una compra completada normalmente es definitiva; un cargo duplicado o no autorizado lo revisa Pagos."
+        },
+        {
+          "sopId": "sc-payout-tax",
+          "score": 0.6222591785800077,
+          "evidence": "Si falta o fue rechazado, remite el caso a Pagos en lugar de asesorar sobre legislación fiscal."
+        },
+        {
+          "sopId": "sc-gift-send-error",
+          "score": 0.6134284968136805,
+          "evidence": "Un cargo sin regalo entregado lo revisa Pagos."
+        }
+      ]
     }
   ],
   "runLabel": "scale-rung-m018",
-  "batchSha256": "fc4ba8addc498e610b1052cd1ef598cb45f5f655a4e6bfe08ca0b2af0950a84f",
+  "batchSha256": "cce4534004701f530ec587ca19b43d56306124115a5ea5c9ff1bae79535aa3db",
   "corpusSha256": "db9e5b740c7dd88b8cd24f8ff8012b5032090376d36cc68db6c72b87dad55d89",
   "browser": {
     "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",

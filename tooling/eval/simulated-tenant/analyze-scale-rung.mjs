@@ -79,6 +79,11 @@ const unsafeRows17 = m017.perTicket.filter((r) => r.failureCategoryAfter === 'un
   || r.failureCategoryAfter === 'wrong_sop_answer');
 const wrongFirstRows = m018.perTicket.filter((r) => r.expected.decision === 'answer'
   && (r.candidates?.[0]?.sopId ?? null) !== r.expected.sopId).slice(0, 20);
+// Every figure below is derived from the reports; nothing about the batch size is typed in by hand.
+const labelFix18 = m018.labelFix;
+const escRows18 = m018.perTicket.filter((r) => r.expected.decision === 'escalate');
+const contradictionRows18 = escRows18.filter((r) => r.expected.reason === 'conflicting_procedure_guidance');
+const nearDupRows18 = m018.perTicket.filter((r) => r.ticket.chaosMutation?.type === 'near_duplicate');
 const pct = (v) => `${(v * 100).toFixed(1)}%`;
 const f = (n) => (typeof n === 'number' ? n.toFixed(4) : String(n));
 
@@ -86,9 +91,16 @@ const md = [
   '# Scale-rung evaluation — a 48-procedure simulated tenant',
   '',
   '**data_mode: "simulated".** A larger fictional WaveCast corpus (48 procedures, 13 categories,',
-  'English + Spanish + Portuguese) and a batch of **408 distinct messages** (each used once, so the',
+  `English + Spanish + Portuguese) and a batch of **${s18.tickets} distinct messages** (each used once, so the`,
   'distinct-message count equals the ticket count — unlike the 500-ticket batch, which carries only',
   '47 distinct messages). The corpus passes the conflict lint (0 same-category numeric conflicts).',
+  '',
+  `Escalation coverage is deliberate: **${escRows18.length} of ${s18.tickets}** messages expect escalation — the`,
+  '**no procedure** and **safety** cases (account takeover, suspicious logins, compromised recovery email,',
+  `harassment, legal requests) plus **${contradictionRows18.length} contradiction** messages where two active procedures`,
+  'give conflicting payout timing. The conflicting procedure is injected into the ticket, as the approved',
+  '500-ticket batch does, so the corpus itself stays lint-clean. Near-duplicate topics are present too:',
+  `${nearDupRows18.length} \`near_duplicate\` messages and the corpus's own near-topic procedure pairs.`,
   '',
   `Corpus: \`scale-rung-corpus.json\` · Batch: \`scale-rung-batch.json\` · Runs: \`scale-rung-m018\` / \`-m017\`.`,
   'Gate, threshold, model and corpus logic unchanged; only the evaluation corpus and batch are new.',
@@ -103,7 +115,7 @@ const md = [
   `Answerable messages: ${s18.answerable} of ${s18.tickets} (the rest expect escalation).`,
   `Margin (0.18): median ${f(s18.marginMedian)}, min ${f(s18.marginMin)}, max ${f(s18.marginMax)}.`,
   '',
-  'Figures are the label-fixed outcomes (`expectedOutcome`); **1 of 408** messages was reclassified by that rule (SCALE-0081). The raw batch label gives 189/408 (46.3%) at 0.18.',
+  `Figures are the label-fixed outcomes (\`expectedOutcome\`); **${labelFix18.reclassified} of ${s18.tickets}** messages was reclassified by that rule${labelFix18.reclassifiedTicketIds.length > 0 ? ` (${labelFix18.reclassifiedTicketIds.join(', ')})` : ''}. The raw batch label gives ${labelFix18.before.correct}/${s18.tickets} (${pct(labelFix18.before.accuracy)}) at 0.18.`,
   '',
   '## Unsafe answers first',
   '',
@@ -152,15 +164,16 @@ const md = [
   '|---|---:|---:|---:|---:|---:|',
   '| 7 procedures (`chaos-500.json`) | 47 distinct / 500 tickets | 0.17 | 72.4% | 138 | 0 |',
   '| 7 procedures (`chaos-500.json`) | 47 distinct / 500 tickets | 0.18 | 48.4% | 258 | 0 |',
-  `| 48 procedures (scale-rung) | 408 distinct | 0.17 | ${pct(s17.accuracy)} | ${s17.falseEsc} | ${s17.unsafe} |`,
-  `| 48 procedures (scale-rung) | 408 distinct | 0.18 | ${pct(s18.accuracy)} | ${s18.falseEsc} | ${s18.unsafe} |`,
+  `| 48 procedures (scale-rung) | ${s18.tickets} distinct | 0.17 | ${pct(s17.accuracy)} | ${s17.falseEsc} | ${s17.unsafe} |`,
+  `| 48 procedures (scale-rung) | ${s18.tickets} distinct | 0.18 | ${pct(s18.accuracy)} | ${s18.falseEsc} | ${s18.unsafe} |`,
   '',
   '## Did margin behaviour change with corpus size?',
   '',
   `- **The trade-off held.** At 0.18: ${s18.unsafe} unsafe, ${s18.falseEsc} false escalations, ${pct(s18.accuracy)} accurate. At 0.17: ${s17.unsafe} unsafe, ${s17.falseEsc} false escalations, ${pct(s17.accuracy)} accurate. Lowering the margin answered more and introduced an unsafe answer — the same direction as the 7-procedure corpus.`,
-  `- **The operating point moved, and it is confounded.** The 7-procedure corpus scored 72.4% at 0.17 (138/500 false escalations); this 48-procedure corpus scores ${pct(s17.accuracy)} at 0.17 (${s17.falseEsc}/408). It is a *different, larger* corpus with new procedures, so the change is content and size together — this experiment cannot attribute it to size alone.`,
+  `- **The operating point moved, and it is confounded.** The 7-procedure corpus scored 72.4% at 0.17 (138/500 false escalations); this 48-procedure corpus scores ${pct(s17.accuracy)} at 0.17 (${s17.falseEsc}/${s17.tickets}). It is a *different, larger* corpus with new procedures, so the change is content and size together — this experiment cannot attribute it to size alone.`,
   `- **Language drove more of it than size.** English ${pct(lang18.en.correct / lang18.en.tickets)} accurate, Spanish ${pct(lang18.es.correct / lang18.es.tickets)}, Portuguese ${pct(lang18.pt.correct / lang18.pt.tickets)}: the shorter translated summaries and queries false-escalate far more.`,
   '- **Still synthetic and in-sample.** It does not establish behaviour at a 5,000-procedure tenant. Each message is used once, so the distinct-message figures equal the ticket figures here.',
+  `- **Escalation rows pass by construction when the gate escalates.** At 0.18, ${s18.unsafe === 0 ? 'no escalation-expected message was answered' : `${s18.unsafe} escalation-expected messages were answered`}, so every escalation row is a correct escalation. Those rows test that the gate does not over-answer; they carry no retrieval signal, and they are not independent evidence about ranking.`,
 ].join('\n') + '\n';
 
 writeFileSync(resolve(here, 'scale-rung-results.md'), md);

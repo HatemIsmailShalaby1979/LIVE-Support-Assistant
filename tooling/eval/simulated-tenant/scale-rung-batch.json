@@ -1,16 +1,17 @@
 {
   "data_mode": "simulated",
   "seed": 20260928,
-  "ticketCount": 408,
-  "chaosRateConfigured": 0.02,
-  "chaosRateActual": 0.02,
+  "ticketCount": 414,
+  "chaosRateConfigured": 0.034,
+  "chaosRateActual": 0.034,
   "chaosSummary": {
-    "chaosTicketCount": 8
+    "chaosTicketCount": 14
   },
   "chaosTypeDistribution": {
     "baseline": 400,
     "mixed_language_typos_sarcasm": 2,
-    "near_duplicate": 6
+    "near_duplicate": 6,
+    "contradicting_sops": 6
   },
   "tickets": [
     {
@@ -4629,6 +4630,222 @@
       "expected": {
         "decision": "answer",
         "sopId": "sc-live-disconnect"
+      }
+    },
+    {
+      "ticketId": "SCALE-0409",
+      "subject": "your help page says payouts take",
+      "message": "your help page says payouts take days but an agent told me one day, which is right",
+      "language": "en",
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "contradicting_sops"
+      },
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "conflicting_procedure_guidance"
+      },
+      "testEnvironment": {
+        "data_mode": "simulated",
+        "additionalSops": [
+          {
+            "data_mode": "simulated",
+            "id": "sc-payout-timing-legacy",
+            "title": "Payout Timing — Conflicting Legacy Guide",
+            "category": "Creator payouts",
+            "triggerKeywords": [
+              "payout",
+              "processed",
+              "bank",
+              "arrive"
+            ],
+            "summary": "A creator payout marked processed arrives on the next business day. Do not use the multi-day estimate in the standard payout procedure; this legacy guide conflicts with it and a lead must confirm which rule is current. Un pago marcado como procesado llega el siguiente día hábil; esta guía contradice el plazo estándar y un responsable debe confirmar qué regla rige. Um saque marcado como processado chega no próximo dia útil; este guia contradiz o prazo padrão e uma liderança deve confirmar qual regra vale.",
+            "suggestedReply": "The published payout guidance conflicts. I am escalating this for a lead to confirm the current timing.",
+            "escalationRequired": true,
+            "escalationReason": "Two active simulated procedures give contradictory payout timing."
+          }
+        ]
+      }
+    },
+    {
+      "ticketId": "SCALE-0410",
+      "subject": "two different answers on payout timing,",
+      "message": "two different answers on payout timing, the guide and the chat disagree",
+      "language": "en",
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "contradicting_sops"
+      },
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "conflicting_procedure_guidance"
+      },
+      "testEnvironment": {
+        "data_mode": "simulated",
+        "additionalSops": [
+          {
+            "data_mode": "simulated",
+            "id": "sc-payout-timing-legacy",
+            "title": "Payout Timing — Conflicting Legacy Guide",
+            "category": "Creator payouts",
+            "triggerKeywords": [
+              "payout",
+              "processed",
+              "bank",
+              "arrive"
+            ],
+            "summary": "A creator payout marked processed arrives on the next business day. Do not use the multi-day estimate in the standard payout procedure; this legacy guide conflicts with it and a lead must confirm which rule is current. Un pago marcado como procesado llega el siguiente día hábil; esta guía contradice el plazo estándar y un responsable debe confirmar qué regla rige. Um saque marcado como processado chega no próximo dia útil; este guia contradiz o prazo padrão e uma liderança deve confirmar qual regra vale.",
+            "suggestedReply": "The published payout guidance conflicts. I am escalating this for a lead to confirm the current timing.",
+            "escalationRequired": true,
+            "escalationReason": "Two active simulated procedures give contradictory payout timing."
+          }
+        ]
+      }
+    },
+    {
+      "ticketId": "SCALE-0411",
+      "subject": "which payout timing rule is current,",
+      "message": "which payout timing rule is current, the help page contradicts what support said",
+      "language": "en",
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "contradicting_sops"
+      },
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "conflicting_procedure_guidance"
+      },
+      "testEnvironment": {
+        "data_mode": "simulated",
+        "additionalSops": [
+          {
+            "data_mode": "simulated",
+            "id": "sc-payout-timing-legacy",
+            "title": "Payout Timing — Conflicting Legacy Guide",
+            "category": "Creator payouts",
+            "triggerKeywords": [
+              "payout",
+              "processed",
+              "bank",
+              "arrive"
+            ],
+            "summary": "A creator payout marked processed arrives on the next business day. Do not use the multi-day estimate in the standard payout procedure; this legacy guide conflicts with it and a lead must confirm which rule is current. Un pago marcado como procesado llega el siguiente día hábil; esta guía contradice el plazo estándar y un responsable debe confirmar qué regla rige. Um saque marcado como processado chega no próximo dia útil; este guia contradiz o prazo padrão e uma liderança deve confirmar qual regra vale.",
+            "suggestedReply": "The published payout guidance conflicts. I am escalating this for a lead to confirm the current timing.",
+            "escalationRequired": true,
+            "escalationReason": "Two active simulated procedures give contradictory payout timing."
+          }
+        ]
+      }
+    },
+    {
+      "ticketId": "SCALE-0412",
+      "subject": "la pagina de ayuda y el",
+      "message": "la pagina de ayuda y el agente dan plazos distintos para el pago, cual vale",
+      "language": "es",
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "contradicting_sops"
+      },
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "conflicting_procedure_guidance"
+      },
+      "testEnvironment": {
+        "data_mode": "simulated",
+        "additionalSops": [
+          {
+            "data_mode": "simulated",
+            "id": "sc-payout-timing-legacy",
+            "title": "Payout Timing — Conflicting Legacy Guide",
+            "category": "Creator payouts",
+            "triggerKeywords": [
+              "payout",
+              "processed",
+              "bank",
+              "arrive"
+            ],
+            "summary": "A creator payout marked processed arrives on the next business day. Do not use the multi-day estimate in the standard payout procedure; this legacy guide conflicts with it and a lead must confirm which rule is current. Un pago marcado como procesado llega el siguiente día hábil; esta guía contradice el plazo estándar y un responsable debe confirmar qué regla rige. Um saque marcado como processado chega no próximo dia útil; este guia contradiz o prazo padrão e uma liderança deve confirmar qual regra vale.",
+            "suggestedReply": "The published payout guidance conflicts. I am escalating this for a lead to confirm the current timing.",
+            "escalationRequired": true,
+            "escalationReason": "Two active simulated procedures give contradictory payout timing."
+          }
+        ]
+      }
+    },
+    {
+      "ticketId": "SCALE-0413",
+      "subject": "a pagina de ajuda e o",
+      "message": "a pagina de ajuda e o atendente dao prazos diferentes para o saque, qual vale",
+      "language": "pt",
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "contradicting_sops"
+      },
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "conflicting_procedure_guidance"
+      },
+      "testEnvironment": {
+        "data_mode": "simulated",
+        "additionalSops": [
+          {
+            "data_mode": "simulated",
+            "id": "sc-payout-timing-legacy",
+            "title": "Payout Timing — Conflicting Legacy Guide",
+            "category": "Creator payouts",
+            "triggerKeywords": [
+              "payout",
+              "processed",
+              "bank",
+              "arrive"
+            ],
+            "summary": "A creator payout marked processed arrives on the next business day. Do not use the multi-day estimate in the standard payout procedure; this legacy guide conflicts with it and a lead must confirm which rule is current. Un pago marcado como procesado llega el siguiente día hábil; esta guía contradice el plazo estándar y un responsable debe confirmar qué regla rige. Um saque marcado como processado chega no próximo dia útil; este guia contradiz o prazo padrão e uma liderança deve confirmar qual regra vale.",
+            "suggestedReply": "The published payout guidance conflicts. I am escalating this for a lead to confirm the current timing.",
+            "escalationRequired": true,
+            "escalationReason": "Two active simulated procedures give contradictory payout timing."
+          }
+        ]
+      }
+    },
+    {
+      "ticketId": "SCALE-0414",
+      "subject": "dos respuestas distintas sobre el plazo",
+      "message": "dos respuestas distintas sobre el plazo del pago, la guia se contradice",
+      "language": "es",
+      "isChaos": true,
+      "chaosMutation": {
+        "type": "contradicting_sops"
+      },
+      "expected": {
+        "decision": "escalate",
+        "sopId": null,
+        "reason": "conflicting_procedure_guidance"
+      },
+      "testEnvironment": {
+        "data_mode": "simulated",
+        "additionalSops": [
+          {
+            "data_mode": "simulated",
+            "id": "sc-payout-timing-legacy",
+            "title": "Payout Timing — Conflicting Legacy Guide",
+            "category": "Creator payouts",
+            "triggerKeywords": [
+              "payout",
+              "processed",
+              "bank",
+              "arrive"
+            ],
+            "summary": "A creator payout marked processed arrives on the next business day. Do not use the multi-day estimate in the standard payout procedure; this legacy guide conflicts with it and a lead must confirm which rule is current. Un pago marcado como procesado llega el siguiente día hábil; esta guía contradice el plazo estándar y un responsable debe confirmar qué regla rige. Um saque marcado como processado chega no próximo dia útil; este guia contradiz o prazo padrão e uma liderança deve confirmar qual regra vale.",
+            "suggestedReply": "The published payout guidance conflicts. I am escalating this for a lead to confirm the current timing.",
+            "escalationRequired": true,
+            "escalationReason": "Two active simulated procedures give contradictory payout timing."
+          }
+        ]
       }
     }
   ]
