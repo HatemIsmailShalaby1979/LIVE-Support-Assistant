@@ -2216,3 +2216,92 @@ Spanish 32.0% and Portuguese 31.0%.
 **Gates.** `pnpm run verify` **7/7**, eslint **0**, 500-ticket validator **OK**.
 Commit `23be90e` (branch `exp/scale-rung`; supersedes the earlier `60d7888` run,
 whose reports are invalidated by the batch change and remain in history).
+
+## Multilingual embedder experiment — 2026-09-28
+
+Branch `exp/multilingual-embedder`. **Branch-only; not merged to `main`.** No shipped
+default, dependency, gate, or threshold was changed. `packages/embedder` is untouched:
+the alternate model specs live in the harness runner (`chaos-runner.ts`), selected by a
+`model` query parameter, and the shipped path still resolves to `EMBEDDING_MODEL`.
+
+**This is adjacent to the do-not-repeat entry above.** That entry rejects *model
+swapping* on the strength of two English bi-encoders (`bge-small-en-v1.5`,
+`e5-small-v2`). This experiment tests a different hypothesis — *multilingual* coverage —
+which was never measured, and it was run on the owner's explicit instruction. It reaches
+the same verdict by a different route, so it strengthens the entry rather than reopening
+it.
+
+**The shipped model, stated once.** `Xenova/all-MiniLM-L6-v2`, revision
+`751bff37182d3f1213fa05d7196b954e230abad9`, `q8`, 384 dimensions, mean pooling
+(`packages/embedder/src/model.ts:57-67`; selected as `EMBEDDING_MODEL` at line 119).
+**Download 21.91 MB** (`onnx/model_quantized.onnx`, Hugging Face model API).
+**Not multilingual.** The sentence-transformers model listing places it under *Original
+Models* — the general-purpose, English-oriented group — and lists multilingual models
+separately as a 50+ language family (`sbert.net/docs/sentence_transformer/pretrained_models.html`).
+Its base model is `nreimers/MiniLM-L6-H384-uncased` and every training corpus named on its
+card is English. The scale-rung run corroborates it empirically: English 62.1% accurate
+against Spanish 32.0% and Portuguese 31.0%.
+
+**Candidates** (all transformers.js / ONNX Runtime, `Xenova/*`, `q8`; sizes from the
+Hugging Face model API):
+
+| Model | Dims | q8 download | Languages | Prefixes |
+|---|---:|---:|---|---|
+| `Xenova/paraphrase-multilingual-MiniLM-L12-v2` | 384 | 112.83 MB | 50+ (incl. es, pt-BR) | none, mean pooling |
+| `Xenova/multilingual-e5-small` | 384 | 112.83 MB | 100 | `query: ` / `passage: ` |
+| `Xenova/paraphrase-multilingual-mpnet-base-v2` | 768 | 265.74 MB | 50+ | none |
+| `Xenova/multilingual-e5-base` | 768 | 265.74 MB | 100 | `query: ` / `passage: ` |
+
+The two 384-dimension candidates were measured; the 768-dimension pair was not, because a
+width change would also change the stored-vector contract.
+
+**Measured — by distinct message**, both batches at margins 0.17 and 0.18. `answered
+correctly` counts only in-scope messages (at least one ticket expecting an answer) where
+every such ticket was answered with the right procedure; **escalation-by-construction rows
+are excluded**.
+
+Scale-rung (414 distinct messages, 302 in scope):
+
+| Embedder | 0.18 | 0.17 |
+|---|---:|---:|
+| MiniLM (shipped) | 84/302 (27.8%) | 93/302 (30.8%) |
+| `multilingual-MiniLM-L12-v2` | 85/302 (28.1%) | 91/302 (30.1%) |
+| `multilingual-e5-small` | 1/302 (0.3%) | 1/302 (0.3%) |
+
+Per language at 0.18, as a change against the shipped run on the same batch and margin:
+**English −9.7 pp, Spanish +9.6 pp, Portuguese +12.2 pp, overall +0.3 pp** (at 0.17:
+−12.9 / +8.2 / +16.2, overall −0.7 pp). The multilingual candidate roughly doubles
+non-English accuracy (6.8% → 16.4% es, 18.9% pt) and gives back about a fifth of English
+(47.7% → 38.1%).
+
+**The margin scale is model-specific, and that decides the e5 result.** `multilingual-e5-small`
+answers 1 of 302 in-scope messages at 0.18: its median margin is **0.0164** against
+MiniLM's **0.0891**, so the shipped 0.18 escalates almost everything. 276 of 302 in-scope
+messages sit below 0.05 on its scale. This is a *scale* finding, not a quality finding, and
+**no new threshold is proposed** — the swap would need its own calibrated operating point,
+which is a per-tenant onboarding step.
+
+**Cost.** 5.1× the download (21.91 → 112.83 MB), cold model load 14.7 s → ~42 s in a fresh
+browser profile (this includes the one-time weight fetch), and steady-state decision
+latency 9.26 ms → 15.37 ms mean, p95 14.40 → 20.70 ms on the scale-rung batch.
+
+**Recommendation: do not swap.** The auto-answer rate — the metric the gate exists to
+raise — is flat (+0.3 pp at 0.18). What the multilingual model buys is a *language trade*
+(English for Spanish and Portuguese), which is a tenant-traffic decision rather than a
+general improvement, and it costs 5.1× the download and ~1.7× the latency on an on-device
+path whose stated product experience is the escalation handover. Full report:
+`tooling/eval/simulated-tenant/multilingual-embedder-results.md`.
+
+**Verified.** The harness change is behaviour-neutral: `ml-base-chaos-m017` (MiniLM,
+chaos-500, margin 0.17) reproduced `phase5-label-fix-margin-017` **row for row, 0
+differing**, same batch and corpus SHA-256, 362/500 both. The shipped run is therefore
+unaffected by the added parameter.
+
+**Limits.** Both batches are synthetic and in-sample, authored by the same agent that wrote
+the corpus. The 500-ticket batch carries only 47 distinct messages, so its per-language
+figures rest on 5–13 messages and are not comparable to the scale-rung ones. The 768-dim
+candidates were not measured. No tenant traffic mix is known, so the language trade cannot
+be valued here.
+
+**Gates.** `pnpm run verify` **7/7**, eslint **0**, 500-ticket validator **OK**.
+Commit `aa25869` (branch `exp/multilingual-embedder`).
