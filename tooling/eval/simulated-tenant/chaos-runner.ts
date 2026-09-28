@@ -3,7 +3,7 @@ import {
   DEFAULT_GATE_CONFIG,
   evaluateGate,
 } from '../../../packages/core/dist/index.js';
-import { EMBEDDING_MODEL, createEmbedder } from '../../../packages/embedder/dist/index.js';
+import { EMBEDDING_MODEL, createEmbedder, type EmbeddingModelSpec } from '../../../packages/embedder/dist/index.js';
 import { buildCorpusPassages, searchTopK } from '../../../packages/vector-store/dist/index.js';
 import { labelQuery, type ExpectedOutcome } from './expected-outcome';
 import type batchType from './chaos-500.json';
@@ -51,6 +51,46 @@ const minMargin = requestedMargin === null
   ? DEFAULT_GATE_CONFIG.minMargin
   : Number(requestedMargin);
 const assetPattern = /^[a-z0-9-]+\.json$/;
+
+/**
+ * Embedder selection, for measurement only.
+ *
+ * The shipped default stays `EMBEDDING_MODEL` (pinned MiniLM). These alternate
+ * specs exist so a run can swap *only* the embedder and re-measure the same
+ * batch through the identical gate; they are declared here rather than in
+ * `packages/embedder` so no product default, dependency, or bundle changes.
+ * Each spec's pooling, prefixes and dtype mirror its own model card.
+ */
+const EMBEDDER_SPECS: Readonly<Record<string, EmbeddingModelSpec>> = {
+  minilm: EMBEDDING_MODEL,
+  'multilingual-minilm': {
+    id: 'Xenova/paraphrase-multilingual-MiniLM-L12-v2',
+    revision: '2c4055b12046f11709e9df2c122e59ffbdc2f900',
+    dtype: 'q8',
+    dimensions: 384,
+    pooling: 'mean',
+    normalize: true,
+    queryPrefix: '',
+    passagePrefix: '',
+    note: 'multilingual sentence-similarity, 50+ languages, mean pooling, no prefixes',
+  },
+  'multilingual-e5-small': {
+    id: 'Xenova/multilingual-e5-small',
+    revision: '761b726dd34fb83930e26aab4e9ac3899aa1fa78',
+    dtype: 'q8',
+    dimensions: 384,
+    pooling: 'mean',
+    normalize: true,
+    queryPrefix: 'query: ',
+    passagePrefix: 'passage: ',
+    note: 'multilingual retrieval-trained, 100 languages, requires query:/passage: prefixes',
+  },
+};
+const modelKey = searchParams.get('model') ?? 'minilm';
+const embedderSpec = EMBEDDER_SPECS[modelKey];
+if (embedderSpec === undefined) {
+  throw new Error(`unknown simulated embedder: ${modelKey}`);
+}
 
 if (!Number.isFinite(minMargin) || minMargin < 0 || minMargin > 1) {
   throw new Error(`invalid simulated minMargin: ${requestedMargin}`);
@@ -131,9 +171,9 @@ async function run(): Promise<void> {
 
   const keywordsBySop = new Map(corpus.sops.map((sop) => [sop.id, sop.triggerKeywords]));
 
-  setStatus('loading pinned MiniLM in the browser');
+  setStatus(`loading ${embedderSpec.id} in the browser`);
   const loadStarted = performance.now();
-  const embedder = await createEmbedder(EMBEDDING_MODEL);
+  const embedder = await createEmbedder(embedderSpec);
   const modelLoadMs = performance.now() - loadStarted;
 
   setStatus('building the simulated policy index');

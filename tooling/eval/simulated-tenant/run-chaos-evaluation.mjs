@@ -22,6 +22,10 @@ if (!inputPattern.test(batchName) || !inputPattern.test(corpusName)) {
 const batchPath = resolve(evaluationDir, batchName);
 const corpusPath = resolve(evaluationDir, corpusName);
 const minMargin = process.env.SIMULATION_MIN_MARGIN;
+const modelKey = process.env.SIMULATION_MODEL ?? 'minilm';
+if (!/^[a-z0-9-]+$/.test(modelKey)) {
+  throw new Error('SIMULATION_MODEL must contain only lowercase letters, digits, and hyphens');
+}
 const queryInputMode = process.env.SIMULATION_QUERY_INPUT ?? 'message';
 if (!['message', 'subject-message'].includes(queryInputMode)) {
   throw new Error('SIMULATION_QUERY_INPUT must be message or subject-message');
@@ -169,6 +173,7 @@ try {
       batch: batchName,
       corpus: corpusName,
       queryInput: queryInputMode,
+      model: modelKey,
       ...(minMargin === undefined ? {} : { minMargin }),
     })}`,
   }, sessionId);
@@ -225,6 +230,7 @@ try {
     '',
     `Evaluated ${report.batch.tickets} synthetic tickets (${report.batch.chaosTickets} flagged, ${report.batch.chaosRateActual * 100}% chaos) using seed ${report.batch.seed}.`,
     `Query text: ${report.queryInputMode}.`,
+    `Embedder: \`${report.implementation.modelId}\` @ \`${report.implementation.modelRevision}\` (${report.implementation.dtype}); applied margin ${report.implementation.minMargin}.`,
     '',
     `Decision-path accuracy against the batch's own labels: **${(totals.accuracy * 100).toFixed(1)}%** (${totals.correct}/${totals.tickets}). Failure rate: **${(totals.failureRate * 100).toFixed(1)}%** (${totals.failures}/${totals.tickets}).`,
     `Latency per query decision: mean ${(totals.latencyMs.mean).toFixed(2)} ms; median ${totals.latencyMs.median.toFixed(2)} ms; p95 ${totals.latencyMs.p95.toFixed(2)} ms; max ${totals.latencyMs.max.toFixed(2)} ms.`,
