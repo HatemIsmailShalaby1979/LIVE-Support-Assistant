@@ -87,6 +87,12 @@ const SUITES = [
     script: 'tooling/telemetry/verify-queue.mjs',
     verdict: 'QUEUE VERIFICATION OK',
   },
+  {
+    key: 'conflicts',
+    name: 'conflicting-procedure lint',
+    script: 'tooling/conflicts/verify-conflict-lint.mjs',
+    verdict: 'CONFLICT LINT VERIFICATION OK',
+  },
 ];
 
 const requested = process.argv.slice(2);
