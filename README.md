@@ -81,7 +81,47 @@ SQL ingest contracts. No generative model in query, gate, answer, or escalation.
 ## Production status & test coverage
 
 > [!WARNING]
-> This is a prototype, not a production deployment. **Validated on a simulated tenant; safety-first by design; ready for a shadow-mode pilot. Not production-proven: no real customer traffic.** The headline measurement is 500 simulated tickets (47 distinct messages, 7 procedures, four languages) through the deployed path with tenant isolation audited; one unsafe answer found and documented. It was repeated on an independent holdout seed and at 48 procedures — see the claims table below. The on-device retrieval + confidence gate flow was re-verified on current HEAD on 2026-09-27. The backend verification suites (RBAC, RLS, telemetry, retention, encrypted sync, key rotation, telemetry queue, conflicting-procedure lint) pass independently, but the hosted transport that would connect them to the running client is not wired into the standalone demo — a query's telemetry or escalation is not actually delivered there. No external security audit, no certified data isolation, no signed installer. No revenue and no paying users. The latest tagged release is **v1.0.1** (2026-08-29); it predates the current HEAD. In-sample prototype results (e.g. the 0.18 margin auto-answers 8 of 50 in-scope queries) are not a production SLA; threshold calibration remains a per-tenant onboarding task. There is no design partner.
+> This is a prototype, not a production deployment. **Validated on a simulated tenant; safety-first by design; ready for a shadow-mode pilot. Not production-proven: no real customer traffic.** The headline measurement is 500 simulated tickets (47 distinct messages, 7 procedures, four languages) through the deployed path with tenant isolation audited. **One unsafe answer was found and documented, and the shipped 0.18 margin would not have stopped it** — see *Safety* below. It was repeated on an independent holdout seed and at 48 procedures — see the claims table below. The on-device retrieval + confidence gate flow was re-verified on current HEAD on 2026-09-27. The backend verification suites (RBAC, RLS, telemetry, retention, encrypted sync, key rotation, telemetry queue, conflicting-procedure lint) pass independently, but the hosted transport that would connect them to the running client is not wired into the standalone demo — a query's telemetry or escalation is not actually delivered there. No external security audit, no certified data isolation, no signed installer. No revenue and no paying users. The latest tagged release is **v1.0.1** (2026-08-29); it predates the current HEAD. In-sample prototype results (e.g. the 0.18 margin auto-answers 8 of 50 in-scope queries) are not a production SLA; threshold calibration remains a per-tenant onboarding task. There is no design partner.
+
+### Safety — what is claimed, and what is not
+
+The design is **safety-first**: the gate answers only when the best procedure clears both the
+absolute floor and the margin, and an escalation carries no procedure text, no title and no
+suggested reply (10/10 checks, `tooling/gate/verify-gate.mjs`).
+
+**That is not the same as "fails safe", and the difference is measured, not rhetorical.**
+
+- **One unsafe answer is recorded, and the shipped default would not have stopped it.** On the
+  deployed path, `SIM-TICKET-00272` — a deliberately contradictory payout case — was **answered**
+  at a measured top-1/top-2 margin of **0.180757**, which is **≥ the shipped 0.18 default** as well
+  as the applied 0.17 (`tooling/eval/simulated-tenant/phase5-deployed-run-0aec9773442c4282.md`).
+  The gate measures how *decisive* a match is, not whether the matched policy agrees with itself.
+- **The local harness does not reproduce that answer** — it escalates the same ticket at margin
+  0.167715. The counterexample therefore rests on the deployed run alone.
+- **Out-of-scope public questions were answered.** Scored at margin 0.18 on the browser-local path,
+  the assistant **answered 6 of 52 out-of-scope public questions** — questions the owner labelled
+  escalate or ambiguous, where the correct behaviour is not to answer
+  (`tooling/eval/simulated-tenant/real-phrased-label-results.md`):
+
+  | Query | Text | Owner label | Label provenance | Contested? |
+  | --- | --- | --- | --- | --- |
+  | `rp-022` | Livestream on youtube by phone and microphone not enabling this just started happening | escalate | human-resolved | **yes** — both agent passes called it answerable; the owner overrode |
+  | `rp-023` | How can i Enable Live Streaming? | escalate | human-resolved | **yes** — same split |
+  | `rp-025` | Live stream on mobile | ambiguous | human-resolved | no |
+  | `rp-026` | Live streaming issues | ambiguous | recorded as "live streaming issues are technical stream problems" | no |
+  | `rp-040` | YouTube: We have detected multiple streams using the same stream key with auto-start enabled. | ambiguous | human-resolved | **yes** — same split |
+  | `rp-060` | How can creators monetize on TikTok? | escalate | agent-agreed, unconfirmed | no |
+
+  "Contested" means the row is in the set where two independent agent passes agreed the query was
+  answerable and the owner overrode to escalate/ambiguous — three of the six. The other three are
+  uncontested, and the assistant answered them anyway. At margin 0.17 the same set produced **7**
+  false accepts.
+- **Against that, the author-written floor set held.** **0 of 8** refusal rows (5 escalate + 3
+  ambiguous) were auto-answered at 0.18 and 0.17
+  (`tooling/eval/simulated-tenant/floor-queries-results.md`).
+
+Net: the refusal path is real and the direction is right, but the claim is **"safety-first by
+design"**, not "safe".
 
 ### Evaluation evidence — claims, with sources
 
@@ -89,7 +129,7 @@ Every number below is a measurement on simulated or author-written data, with th
 from. Nothing here is a production-customer measure. The three tiers are the honest reading: what
 has been shown, what it costs, and what has not been shown at all.
 
-#### Tier 1 — PROVEN ON SIMULATED DATA
+#### Tier 1 — DEMONSTRATED ON SIMULATED DATA
 
 | Claim | Measured | Source |
 | --- | --- | --- |
@@ -100,7 +140,7 @@ has been shown, what it costs, and what has not been shown at all.
 | Safety behaviour at 48 procedures, margin 0.18 | 196/414 (47.3%), 218 false escalations, **0 unsafe** | branch `exp/scale-rung`, `tooling/eval/simulated-tenant/scale-rung-results.md` |
 | Same corpus, margin 0.17 | 205/414 (49.5%), 208 false escalations, **1 unsafe** (`SCALE-0328`) | same file |
 | Deployed path end to end (sign-in, bundle, model, gate, tagged ingest) | 361/500 (72.2%), 138 false escalations, 1 unsafe, 0 runtime errors | `tooling/eval/simulated-tenant/phase5-deployed-run-0aec9773442c4282.md` |
-| Tenant isolation audit | 500/500 query events, 261/261 escalation records, 15 SOP versions, 4 profiles, 2 devices tagged; **0 untagged rows** | same file |
+| **Proven** — tenant isolation audit | 500/500 query events, 261/261 escalation records, 15 SOP versions, 4 profiles, 2 devices tagged; **0 untagged rows** | same file |
 | Refusal behaviour, author-written floor set | **0 of 8** refusal rows auto-answered at 0.18 and 0.17 | `tooling/eval/simulated-tenant/floor-queries-results.md` |
 | The gate never leaks procedure text on escalation | 10/10 gate checks, including blocked views echoing the query text | `tooling/gate/verify-gate.mjs` |
 
@@ -110,8 +150,7 @@ has been shown, what it costs, and what has not been shown at all.
 | --- | --- | --- |
 | In-scope recall at 48 procedures (escalation-by-construction rows excluded) | 84/302 (27.8%) at 0.18; 93/302 (30.8%) at 0.17 | branch `exp/multilingual-embedder`, `tooling/eval/simulated-tenant/multilingual-embedder-results.md` |
 | Non-English gap on the same corpus | English 62.1% vs Spanish 32.0% and Portuguese 31.0% at 0.18 | branch `exp/scale-rung`, `tooling/eval/simulated-tenant/scale-rung-results.md` |
-| Author-written floor set, in-scope | 5/21 (23.8%) at 0.18, dominated by false escalations | `tooling/eval/simulated-tenant/floor-queries-results.md` |
-| Real-phrased refusal set | 6 of 52 refusal rows auto-answered at 0.18 (7 at 0.17) | `tooling/eval/simulated-tenant/real-phrased-label-results.md` |
+| Author-written floor set, in-scope | **5 of 21** clear in-scope floor queries answered correctly (23.8%) at 0.18; the rest false-escalated | `tooling/eval/simulated-tenant/floor-queries-results.md` |
 | **Rejected — procedure wording** (branch `exp/procedure-distinctness`) | moved only two `wc-gifts` templates, emptied the [0.17, 0.18) margin band, made the riskiest procedure pair slightly worse | `tooling/eval/simulated-tenant/wording-experiment-report.md` on that branch |
 | **Rejected — cross-encoder reranker** (branch `exp/reranker-measurement`) | +14 new unsafe answers on chaos-500, +15 on the holdout; **862 ms per query**; roughly double the model download | `tooling/eval/simulated-tenant/reranker-measurement-report.md` on that branch |
 | **Rejected — multilingual embedders** (branch `exp/multilingual-embedder`) | overall **+0.3 pp** at **5.1× the download** (21.91 → 112.83 MB); a language trade (en −9.7 pp, es +9.6 pp, pt +12.2 pp), not a gain | `tooling/eval/simulated-tenant/multilingual-embedder-results.md` on that branch |

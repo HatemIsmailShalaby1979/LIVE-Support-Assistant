@@ -2204,7 +2204,11 @@ branch was changed or merged.
 **Claims table — the three tiers.** The same table is on `README.md`; this is the
 ledger's copy, with the source path for every number.
 
-*Tier 1 — PROVEN ON SIMULATED DATA.*
+*Tier 1 — DEMONSTRATED ON SIMULATED DATA.* Only the tenant-isolation audit is
+called **proven**; everything else is a demonstration on a simulated tenant. The
+README carries the full safety statement ("safety-first by design", not "fails
+safe"), including the deployed unsafe answer and the six out-of-scope public
+questions that were answered.
 
 | Claim | Measured | Source |
 | --- | --- | --- |
