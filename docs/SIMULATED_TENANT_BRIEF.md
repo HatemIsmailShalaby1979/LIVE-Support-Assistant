@@ -58,3 +58,11 @@ evidence.
 
 The full statement of what the exercise proves and does not prove is in
 [`proof-of-concept.md`](../proof-of-concept.md).
+
+## Offline labeling tool
+
+Open `tooling/eval/simulated-tenant/label-tool.html` in any browser — no network or install needed.
+Load `real-phrased-queries.csv` (or your copied `my-floor-queries.csv`) and label each query:
+`A` answerable → pick `1`–`7`, `E` escalate, `M` ambiguous, `S` skip, `Backspace` back.
+Progress saves to your browser's localStorage after every key; use "Add my own query" to build floor queries and "Export CSV" to download them.
+Nothing is pre-filled, suggested, or auto-labeled.

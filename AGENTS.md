@@ -2142,3 +2142,20 @@ is impossible. They are labelled as such in the report.
 candidate scores, so its margin distribution is not reported rather than
 estimated. The only recorded deployed margin remains the safety counterexample
 (`SIM-TICKET-00272`, 0.180757).
+
+## Offline labeling tool — 2026-09-29
+
+**Goal.** Let the owner hand-label the two simulated-tenant CSVs with no network,
+no dependency, and no auto-suggestion. No product code, corpus, or gate touched.
+
+**Deliverable.** `tooling/eval/simulated-tenant/label-tool.html` — one self-contained
+HTML file. Loads a CSV (generic; per-filename state in `localStorage`), shows one
+query at a time with the seven-procedure reference list (id + English title) and
+large text, and records labels via keyboard: `A` answerable → `1`–`7` picks the
+procedure, `E` escalate, `M` ambiguous, `S` skip, `Backspace` back. Notes save on
+every keystroke; "Add my own query" appends floor queries; "Export CSV" downloads
+the same columns. No field is pre-filled, suggested, or auto-labeled.
+
+**Verification.** `verify-label-tool.mjs` compiles the embedded script in-process
+(no spawn — `spawnSync` is the EBUSY host issue) and round-trips both CSVs plus
+the label logic: 10/10 checks pass.

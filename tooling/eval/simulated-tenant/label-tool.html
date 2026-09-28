@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SOP offline labeling tool</title>
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --panel: #ffffff;
+    --ink: #1c1f23;
+    --muted: #5b6470;
+    --line: #d9dee5;
+    --accent: #2f6df0;
+    --accent-soft: #e7efff;
+    --ok: #1f8a4c;
+    --warn: #b6791b;
+    --skip: #6b7280;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.45;
+  }
+  header {
+    padding: 14px 20px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+  header h1 { font-size: 16px; margin: 0; font-weight: 600; }
+  .file { font-size: 13px; color: var(--muted); }
+  .spacer { flex: 1; }
+  button {
+    font: inherit;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--ink);
+    padding: 7px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+  button:hover { background: var(--accent-soft); border-color: var(--accent); }
+  button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  button.primary:hover { filter: brightness(0.95); }
+  main { max-width: 1080px; margin: 0 auto; padding: 20px; }
+  .progress {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .progress b { color: var(--ink); font-weight: 600; }
+  .banner {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    color: #173a86;
+    padding: 8px 12px;
+    border-radius: 7px;
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  .querycard {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px;
+    margin-bottom: 16px;
+  }
+  .query-meta { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .query-text {
+    font-size: 26px;
+    line-height: 1.4;
+    font-weight: 500;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .current-label {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .current-label .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+    margin-left: 4px;
+  }
+  .tag.answerable { background: #e3f5ea; color: var(--ok); }
+  .tag.escalate { background: #fde7e7; color: #b3261e; }
+  .tag.ambiguous { background: #fbf0d8; color: var(--warn); }
+  .tag.skip { background: #eceef1; color: var(--skip); }
+  .tag.none { background: #eceef1; color: var(--skip); }
+  .ref {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .ref h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 10px; }
+  ol.procs { list-style: none; margin: 0; padding: 0; }
+  ol.procs li {
+    display: flex;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: 7px;
+    font-size: 14px;
+  }
+  ol.procs li .num {
+    flex: 0 0 22px;
+    height: 22px;
+    width: 22px;
+    border-radius: 6px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 700;
+    text-align: center;
+    line-height: 22px;
+  }
+  ol.procs li .pid { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 600; }
+  ol.procs.awaiting li.pick { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .hint {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 600;
+    min-height: 18px;
+  }
+  .controls {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .keys { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+  .key {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+  }
+  .key kbd {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    background: #f0f2f5;
+    border: 1px solid var(--line);
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-weight: 700;
+  }
+  textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px;
+    resize: vertical;
+    min-height: 64px;
+    background: #fff;
+    color: var(--ink);
+  }
+  label.field { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 60px 20px;
+    font-size: 15px;
+  }
+  /* Add-query view */
+  .formrow { margin-bottom: 14px; }
+  select, input[type=text] {
+    font: inherit;
+    font-size: 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
+    background: #fff;
+    color: var(--ink);
+    width: 100%;
+  }
+  .hidden { display: none; }
+  .footer-note { font-size: 12px; color: var(--muted); margin-top: 24px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>SOP offline labeling tool</h1>
+  <span class="file" id="fileLabel">no file loaded</span>
+  <span class="spacer"></span>
+  <button id="btnLoad">Load CSV</button>
+  <button id="btnAdd">Add my own query</button>
+  <button id="btnReset">Reset session</button>
+  <button id="btnExport" class="primary">Export CSV</button>
+  <input type="file" id="fileInput" accept=".csv,text/csv" class="hidden" />
+</header>
+
+<main>
+  <div id="labelView">
+    <div class="progress" id="progress"></div>
+    <div id="banner" class="banner hidden"></div>
+    <div id="cardArea"></div>
+  </div>
+
+  <div id="addView" class="hidden">
+    <div class="ref">
+      <h2>Add my own floor query</h2>
+      <div class="formrow">
+        <label class="field" for="addQuery">Query text</label>
+        <textarea id="addQuery" placeholder="Type the caller's question or message verbatim."></textarea>
+      </div>
+      <div class="formrow">
+        <label class="field" for="addLabel">My label</label>
+        <select id="addLabel">
+          <option value="answerable">answerable</option>
+          <option value="escalate">escalate</option>
+          <option value="ambiguous">ambiguous</option>
+        </select>
+      </div>
+      <div class="formrow">
+        <label class="field for="addProc">My procedure (leave blank if not applicable)</label>
+        <select id="addProc">
+          <option value="">— none —</option>
+        </select>
+      </div>
+      <div class="formrow">
+        <label class="field" for="addNotes">Notes (optional)</label>
+        <textarea id="addNotes" placeholder="Optional free-text notes."></textarea>
+      </div>
+      <div>
+        <button id="btnAddSave" class="primary">Add query</button>
+        <button id="btnAddCancel">Back to labeling</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+"use strict";
+
+// === CSV CORE START ===
+// RFC 4180-ish parser. Returns an array of rows, each an array of string fields.
+function parseCSV(text) {
+  const rows = [];
+  let row = [];
+  let field = "";
+  let i = 0;
+  let inQuotes = false;
+  text = String(text).replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  while (i < text.length) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i += 2; continue; }
+        inQuotes = false; i++; continue;
+      }
+      field += c; i++; continue;
+    } else {
+      if (c === '"') { inQuotes = true; i++; continue; }
+      if (c === ',') { row.push(field); field = ""; i++; continue; }
+      if (c === '\n') { row.push(field); rows.push(row); row = []; field = ""; i++; continue; }
+      field += c; i++; continue;
+    }
+  }
+  if (field.length > 0 || row.length > 0) { row.push(field); rows.push(row); }
+  // Drop fully-empty rows (e.g. trailing newline).
+  return rows.filter(r => !(r.length === 1 && r[0] === "") && !(r.every(f => f === "")));
+}
+
+function csvEscape(v) {
+  v = v == null ? "" : String(v);
+  if (/[",\n\r]/.test(v)) return '"' + v.replace(/"/g, '""') + '"';
+  return v;
+}
+
+// Serialize an array of row objects given an ordered column list.
+function serializeCSV(rows, columns) {
+  const lines = [columns.join(",")];
+  for (const r of rows) {
+    lines.push(columns.map(c => csvEscape(r[c])).join(","));
+  }
+  return lines.join("\r\n") + "\r\n";
+}
+// === CSV CORE END ===
+
+// Reference procedure list (id + one-line English title) from corpus.json.
+const PROCEDURES = [
+  { id: "wc-gifts",      title: "Gifts, Coins, and Purchase Refunds" },
+  { id: "wc-payout",     title: "Creator Payout Timing and Missing Deposits" },
+  { id: "wc-login",      title: "Routine Account Login Recovery" },
+  { id: "wc-security",   title: "Suspected Account Takeover" },
+  { id: "wc-live",       title: "LIVE Connection and Stream Stability" },
+  { id: "wc-appeal",     title: "Content Action and LIVE Restriction Appeals" },
+  { id: "wc-eligibility", title: "LIVE Eligibility Requirements" },
+];
+const COLUMNS = ["id", "query", "source_type", "my_label", "my_sop_id", "notes"];
+const LABELS = { A: "answerable", E: "escalate", M: "ambiguous", S: "skip" };
+
+const state = {
+  fileName: null,
+  rows: [],        // [{id, query, source_type, my_label, my_sop_id, notes}]
+  index: 0,
+  awaitingProc: false,
+  addedCount: 0,
+};
+
+const $ = (id) => document.getElementById(id);
+
+function keyFor(fn) { return "sop-label-tool::" + fn; }
+
+function save() {
+  if (!state.fileName) return;
+  try {
+    localStorage.setItem(keyFor(state.fileName), JSON.stringify({
+      rows: state.rows, index: state.index, addedCount: state.addedCount,
+    }));
+  } catch (e) { /* storage may be unavailable; ignore */ }
+}
+
+function loadSaved(fn) {
+  try {
+    const raw = localStorage.getItem(keyFor(fn));
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
+
+function rowsFromText(text) {
+  const raw = parseCSV(text);
+  if (!raw.length) return [];
+  const header = raw[0].map(h => h.trim());
+  const out = [];
+  for (let r = 1; r < raw.length; r++) {
+    const cells = raw[r];
+    const obj = {};
+    COLUMNS.forEach(c => { obj[c] = ""; });
+    header.forEach((h, ci) => {
+      if (COLUMNS.includes(h)) obj[h] = cells[ci] != null ? cells[ci] : "";
+    });
+    out.push(obj);
+  }
+  return out;
+}
+
+function current() {
+  return state.rows[state.index] || null;
+}
+
+function render() {
+  const total = state.rows.length;
+  $("fileLabel").textContent = state.fileName ? state.fileName : "no file loaded";
+  if (total === 0) {
+    $("progress").innerHTML = "";
+    $("cardArea").innerHTML = '<div class="empty">No queries yet. Load a CSV, or use <b>Add my own query</b> to build your floor-query list.</div>';
+    return;
+  }
+  const labeled = state.rows.filter(r => r.my_label && r.my_label !== "skip").length;
+  $("progress").innerHTML =
+    '<span>Query <b>' + (state.index + 1) + '</b> of <b>' + total + '</b></span>' +
+    '<span>Labeled: <b>' + labeled + '</b></span>' +
+    '<span>Skipped: <b>' + state.rows.filter(r => r.my_label === "skip").length + '</b></span>';
+
+  const row = current();
+  if (!row) { $("cardArea").innerHTML = '<div class="empty">All queries processed.</div>'; return; }
+
+  const labelClass = row.my_label || "none";
+  const procTitle = row.my_sop_id
+    ? (PROCEDURES.find(p => p.id === row.my_sop_id) || { title: row.my_sop_id }).title
+    : "";
+  const tagText = row.my_label
+    ? (row.my_label === "answerable" && procTitle ? row.my_label + " → " + row.my_sop_id : row.my_label)
+    : "unlabeled";
+
+  let procs = '<ol class="procs' + (state.awaitingProc ? ' awaiting' : '') + '">';
+  PROCEDURES.forEach((p, i) => {
+    const sel = (row.my_sop_id === p.id) ? ' style="font-weight:700"' : '';
+    procs += '<li class="pick"><span class="num">' + (i + 1) + '</span>' +
+      '<span><span class="pid"' + sel + '>' + p.id + '</span> — ' + p.title + '</span></li>';
+  });
+  procs += '</ol>';
+
+  const hint = state.awaitingProc
+    ? "Press 1–7 to choose the procedure for this answerable query (Esc cancels)."
+    : "";
+
+  $("cardArea").innerHTML =
+    '<div class="querycard">' +
+      '<div class="query-meta">id: ' + csvEscape(row.id) + (row.source_type ? ' · ' + csvEscape(row.source_type) : '') + '</div>' +
+      '<div class="query-text">' + csvEscape(row.query) + '</div>' +
+      '<div class="current-label">Current: <span class="tag ' + labelClass + '">' + csvEscape(tagText) + '</span></div>' +
+    '</div>' +
+    '<div class="ref"><h2>Procedure reference (id + English title)</h2>' + procs +
+      '<div class="hint">' + hint + '</div></div>' +
+    '<div class="controls">' +
+      '<div class="keys">' +
+        '<span class="key"><kbd>A</kbd> answerable</span>' +
+        '<span class="key"><kbd>E</kbd> escalate</span>' +
+        '<span class="key"><kbd>M</kbd> ambiguous</span>' +
+        '<span class="key"><kbd>S</kbd> skip</span>' +
+        '<span class="key"><kbd>⌫</kbd> back</span>' +
+      '</div>' +
+      '<label class="field" for="notes">Notes (optional, saved automatically)</label>' +
+      '<textarea id="notes" placeholder="Optional notes for this query.">' + csvEscape(row.notes || "") + '</textarea>' +
+    '</div>';
+
+  const notes = $("notes");
+  if (notes) {
+    notes.addEventListener("input", () => {
+      row.notes = notes.value;
+      save();
+    });
+  }
+}
+
+function applyLabel(label, procId) {
+  const row = current();
+  if (!row) return;
+  row.my_label = label;
+  row.my_sop_id = (label === "answerable" && procId) ? procId : "";
+  state.awaitingProc = false;
+  save();
+  advance();
+}
+
+function advance() {
+  if (state.index < state.rows.length - 1) state.index++;
+  render();
+}
+
+function back() {
+  state.awaitingProc = false;
+  if (state.index > 0) state.index--;
+  render();
+}
+
+function onKey(e) {
+  const t = e.target;
+  if (t && (t.tagName === "TEXTAREA" || t.tagName === "INPUT" || t.tagName === "SELECT")) {
+    if (e.key === "Escape") { if (state.awaitingProc) { state.awaitingProc = false; render(); } t.blur(); }
+    return;
+  }
+  if (state.rows.length === 0) return;
+
+  if (state.awaitingProc) {
+    if (e.key >= "1" && e.key <= String(PROCEDURES.length)) {
+      e.preventDefault();
+      const p = PROCEDURES[Number(e.key) - 1];
+      applyLabel("answerable", p.id);
+      return;
+    }
+    // Any other key cancels procedure-pick and is processed normally below.
+    state.awaitingProc = false;
+  }
+
+  const k = e.key.toUpperCase();
+  if (k === "A") { e.preventDefault(); state.awaitingProc = true; render(); return; }
+  if (k === "E") { e.preventDefault(); applyLabel("escalate"); return; }
+  if (k === "M") { e.preventDefault(); applyLabel("ambiguous"); return; }
+  if (k === "S") { e.preventDefault(); applyLabel("skip"); return; }
+  if (e.key === "Backspace") { e.preventDefault(); back(); return; }
+}
+
+function exportCSV() {
+  if (state.rows.length === 0) { alert("Nothing to export yet."); return; }
+  const csv = serializeCSV(state.rows, COLUMNS);
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const base = state.fileName ? state.fileName.replace(/\.csv$/i, "") : "labeled";
+  a.href = url;
+  a.download = "labeled-" + base + ".csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function resetSession() {
+  if (!state.fileName) { alert("No active session to reset."); return; }
+  if (!confirm("Clear the saved session for " + state.fileName + "? This forgets all labels you entered in this browser.")) return;
+  localStorage.removeItem(keyFor(state.fileName));
+  state.rows = []; state.index = 0; state.awaitingProc = false; state.addedCount = 0; state.fileName = null;
+  $("banner").classList.add("hidden");
+  render();
+}
+
+function handleFile(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    const text = reader.result;
+    const fresh = rowsFromText(text);
+    if (!fresh.length) { alert("That CSV had no data rows."); return; }
+    state.fileName = file.name;
+    state.addedCount = 0;
+    const saved = loadSaved(file.name);
+    if (saved && Array.isArray(saved.rows) && saved.rows.length === fresh.length &&
+        confirm("Resume saved session for " + file.name + "? (" + saved.rows.filter(r => r.my_label).length + " queries already labeled)\nOK = resume saved labels, Cancel = start fresh from the file.")) {
+      state.rows = saved.rows;
+      state.index = Math.min(saved.index || 0, fresh.length - 1);
+      state.addedCount = saved.addedCount || 0;
+      showBanner("Resumed saved session for " + file.name + ". Your earlier labels are restored.");
+    } else {
+      state.rows = fresh;
+      state.index = 0;
+      showBanner("Loaded " + file.name + " (" + fresh.length + " queries). Nothing is pre-labeled.");
+    }
+    save();
+    render();
+  };
+  reader.readAsText(file);
+}
+
+function showBanner(msg) {
+  const b = $("banner");
+  b.textContent = msg;
+  b.classList.remove("hidden");
+}
+
+// Add-my-own-query view wiring.
+function openAdd() {
+  // Populate procedure dropdown once.
+  const sel = $("addProc");
+  if (!sel.dataset.filled) {
+    PROCEDURES.forEach(p => {
+      const o = document.createElement("option");
+      o.value = p.id; o.textContent = p.id + " — " + p.title;
+      sel.appendChild(o);
+    });
+    sel.dataset.filled = "1";
+  }
+  $("addView").classList.remove("hidden");
+  $("labelView").classList.add("hidden");
+}
+function closeAdd() {
+  $("addView").classList.add("hidden");
+  $("labelView").classList.remove("hidden");
+  render();
+}
+function saveAdd() {
+  const q = $("addQuery").value.trim();
+  if (!q) { alert("Enter the query text first."); return; }
+  const label = $("addLabel").value;
+  const proc = $("addProc").value;
+  state.addedCount++;
+  const row = {
+    id: "myq-" + String(state.addedCount).padStart(3, "0"),
+    query: q,
+    source_type: "operator experience",
+    my_label: label,
+    my_sop_id: label === "answerable" ? proc : "",
+    notes: $("addNotes").value,
+  };
+  state.rows.push(row);
+  if (state.index >= state.rows.length - 1 && state.rows.length === 1) state.index = 0;
+  save();
+  $("addQuery").value = ""; $("addNotes").value = ""; $("addProc").value = "";
+  closeAdd();
+  showBanner("Added query " + row.id + ". Total queries: " + state.rows.length + ".");
+}
+
+// Wire up controls.
+$("btnLoad").addEventListener("click", () => $("fileInput").click());
+$("fileInput").addEventListener("change", (e) => { if (e.target.files[0]) handleFile(e.target.files[0]); e.target.value = ""; });
+$("btnExport").addEventListener("click", exportCSV);
+$("btnReset").addEventListener("click", resetSession);
+$("btnAdd").addEventListener("click", openAdd);
+$("btnAddCancel").addEventListener("click", closeAdd);
+$("btnAddSave").addEventListener("click", saveAdd);
+document.addEventListener("keydown", onKey);
+
+render();
+</script>
+</body>
+</html>
