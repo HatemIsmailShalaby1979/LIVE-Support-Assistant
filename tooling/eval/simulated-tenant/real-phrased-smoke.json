@@ -1,0 +1,257 @@
+{
+  "data_mode": "public-wording",
+  "evaluatedAt": "2026-09-28T05:18:43.646Z",
+  "evaluation": "Local browser decision-path scoring of operator-labelled real-phrased queries; no live tenant, hosted database, or telemetry transport used.",
+  "sources": [
+    "my-floor-queries.template.csv"
+  ],
+  "marginNote": "minMargin 0.17; the recorded simulated-batch baseline used 0.17 and the shipped default is 0.18",
+  "implementation": {
+    "path": "browser-local MiniLM embedQuery → passage cosine searchTopK → evaluateGate → buildAgentView",
+    "modelId": "Xenova/all-MiniLM-L6-v2",
+    "modelRevision": "751bff37182d3f1213fa05d7196b954e230abad9",
+    "dtype": "q8",
+    "thresholdAccept": 0,
+    "minMargin": 0.17,
+    "topK": 5,
+    "modelLoadMs": 13801.5,
+    "indexBuildMs": 4218.699999999255
+  },
+  "browser": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+    "consoleExceptions": [],
+    "telemetryTransport": "not initialized"
+  },
+  "provenance": "Real-phrased wording collected from public sources; my-floor-queries.template.csv",
+  "totals": {
+    "queries": 5,
+    "scored": 4,
+    "correct": 3,
+    "accuracy": 0.75,
+    "falseEscalations": 1,
+    "unsafeAnswers": 0,
+    "runtimeErrors": 0,
+    "ambiguous": 1,
+    "sopUnspecified": 0,
+    "bySourceType": {
+      "operator experience": 5
+    },
+    "bySource": {
+      "operator experience": {
+        "queries": 5,
+        "scored": 4,
+        "correct": 3,
+        "accuracy": 0.75,
+        "falseEscalations": 1,
+        "unsafeAnswers": 0
+      }
+    }
+  },
+  "perQuery": [
+    {
+      "id": "example-001",
+      "source_type": "operator experience",
+      "my_label": "answerable",
+      "my_sop_id": "wc-payout",
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-payout"
+      },
+      "latencyMs": 19.400000002235174,
+      "candidates": [
+        {
+          "sopId": "wc-payout",
+          "score": 0.5945257752925611,
+          "evidence": "If more than seven business days have passed, route the case to Payments with the payout reference and status."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.2873283408907049,
+          "evidence": "A completed Coin purchase is normally final."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.20580156054169713,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.18028738812760528,
+          "evidence": "Direct the customer to secure the recovery email from a trusted device and create an urgent specialist handoff."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.1280539371891712,
+          "evidence": "A recovery code that does not arrive after a phone change, or a password reset loop, is a routine account login issue unless the recovery contact itself has been changed without permission."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "example-002",
+      "source_type": "operator experience",
+      "my_label": "escalate",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 14.599999997764826,
+      "candidates": [
+        {
+          "sopId": "wc-payout",
+          "score": 0.4074271809129554,
+          "evidence": "If more than seven business days have passed, route the case to Payments with the payout reference and status."
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.36907160860145977,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.2776005818247329,
+          "evidence": "Direct the customer to secure the recovery email from a trusted device and create an urgent specialist handoff."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.207573191730336,
+          "evidence": "A recovery code that does not arrive after a phone change, or a password reset loop, is a routine account login issue unless the recovery contact itself has been changed without permission."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.20330536737186392,
+          "evidence": "If several creators report the same regional failure, route it as a possible service incident rather than treating each report as an individual device fault."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "example-003",
+      "source_type": "operator experience",
+      "my_label": "ambiguous",
+      "my_sop_id": "",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 15.600000001490116,
+      "candidates": [
+        {
+          "sopId": "wc-gifts",
+          "score": 0.3672706074808447,
+          "evidence": "Gift balances update after the purchase settles."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.31210503696772873,
+          "evidence": "A suspected account takeover requires specialist Account Security review."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.2913110825014844,
+          "evidence": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "sopId": "wc-payout",
+          "score": 0.2691412135054668,
+          "evidence": "If more than seven business days have passed, route the case to Payments with the payout reference and status."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.25793264395955284,
+          "evidence": "Routine Account Login Recovery — Account access"
+        }
+      ],
+      "scored": false,
+      "outcome": "ambiguous",
+      "category": null
+    },
+    {
+      "id": "example-004",
+      "source_type": "operator experience",
+      "my_label": "escalate",
+      "my_sop_id": "wc-security",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 16.600000001490116,
+      "candidates": [
+        {
+          "sopId": "wc-security",
+          "score": 0.5627009853082324,
+          "evidence": "Suspected Account Takeover — Account security"
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.45139804252200466,
+          "evidence": "Routine Account Login Recovery — Account access"
+        },
+        {
+          "sopId": "wc-gifts",
+          "score": 0.3233670487423023,
+          "evidence": "A duplicate charge or a purchase the account holder did not authorize must be reviewed by Payments; retain the receipt identifier and do not promise a refund before review."
+        },
+        {
+          "sopId": "wc-live",
+          "score": 0.22896813697933532,
+          "evidence": "If several creators report the same regional failure, route it as a possible service incident rather than treating each report as an individual device fault."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.2065382430361067,
+          "evidence": "If all checks appear satisfied but the LIVE control is absent, route the case for eligibility review rather than promising access."
+        }
+      ],
+      "scored": true,
+      "outcome": "correct",
+      "category": null
+    },
+    {
+      "id": "example-005",
+      "source_type": "operator experience",
+      "my_label": "answerable",
+      "my_sop_id": "wc-eligibility",
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "latencyMs": 12.5,
+      "candidates": [
+        {
+          "sopId": "wc-live",
+          "score": 0.45915500792427155,
+          "evidence": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        },
+        {
+          "sopId": "wc-login",
+          "score": 0.2957424194415507,
+          "evidence": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "sopId": "wc-security",
+          "score": 0.20773787549809994,
+          "evidence": "Direct the customer to secure the recovery email from a trusted device and create an urgent specialist handoff."
+        },
+        {
+          "sopId": "wc-appeal",
+          "score": 0.2066644123370222,
+          "evidence": "Si un créateur conteste une mesure concernant son contenu ou une restriction LIVE, il doit ouvrir la notification dans l’application et envoyer son appel depuis celle-ci."
+        },
+        {
+          "sopId": "wc-eligibility",
+          "score": 0.16769270057002994,
+          "evidence": "LIVE Eligibility Requirements — Creator eligibility"
+        }
+      ],
+      "scored": true,
+      "outcome": "incorrect",
+      "category": "false_escalation"
+    }
+  ]
+}
