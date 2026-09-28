@@ -9,6 +9,9 @@ supplied examples, reviewed results, or is referenced anywhere in this work. The
 Phase 7 comparison was defined as a cross-check against a partner's anonymised
 examples; with no partner, that comparison does not exist and is not claimed.
 
+**Positioning.** Validated on a simulated tenant; safety-first by design; ready
+for a shadow-mode pilot. Not production-proven: no real customer traffic.
+
 ## Scenario
 
 WaveCast is a fictional live-streaming and creator-commerce service. The scenario
@@ -141,6 +144,16 @@ awaiting a decision.
   no wrong-procedure answer — the safety behaviour held. The cost is false
   escalation: 16 of 21 in-scope rows at 0.18 and 15 at 0.17
   ([floor-queries-results.md](tooling/eval/simulated-tenant/floor-queries-results.md)).
+- The same safety result holds on an **independent holdout seed** (`20260929`, a
+  different 500-ticket draw): **0 unsafe answers** at both margins — 379/500
+  (75.8%) with 121 false escalations at 0.17, 359/500 (71.8%) with 141 at 0.18
+  ([phase5-holdout-seed-20260929-margin-017.md](tooling/eval/simulated-tenant/phase5-holdout-seed-20260929-margin-017.md)).
+- The same safety result holds when the corpus grows **from 7 procedures to 48**
+  (branch `exp/scale-rung`): 0 unsafe answers at 0.18 (196/414, 47.3%, 218 false
+  escalations). At 0.17 that corpus produced **1** unsafe answer (`SCALE-0328`),
+  so 0.17 is not safe at 48 procedures
+  ([scale-rung-results.md](tooling/eval/simulated-tenant/scale-rung-results.md) on
+  that branch).
 
 ## What this does not prove
 
@@ -166,7 +179,7 @@ awaiting a decision.
 
 ## Tried and rejected
 
-Two changes were measured and not merged. They are recorded so they are not retried (see
+Three changes were measured and not merged. They are recorded so they are not retried (see
 `AGENTS.md`, "Do not repeat these experiments").
 
 - **Procedure-wording edit** — branch `exp/procedure-distinctness`. Naming each procedure's topic
@@ -176,12 +189,21 @@ Two changes were measured and not merged. They are recorded so they are not retr
 - **Cross-encoder reranker** — branch `exp/reranker-measurement`. Raised headline accuracy only by
   answering more: +14 unsafe answers on one batch, +15 on another, at 862 ms per query and roughly
   double the model download. Rejected.
+- **Multilingual embedders** — branch `exp/multilingual-embedder`. A multilingual MiniLM moved
+  in-scope accuracy by **+0.3 pp** overall at **5.1× the download** (21.91 → 112.83 MB). It is a
+  language trade, not a gain: English −9.7 pp, Spanish +9.6 pp, Portuguese +12.2 pp. Rejected on
+  the product metric. A retrieval-trained candidate (`multilingual-e5-small`) answered 1 of 302
+  in-scope messages because its margin scale sits far below the shipped 0.18 — a scale result, not
+  a quality result.
 
 ## Known limits and next steps
 
-- **Corpus size is untested at scale.** Every measurement in this document is on a 7-procedure
-  corpus. A 40–70-procedure tenant is the next experiment (`exp/scale-rung`); whether the
-  top-1/top-2 margin separates better or worse as the corpus grows is not yet measured.
+- **Corpus size is measured at 48 procedures, not at production scale.** The 7-procedure corpus
+  scored 72.4% at 0.17; the 48-procedure corpus scored 49.5% at 0.17 and 47.3% at 0.18, with
+  English 62.1% against Spanish 32.0% and Portuguese 31.0%. That change is **confounded** — a
+  different, larger corpus with new procedures — so this work cannot attribute it to size alone.
+  A 5,000-procedure tenant is still unmeasured, and the non-English gap is the largest open
+  question.
 - **Threshold calibration is per-tenant onboarding, not a shipped constant.**
   `DEFAULT_GATE_CONFIG` (`packages/core/src/types.ts`) states the shipped 0.18 default is a starting
   point; the 0.17 value used in these evaluations is harness-only.
