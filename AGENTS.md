@@ -1917,7 +1917,7 @@ round-3, and stability JSON/Markdown reports. The subsequent deployed-path
 validation and Phase 6 package are recorded below. Phase 7 remains pending
 partner examples; publication of these changes has not yet been performed.
 
-## Phase 5 margin safety probe — 2026-10-02
+## Phase 5 margin safety probe — 2026-09-28
 
 **data_mode: "simulated".** Re-ran the unchanged approved 500-ticket batch and
 corpus in the local shipped decision path at a test-only margin of 0.16. It
@@ -1933,7 +1933,7 @@ The results, including the two synthetic examples, are in
 The 0.17 baseline also remains unchanged. No real customer or design-partner
 data is used.
 
-## Deployed-path simulation and Phase 6 package — 2026-10-02
+## Deployed-path simulation and Phase 6 package — 2026-09-28
 
 **data_mode: "simulated".** The approved 500-ticket batch was exercised through
 the public Vercel app, isolated signed policy bundles, browser MiniLM and gate,
