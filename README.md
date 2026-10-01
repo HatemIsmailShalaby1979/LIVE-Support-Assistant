@@ -24,6 +24,12 @@ confidence gate — and escalates instead of guessing when the match is weak.
 > [!NOTE]
 > **Operating principle.** No generative model sits in the answering path. A wrong procedure in a support reply is a compliance breach, not a drafting aid — so retrieval, a deterministic confidence gate, and human escalation decide what a user sees. The gate requires an absolute floor and a measured margin between the best and second-best procedure; if that margin is not met, the reply is escalated to a human rather than shown as an answer.
 
+> [!CAUTION]
+> **Read this first — the three weakest measured results.**
+> - One unsafe answer on the deployed path at margin **0.180757** — the shipped 0.18 default would not have stopped it ([Safety](#safety--what-is-claimed-and-what-is-not)).
+> - **6 of 52** out-of-scope public questions answered at margin 0.18 ([Safety](#safety--what-is-claimed-and-what-is-not)).
+> - In-scope recall **84/302 (27.8%)** at 48 procedures ([Evaluation evidence](#evaluation-evidence--claims-with-sources)).
+
 ## What it does
 
 The part a user actually exercises: open the app, sign in through the hosted Supabase
