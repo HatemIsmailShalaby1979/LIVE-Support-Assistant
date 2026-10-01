@@ -209,6 +209,15 @@ evaluation, not of the hosted app. Regenerate it with `node tooling/video/captur
 then `python tooling/video/assemble-video.py`; the derived MP4 is not committed, but the
 sources and `tooling/video/demo-video-manifest.json` are.
 
+<!-- TODO(Hatem): paste GitHub user-attachments video URL on its own line here -->
+
+Narrated walkthrough video (hosted copy pending). A three-minute screen recording of the local
+four-ticket browser run: the shipped decision path answers one clear question, refuses three
+weaker ones, and shows the real confidence-gate decisions on screen. It is a capture of the
+**local browser** evaluation, not of the hosted app. The MP4 is deliberately not committed to
+this repository; the hosted copy is attached to a GitHub issue or pull request comment, and the
+resulting `user-attachments` URL is pasted on the line above.
+
 The **hosted** app is a separate, credential-gated path — see `docs/PRODUCTION_STATUS.md`. There
 is no guest account, so a reviewer without one should watch the narrated walkthrough above
 rather than click through.
