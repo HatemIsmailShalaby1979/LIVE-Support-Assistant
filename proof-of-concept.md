@@ -156,7 +156,7 @@ The two fix options and their trade-offs remain in
   (tag `evidence/scale-rung (e5a7d9baf4f6)`): 0 unsafe answers at 0.18 (196/414, 47.3%, 218 false
   escalations). At 0.17 that corpus produced **1** unsafe answer (`SCALE-0328`),
   so 0.17 is not safe at 48 procedures
-  ([scale-rung-results.md](tooling/eval/simulated-tenant/scale-rung-results.md) on
+  ([scale-rung-results.md](https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant/blob/evidence/scale-rung/tooling/eval/simulated-tenant/scale-rung-results.md) on
   that branch).
 
 ## What this does not prove

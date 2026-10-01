@@ -38,7 +38,7 @@ top-1 minus top-2 margin separated the same queries, so both signals are require
   (`tooling/eval/simulated-tenant/phase5-holdout-seed-20260929-margin-017.md`).
 - A **48-procedure corpus** to test whether the margin survives scale: 196/414 (47.3%) with 218
   false escalations and 0 unsafe at 0.18; 205/414 (49.5%) with 208 false escalations and **1
-  unsafe** at 0.17 (`tooling/eval/simulated-tenant/scale-rung-results.md`, tag `evidence/scale-rung (e5a7d9baf4f6)`).
+  unsafe** at 0.17 ([scale-rung-results.md](https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant/blob/evidence/scale-rung/tooling/eval/simulated-tenant/scale-rung-results.md), tag `evidence/scale-rung (e5a7d9baf4f6)`).
 - A **deployed-path** run against a development Supabase project with an isolated signed bundle:
   361/500 (72.2%), one unsafe answer, zero runtime errors
   (`tooling/eval/simulated-tenant/phase5-deployed-run-0aec9773442c4282.md`).

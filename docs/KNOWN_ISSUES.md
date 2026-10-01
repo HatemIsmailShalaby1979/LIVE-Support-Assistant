@@ -44,7 +44,7 @@ how far that block protects a multilingual corpus.
 ## 3. Recall at 48 procedures: 84/302 in scope
 
 `tag evidence/scale-rung (e5a7d9baf4f6)`,
-`tooling/eval/simulated-tenant/scale-rung-results.md`: with escalation-by-construction
+[scale-rung-results.md](https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant/blob/evidence/scale-rung/tooling/eval/simulated-tenant/scale-rung-results.md): with escalation-by-construction
 rows excluded, in-scope recall at the 48-procedure corpus is **84/302 (27.8%)** at the
 shipped 0.18 margin (93/302 at 0.17). This is the largest corpus measured and it is
 the weakest recall point. A 40–70-procedure tenant is a rung, not the 5,000-procedure
@@ -53,7 +53,7 @@ scale the Phase 1 open question names. See also `README.md` (claims table, Tier 
 ## 4. Non-English gap on the same corpus
 
 `tag evidence/scale-rung (e5a7d9baf4f6)`,
-`tooling/eval/simulated-tenant/scale-rung-results.md`: on the 48-procedure corpus at
+[scale-rung-results.md](https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant/blob/evidence/scale-rung/tooling/eval/simulated-tenant/scale-rung-results.md): on the 48-procedure corpus at
 0.18, accuracy is **English 62.1% vs Spanish 32.0% and Portuguese 31.0%**. The change
 is confounded (a different and larger corpus), so it is not attributable to language
 alone, but the gap is real on the measured data. French was not part of the
