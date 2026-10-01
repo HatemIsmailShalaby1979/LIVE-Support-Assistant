@@ -17,7 +17,7 @@ has been shown, what it costs, and what has not been shown at all.
 | Same batch, repeated at identical settings | identical decisions on all 500 tickets | same file |
 | Safety behaviour, independent holdout seed, margin 0.17 | 379/500 (75.8%), 121 false escalations, **0 unsafe** | `tooling/eval/simulated-tenant/phase5-holdout-seed-20260929-margin-017.md` |
 | Safety behaviour, independent holdout seed, margin 0.18 | 359/500 (71.8%), 141 false escalations, **0 unsafe** | `tooling/eval/simulated-tenant/phase5-holdout-seed-20260929-margin-018.md` |
-| Safety behaviour at 48 procedures, margin 0.18 | 196/414 (47.3%), 218 false escalations, **0 unsafe** | tag `evidence/scale-rung (e5a7d9baf4f6)`, `tooling/eval/simulated-tenant/scale-rung-results.md` |
+| Safety behaviour at 48 procedures, margin 0.18 | 196/414 (47.3%), 218 false escalations, **0 unsafe** | tag `evidence/scale-rung` (`e5a7d9baf4f6`) — [scale-rung-results.md](https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant/blob/evidence/scale-rung/tooling/eval/simulated-tenant/scale-rung-results.md) |
 | Same corpus, margin 0.17 | 205/414 (49.5%), 208 false escalations, **1 unsafe** (`SCALE-0328`) | same file |
 | Deployed path end to end (sign-in, bundle, model, gate, tagged ingest) | 361/500 (72.2%), 138 false escalations, 1 unsafe, 0 runtime errors | `tooling/eval/simulated-tenant/phase5-deployed-run-0aec9773442c4282.md` |
 | **Proven** — tenant isolation audit | 500/500 query events, 261/261 escalation records, 15 SOP versions, 4 profiles, 2 devices tagged; **0 untagged rows** | same file |
@@ -29,11 +29,32 @@ has been shown, what it costs, and what has not been shown at all.
 | Limit | Measured | Source |
 | --- | --- | --- |
 | In-scope recall at 48 procedures (escalation-by-construction rows excluded) | 84/302 (27.8%) at 0.18; 93/302 (30.8%) at 0.17 | tag `evidence/multilingual-embedder (65b76aef103f)`, `tooling/eval/simulated-tenant/multilingual-embedder-results.md` |
-| Non-English gap on the same corpus | English 62.1% vs Spanish 32.0% and Portuguese 31.0% at 0.18 | tag `evidence/scale-rung (e5a7d9baf4f6)`, `tooling/eval/simulated-tenant/scale-rung-results.md` |
+| Non-English gap on the same corpus | English 62.1% vs Spanish 32.0% and Portuguese 31.0% at 0.18 | tag `evidence/scale-rung` (`e5a7d9baf4f6`) — [scale-rung-results.md](https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant/blob/evidence/scale-rung/tooling/eval/simulated-tenant/scale-rung-results.md) |
 | Author-written floor set, in-scope | **5 of 21** clear in-scope floor queries answered correctly (23.8%) at 0.18; the rest false-escalated | `tooling/eval/simulated-tenant/floor-queries-results.md` |
 | **Rejected — procedure wording** (tag `evidence/procedure-wording (bd6db511a0ca)`) | moved only two `wc-gifts` templates, emptied the [0.17, 0.18) margin band, made the riskiest procedure pair slightly worse | `tooling/eval/simulated-tenant/wording-experiment-report.md` on that branch |
 | **Rejected — cross-encoder reranker** (tag `evidence/reranker (495b52f6399b)`) | +14 new unsafe answers on chaos-500, +15 on the holdout; **862 ms per query**; roughly double the model download | `tooling/eval/simulated-tenant/reranker-measurement-report.md` on that branch |
 | **Rejected — multilingual embedders** (tag `evidence/multilingual-embedder (65b76aef103f)`) | overall **+0.3 pp** at **5.1× the download** (21.91 → 112.83 MB); a language trade (en −9.7 pp, es +9.6 pp, pt +12.2 pp), not a gain | `tooling/eval/simulated-tenant/multilingual-embedder-results.md` on that branch |
+
+#### Derivation of 84/302
+
+Recomputed from the raw rows in `scale-rung-results.md` at tag `evidence/scale-rung`
+(`e5a7d9baf4f6`), at margin 0.18. Line numbers are those of that file as pinned by the tag.
+
+| Step | Value | Source line in `scale-rung-results.md` |
+| --- | --- | --- |
+| Messages evaluated | 414 | line 22 (headline table, 0.18 row) |
+| Correct outcomes, all rows | 196 | line 22 |
+| Escalation-expected rows | 112 | line 8 |
+| Answerable rows | 302 = 414 − 112 | line 25 |
+| Correct among answerable rows | **84 = 196 − 112** | derived |
+| In-scope recall | **84/302 = 27.8%** | derived |
+
+The subtraction is valid because at 0.18 no escalation-expected row was answered, so every one of
+the 112 escalation rows is a correct escalation — "At 0.18 no escalation-expected message was
+answered" (line 32), restated as "Escalation rows pass by construction when the gate escalates"
+(line 115). Cross-check: the same headline row reports 218 false escalations, and
+84 + 218 = 302, the answerable count. Those 112 rows carry no retrieval signal, so they are
+excluded from recall; that exclusion is what turns 196/414 (47.3%) into 84/302 (27.8%).
 
 #### Tier 3 — NOT PROVEN
 

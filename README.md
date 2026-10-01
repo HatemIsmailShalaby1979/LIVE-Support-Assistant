@@ -100,7 +100,7 @@ Four experiment branches are **evidence-only** — measured, rejected or kept as
 
 | Tag | Branch | Finding |
 | --- | --- | --- |
-| `evidence/scale-rung` (`e5a7d9baf4f6`) | `exp/scale-rung` | 48-procedure corpus; in-scope recall 84/302 (27.8%) at 0.18 |
+| [`evidence/scale-rung`](https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant/blob/evidence/scale-rung/tooling/eval/simulated-tenant/scale-rung-results.md) (`e5a7d9baf4f6`) | `exp/scale-rung` | 48-procedure corpus; in-scope recall 84/302 (27.8%) at 0.18 |
 | `evidence/multilingual-embedder` (`65b76aef103f`) | `exp/multilingual-embedder` | +0.3 pp overall at 5.1× download — rejected |
 | `evidence/reranker` (`495b52f6399b`) | `exp/reranker-measurement` | +14/+15 unsafe answers — rejected |
 | `evidence/procedure-wording` (`bd6db511a0ca`) | `exp/procedure-distinctness` | threshold-dependent — rejected |
