@@ -74,7 +74,9 @@ reach a user.
 **Spoken (37 words):**
 On the full deployed test of five hundred tickets, three hundred and sixty-one matched the
 expected outcome: seventy-two point two percent. There was one unsafe answer and zero runtime
-errors. That case led to the publish block.
+errors. That case led to the publish block. A later thirty-nine-ticket deployed parity run
+recorded six unsafe answers on out-of-scope questions, at margins above the shipped default;
+this is in docs/EVIDENCE.md.
 
 ## Segment 10 — The non-English gap
 **On-screen:** docs/EVIDENCE.md claims table, Tier 2 "Non-English gap" and "In-scope recall at 48 procedures".

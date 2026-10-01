@@ -51,7 +51,7 @@
     "n": 9,
     "title": "The one unsafe case",
     "onscreen": "docs/EVIDENCE.md claims table row: \"1 unsafe\" on the deployed path.",
-    "spoken": "On the full deployed test of five hundred tickets, three hundred and sixty-one matched the expected outcome: seventy-two point two percent. There was one unsafe answer and zero runtime errors. That case led to the publish block."
+    "spoken": "On the full deployed test of five hundred tickets, three hundred and sixty-one matched the expected outcome: seventy-two point two percent. There was one unsafe answer and zero runtime errors. That case led to the publish block. A later thirty-nine-ticket deployed parity run recorded six unsafe answers on out-of-scope questions, at margins above the shipped default; this is in docs/EVIDENCE.md."
   },
   {
     "n": 10,
