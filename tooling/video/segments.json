@@ -3,7 +3,7 @@
     "n": 1,
     "title": "Title and positioning",
     "onscreen": "Title card: \"Live Support Assistant — decision path demo\".",
-    "spoken": "Validated on a simulated tenant; safety-first by design; ready for a shadow-mode pilot. Not production-proven: no real customer traffic."
+    "spoken": "Validated on a simulated tenant; safety-first by design; designed for a shadow-mode pilot; prerequisites not yet met. Not production-proven: no real customer traffic."
   },
   {
     "n": 2,
@@ -32,7 +32,7 @@
   {
     "n": 6,
     "title": "The main failure mode",
-    "onscreen": "Highlight \"138 false escalations\" in the README claims table.",
+    "onscreen": "Highlight \"138 false escalations\" in the docs/EVIDENCE.md claims table.",
     "spoken": "This quiet refusal is the usual failure. Across the five hundred tickets, one hundred and thirty-eight were sent to a person for too little confidence. Most misses are refusals, not wrong answers."
   },
   {
@@ -50,19 +50,19 @@
   {
     "n": 9,
     "title": "The one unsafe case",
-    "onscreen": "README claims table row: \"1 unsafe\" on the deployed path.",
+    "onscreen": "docs/EVIDENCE.md claims table row: \"1 unsafe\" on the deployed path.",
     "spoken": "On the full deployed test of five hundred tickets, three hundred and sixty-one matched the expected outcome: seventy-two point two percent. There was one unsafe answer and zero runtime errors. That case led to the publish block."
   },
   {
     "n": 10,
     "title": "The non-English gap",
-    "onscreen": "README claims table, Tier 2 \"Non-English gap\" and \"In-scope recall at 48 procedures\".",
+    "onscreen": "docs/EVIDENCE.md claims table, Tier 2 \"Non-English gap\" and \"In-scope recall at 48 procedures\".",
     "spoken": "The gap is real. On a larger corpus, in-scope answers in other languages fell to twenty-seven point eight percent, eighty-four of three hundred and two. English stayed near sixty-two percent. This is measured, not hidden."
   },
   {
     "n": 11,
     "title": "Repeatability",
-    "onscreen": "README claims table, \"identical decisions on all 500 tickets\".",
+    "onscreen": "docs/EVIDENCE.md claims table, \"identical decisions on all 500 tickets\".",
     "spoken": "The path is deterministic. Run the same five hundred tickets twice and every decision matches. Three hundred and seventy-nine matched the expected outcome: seventy-five point eight percent, at the lower bar."
   },
   {
@@ -75,6 +75,6 @@
     "n": 13,
     "title": "Closing positioning",
     "onscreen": "Title card returns.",
-    "spoken": "Validated on a simulated tenant; safety-first by design; ready for a shadow-mode pilot. Not production-proven: no real customer traffic."
+    "spoken": "Validated on a simulated tenant; safety-first by design; designed for a shadow-mode pilot; prerequisites not yet met. Not production-proven: no real customer traffic."
   }
 ]

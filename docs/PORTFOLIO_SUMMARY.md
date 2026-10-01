@@ -7,7 +7,7 @@ traffic.
 
 ## 60-second pitch
 
-Validated on a simulated tenant; safety-first by design; ready for a shadow-mode pilot.
+Validated on a simulated tenant; safety-first by design; designed for a shadow-mode pilot; prerequisites not yet met.
 Not production-proven: no real customer traffic.
 
 The product is an on-device retrieval plus a Confidence Gate. It reads a support question,

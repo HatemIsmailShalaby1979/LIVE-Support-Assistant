@@ -2,7 +2,7 @@
 
 A three-minute voice-over script for the five-minute local demo. Read the spoken text
 verbatim; the on-screen action tells you what to show. Every spoken number also appears
-in the `README.md` claims table, so the voice and the written evidence agree.
+in the `docs/EVIDENCE.md` claims table, so the voice and the written evidence agree.
 
 - Total runtime: **3 minutes 2 seconds** of speech, measured from the rendered audio
   (`tooling/video/audio/`, 13 segments, 182.06 s).
@@ -19,7 +19,7 @@ in the `README.md` claims table, so the voice and the written evidence agree.
 ## Segment 1 — Title and positioning
 **On-screen:** Title card: "Live Support Assistant — decision path demo".
 **Spoken (19 words):**
-Validated on a simulated tenant; safety-first by design; ready for a shadow-mode pilot.
+Validated on a simulated tenant; safety-first by design; designed for a shadow-mode pilot; prerequisites not yet met.
 Not production-proven: no real customer traffic.
 
 ## Segment 2 — What this is
@@ -50,7 +50,7 @@ procedure is still first, yet the gap is too small. The path stays quiet and sen
 person.
 
 ## Segment 6 — The main failure mode
-**On-screen:** Highlight "138 false escalations" in the README claims table.
+**On-screen:** Highlight "138 false escalations" in the docs/EVIDENCE.md claims table.
 **Spoken (32 words):**
 This quiet refusal is the usual failure. Across the five hundred tickets, one hundred and
 thirty-eight were sent to a person for too little confidence. Most misses are refusals, not
@@ -70,21 +70,21 @@ locally. On the published path, a bundle with that clash is now refused before i
 reach a user.
 
 ## Segment 9 — The one unsafe case
-**On-screen:** README claims table row: "1 unsafe" on the deployed path.
+**On-screen:** docs/EVIDENCE.md claims table row: "1 unsafe" on the deployed path.
 **Spoken (37 words):**
 On the full deployed test of five hundred tickets, three hundred and sixty-one matched the
 expected outcome: seventy-two point two percent. There was one unsafe answer and zero runtime
 errors. That case led to the publish block.
 
 ## Segment 10 — The non-English gap
-**On-screen:** README claims table, Tier 2 "Non-English gap" and "In-scope recall at 48 procedures".
+**On-screen:** docs/EVIDENCE.md claims table, Tier 2 "Non-English gap" and "In-scope recall at 48 procedures".
 **Spoken (35 words):**
 The gap is real. On a larger corpus, in-scope answers in other languages fell to twenty-seven
 point eight percent, eighty-four of three hundred and two. English stayed near sixty-two
 percent. This is measured, not hidden.
 
 ## Segment 11 — Repeatability
-**On-screen:** README claims table, "identical decisions on all 500 tickets".
+**On-screen:** docs/EVIDENCE.md claims table, "identical decisions on all 500 tickets".
 **Spoken (31 words):**
 The path is deterministic. Run the same five hundred tickets twice and every decision matches.
 Three hundred and seventy-nine matched the expected outcome: seventy-five point eight percent,
@@ -99,5 +99,5 @@ refusal, and none were unsafe.
 ## Segment 13 — Closing positioning
 **On-screen:** Title card returns.
 **Spoken (19 words):**
-Validated on a simulated tenant; safety-first by design; ready for a shadow-mode pilot.
+Validated on a simulated tenant; safety-first by design; designed for a shadow-mode pilot; prerequisites not yet met.
 Not production-proven: no real customer traffic.

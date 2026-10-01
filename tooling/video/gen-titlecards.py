@@ -27,7 +27,7 @@ WHITE = (0xF5, 0xF5, 0xF5)
 GRAY = (0xAA, 0xAA, 0xAA)
 
 POSITIONING = (
-    "Validated on a simulated tenant; safety-first by design; ready for a shadow-mode pilot. "
+    "Validated on a simulated tenant; safety-first by design; designed for a shadow-mode pilot; prerequisites not yet met."
     "Not production-proven: no real customer traffic."
 )
 

@@ -3,7 +3,7 @@
 **Tag:** `v1.0-simulated-validation`
 **Tagged commit:** `main` HEAD — see `git log -1` at tag time.
 **Positioning (verbatim from `README.md`):** Validated on a simulated tenant; safety-first by
-design; ready for a shadow-mode pilot. Not production-proven: no real customer traffic.
+design; designed for a shadow-mode pilot; prerequisites not yet met. Not production-proven: no real customer traffic.
 
 This release collects the simulated-tenant validation work into a single, auditable point. It is
 **not** a production deployment and **not** a code change to the gate or thresholds.
