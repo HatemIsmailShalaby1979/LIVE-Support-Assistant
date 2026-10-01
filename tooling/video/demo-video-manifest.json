@@ -1,8 +1,8 @@
 {
   "data_mode": "simulated",
   "output": "demo-video.mp4",
-  "duration_seconds": 182.155,
-  "audio_seconds": 182.064,
+  "duration_seconds": 186.422,
+  "audio_seconds": 186.336,
   "resolution": "1280x720",
   "frame_rate": 30,
   "video_codec": "h264",

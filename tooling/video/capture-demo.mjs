@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
 import { existsSync } from 'node:fs';
-import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -321,6 +321,60 @@ async function main() {
   const profile = await import('node:fs/promises').then(({ mkdtemp }) =>
     mkdtemp(join(tmpdir(), 'sop-video-capture-')),
   );
+  // ffprobe is resolved to an absolute WinGet link when present, then the FFPROBE env
+  // override, then the bare name. Duration measurement runs serially with retry/backoff so
+  // a transient EBUSY ("pipe instances are busy") on the Windows named pipe does not abort
+  // the whole capture after Vite/Chrome are already spawned. Hoisted above the Vite/Chrome
+  // spawns so a probe failure fails fast.
+  const ffprobe = (() => {
+    const candidates = [
+      process.env.LOCALAPPDATA && join(process.env.LOCALAPPDATA, 'Microsoft', 'WinGet', 'Links', 'ffprobe.exe'),
+      process.env.FFPROBE,
+      'ffprobe',
+    ].filter(Boolean);
+    for (const candidate of candidates) {
+      try { if (existsSync(candidate)) return candidate; } catch {}
+    }
+    return process.env.FFPROBE ?? 'ffprobe';
+  })();
+  const { spawn: spawnProbe } = await import('node:child_process');
+  // Async spawn (not spawnSync): the Windows named-pipe pool exhausts under spawnSync
+  // (EBUSY "pipe instances are busy"), but async spawn works — the Vite/Chrome spawns above
+  // use it successfully. Retry/backoff is kept as a safety net for transient EBUSY/UNKNOWN.
+  const probeDuration = (file) => new Promise((resolve, reject) => {
+    const child = spawnProbe(ffprobe, [
+      '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=nw=1:nk=1', file,
+    ], { windowsHide: true });
+    let out = '';
+    let errOut = '';
+    child.stdout.on('data', (chunk) => { out += chunk.toString(); });
+    child.stderr.on('data', (chunk) => { errOut += chunk.toString(); });
+    child.on('error', (e) => reject(e));
+    child.on('close', (code) => {
+      if (code !== 0) reject(new Error(`ffprobe exited ${code}: ${errOut || 'no stderr'}`));
+      else resolve(Number(out.trim()));
+    });
+  });
+  const getDuration = async (file) => {
+    let lastErr;
+    for (let attempt = 0; attempt < 6; attempt++) {
+      try {
+        return await probeDuration(file);
+      } catch (err) {
+        lastErr = err;
+        const text = `${err && err.code ? err.code : ''} ${err && err.message ? err.message : ''}`;
+        const transient = /EBUSY|UNKNOWN|pipe instances are busy|ENOENT|EAGAIN/i.test(text);
+        if (!transient || attempt === 5) break;
+        await new Promise((resolve) => setTimeout(resolve, 200 * (attempt + 1)));
+      }
+    }
+    throw lastErr;
+  };
+  const sceneDurations = [];
+  for (const index of [4, 5, 6, 7, 8]) {
+    sceneDurations.push(await getDuration(join(AUDIO, `seg${String(index).padStart(2, '0')}.mp3`)));
+  }
+
   const vite = spawn(process.execPath, [
     VITE, ROOT, '--config', join(ROOT, 'apps/web/vite.config.ts'),
     '--port', String(port), '--host', '127.0.0.1', '--strictPort',
@@ -425,12 +479,8 @@ async function main() {
     }
     console.log('Browser evaluation verified: 4 tickets, 3 correct dispositions, 1 false escalation, 0 unsafe answers, 0 runtime errors.');
 
-    const ffprobe = process.env.FFPROBE ?? 'ffprobe';
-    const { execFileSync } = await import('node:child_process');
-    const getDuration = (file) => Number(execFileSync(ffprobe, [
-      '-v', 'error', '-show_entries', 'format=duration', '-of', 'default=nw=1:nk=1', file,
-    ], { encoding: 'utf8' }).trim());
-    const sceneDurations = [4, 5, 6, 7, 8].map((index) => getDuration(join(AUDIO, `seg${String(index).padStart(2, '0')}.mp3`)));
+    // sceneDurations is computed earlier (before the Vite/Chrome spawns) with the absolute
+    // ffprobe path and the retry/backoff loop; see the ffprobe setup above the spawn.
     const presentationMs = Math.ceil(sceneDurations.reduce((sum, duration) => sum + duration, 0) * 1000);
     const frameCount = Math.ceil(presentationMs / 1000);
     const payload = {
@@ -449,8 +499,21 @@ async function main() {
     });
 
     await mkdir(FRAMES, { recursive: true });
+    // Stale-frame cleanup. The host's safe-delete shim routes fs/promises.rm through a
+    // vendor trash binary that can time out (ETIMEDOUT / EBUSY) under Windows process-pool
+    // exhaustion. If the trash path fails we rename the stale frame aside instead of throwing,
+    // so stale frames never leak into the assembled video and the run does not abort.
+    const removedDir = join(FRAMES, '.removed');
     for (const file of await readdir(FRAMES)) {
-      if (/^frame-\d{6}\.png$/.test(file)) await rm(join(FRAMES, file));
+      if (!/^frame-\d{6}\.png$/.test(file)) continue;
+      const target = join(FRAMES, file);
+      try {
+        await rm(target);
+      } catch (err) {
+        await mkdir(removedDir, { recursive: true });
+        await rename(target, join(removedDir, file));
+        console.warn(`Stale frame ${file} moved aside (trash shim failed: ${err && err.message ? err.message : err})`);
+      }
     }
     // One frame per second of presentation, each with its scene chosen from the
     // narration durations, so the footage cannot drift out of step with the audio.
@@ -553,7 +616,13 @@ async function main() {
         await new Promise((resolveClose) => child.once('close', resolveClose));
       }
     }
-    await rm(profile, { recursive: true, force: true });
+    try {
+      await rm(profile, { recursive: true, force: true });
+    } catch (err) {
+      // Best-effort cleanup of the temp Chrome profile; do not fail the run if the
+      // host's trash shim times out.
+      console.warn(`Chrome profile cleanup skipped (trash shim failed: ${err && err.message ? err.message : err})`);
+    }
   }
 }
 
