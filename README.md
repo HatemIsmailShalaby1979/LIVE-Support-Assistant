@@ -29,6 +29,7 @@ confidence gate — and escalates instead of guessing when the match is weak.
 > - One unsafe answer on the deployed path at margin **0.180757** — the shipped 0.18 default would not have stopped it ([Safety](#safety--what-is-claimed-and-what-is-not)).
 > - **6 of 52** out-of-scope public questions answered at margin 0.18 ([Safety](#safety--what-is-claimed-and-what-is-not)).
 > - In-scope recall **84/302 (27.8%)** at 48 procedures ([Evidence tiers](docs/EVIDENCE.md#tier-2--measured-limits)).
+> - A second deployed run — a 39-ticket **parity batch** (`60cdbbea8a4f478f`) — recorded **6 unsafe answers**, but these are the *same* six out-of-scope false accepts already in the [refusal table](#safety--what-is-claimed-and-what-is-not) (`rp-022/023/025/026/040/060`), answered at margins 0.1869–0.4175 (all ≥ the shipped 0.18). It is a refusal-heavy batch and is **not comparable** to the 500-ticket run; its JSON sets `localBaselineApplies:false`, and neither deployed run records a git commit hash — a [reproducibility gap](docs/EVIDENCE.md#tier-1--demonstrated-on-simulated-data).
 
 ## What it does
 
@@ -146,6 +147,16 @@ suggested reply (10/10 checks, `tooling/gate/verify-gate.mjs`).
   answerable and the owner overrode to escalate/ambiguous — three of the six. The other three are
   uncontested, and the assistant answered them anyway. At margin 0.17 the same set produced **7**
   false accepts.
+- **The deployed parity run re-recorded these same six as unsafe.** The 39-ticket deployed run
+  `60cdbbea8a4f478f` (margin 0.17, `localBaselineApplies:false`) answered the identical six
+  out-of-scope queries — `PARITY-RP-022` → `rp-022`, `PARITY-RP-023` → `rp-023`, `PARITY-RP-025`
+  → `rp-025`, `PARITY-RP-026` → `rp-026`, `PARITY-RP-040` → `rp-040`, `PARITY-RP-060` → `rp-060`
+  — at measured margins **0.2293, 0.2674, 0.2821, 0.4175, 0.2598, 0.1869**. Every one is **≥ the
+  shipped 0.18 default**, so the margin threshold alone would not have stopped any of them. These
+  are the same six already in the table above — **not six new failures and not a regression**; the
+  deployed parity path is a refusal-heavy batch and is not comparable to the 500-ticket run. Neither
+  deployed run records a git commit hash, so the exact build each was taken against is not pinned (a
+  [reproducibility gap](docs/EVIDENCE.md#tier-1--demonstrated-on-simulated-data)).
 - **Against that, the author-written floor set held.** **0 of 8** refusal rows (5 escalate + 3
   ambiguous) were auto-answered at 0.18 and 0.17
   (`tooling/eval/simulated-tenant/floor-queries-results.md`).
@@ -163,6 +174,10 @@ measured limits, and not proven — are the honest reading, moved in full to
 - **Demonstrated (simulated):** 500-ticket deployed run 72.2% (361/500), 1 unsafe answer at
   margin 0.180757; author-written floor set 0/8 refusal rows answered at 0.18 and 0.17; gate
   10/10 checks (`tooling/gate/verify-gate.mjs`).
+- **Demonstrated (deployed parity, 39-ticket):** 26/39 (66.7%) correct, 7 false escalations, 6
+  unsafe answers at margins 0.1869–0.4175 (all ≥ shipped 0.18) — the same six out-of-scope false
+  accepts in the refusal table, **not a regression**. `localBaselineApplies:false`; no git commit
+  hash recorded (`tooling/eval/simulated-tenant/phase5-deployed-run-60cdbbea8a4f478f.md`).
 - **Measured limits:** in-scope recall 84/302 (27.8%) at 48 procedures (0.18); non-English gap
   en 62.1% vs es 32.0% / pt 31.0%; three changes (procedure wording, cross-encoder reranker,
   multilingual embedders) measured and rejected.
