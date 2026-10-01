@@ -503,7 +503,10 @@ async function main() {
     // vendor trash binary that can time out (ETIMEDOUT / EBUSY) under Windows process-pool
     // exhaustion. If the trash path fails we rename the stale frame aside instead of throwing,
     // so stale frames never leak into the assembled video and the run does not abort.
-    const removedDir = join(FRAMES, '.removed');
+    // The rename-aside target lives under os.tmpdir() -- never inside tooling/video/frames/
+    // -- so the (gitignored) frames/ directory cannot grow a sidecar on hosts where the
+    // trash shim is unreliable. os.tmpdir() is cleared on reboot and is not inside the repo.
+    const removedDir = join(tmpdir(), 'live-support-assistant-capture-removed');
     for (const file of await readdir(FRAMES)) {
       if (!/^frame-\d{6}\.png$/.test(file)) continue;
       const target = join(FRAMES, file);
