@@ -5,7 +5,7 @@
 **An explainable browser support prototype with an on-device confidence gate.**
 
 ![Status](https://img.shields.io/badge/status-prototype-yellow)
-![Gate](https://img.shields.io/badge/confidence%20gate-10%20checks%20passing-2ea043)
+![Confidence gate — CI](https://github.com/HatemIsmailShalaby1979/LIVE-Support-Assistant/actions/workflows/ci.yml/badge.svg)
 ![Licence](https://img.shields.io/badge/licence-MIT-blue)
 ![TypeScript](https://img.shields.io/badge/typescript-app-3178c6)
 
