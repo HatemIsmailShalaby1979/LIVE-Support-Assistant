@@ -1,0 +1,4428 @@
+{
+  "data_mode": "simulated",
+  "simulation_run_id": "60cdbbea8a4f478f",
+  "evaluation": "Deployed public Vercel application path backed by the development Supabase project; not production customer validation.",
+  "target": "https://dist-omega-black-31.vercel.app",
+  "backendProject": "lxlokqtowvaesxjishqz",
+  "evaluatedAt": "2026-09-28T12:01:25.414Z",
+  "runStartedAt": "2026-09-28T11:58:31.804Z",
+  "sourceBatch": "tooling/eval/simulated-tenant/parity-39.json",
+  "sourceCorpus": "tooling/eval/simulated-tenant/corpus.json",
+  "batchSha256": "a37e0d995a54fb1b11f406195317995731f544242c78884cc60dc248953f3f2f",
+  "corpusSha256": "e9e058685d255b24219ed5aab2ede0eaf62542eda9844b9b7b26becec63546fe",
+  "batch": {
+    "tickets": 39,
+    "seed": 20260928,
+    "chaosRateConfigured": 0.5384615384615384,
+    "chaosRateActual": 0.5384615384615384,
+    "chaosTickets": 21,
+    "approvedBatchTickets": 39,
+    "selectedTicketIds": [
+      "SIM-TICKET-00164",
+      "SIM-TICKET-00002",
+      "SIM-TICKET-00359",
+      "SIM-TICKET-00443",
+      "SIM-TICKET-00100",
+      "SIM-TICKET-00196",
+      "SIM-TICKET-00266",
+      "SIM-TICKET-00102",
+      "SIM-TICKET-00025",
+      "SIM-TICKET-00251",
+      "SIM-TICKET-00059",
+      "SIM-TICKET-00431",
+      "SIM-TICKET-00123",
+      "SIM-TICKET-00161",
+      "SIM-TICKET-00477",
+      "SIM-TICKET-00393",
+      "SIM-TICKET-00239",
+      "SIM-TICKET-00208",
+      "SIM-TICKET-00108",
+      "SIM-TICKET-00132",
+      "SIM-TICKET-00205",
+      "SIM-TICKET-00111",
+      "SIM-TICKET-00300",
+      "SIM-TICKET-00381",
+      "SIM-TICKET-00274",
+      "SIM-TICKET-00275",
+      "SIM-TICKET-00373",
+      "SIM-TICKET-00328",
+      "SIM-TICKET-00016",
+      "SIM-TICKET-00283",
+      "SIM-TICKET-00264",
+      "SIM-TICKET-00148",
+      "SIM-TICKET-00392",
+      "PARITY-RP-022",
+      "PARITY-RP-023",
+      "PARITY-RP-025",
+      "PARITY-RP-026",
+      "PARITY-RP-040",
+      "PARITY-RP-060"
+    ]
+  },
+  "selection": {
+    "data_mode": "simulated",
+    "ticketId": null,
+    "chaosType": null,
+    "visibleBrowser": false
+  },
+  "implementation": {
+    "path": "deployed React app → tenant-signed encrypted policy bundle → pinned on-device MiniLM → Confidence Gate → Supabase ingest functions",
+    "thresholdAccept": 0,
+    "minMargin": 0.17,
+    "baselineMinMargin": null,
+    "browserMarginVerifiedForEveryTenant": true,
+    "latencyMeasurement": "browser-side time from Find Answer click to rendered disposition and ready controls"
+  },
+  "tenants": [
+    {
+      "data_mode": "simulated",
+      "id": "0f2368b9-938f-4315-889f-aaf29278c13c",
+      "label": "baseline",
+      "procedures": 7
+    }
+  ],
+  "hostedDataAudit": {
+    "data_mode": "simulated",
+    "taggedQueryEvents": 39,
+    "taggedEscalations": 16,
+    "taggedSopVersions": 7,
+    "taggedAgentProfiles": 2,
+    "taggedTenants": 1,
+    "tenantScopedBundles": 1,
+    "untaggedQueryEvents": 0,
+    "untaggedEscalations": 0,
+    "untaggedSopVersions": 0,
+    "untaggedAgentProfiles": 0,
+    "untaggedTenants": 0,
+    "taggingPreflight": true,
+    "enrolledSimulatedAgentDevices": 1
+  },
+  "totals": {
+    "tickets": 39,
+    "correct": 26,
+    "accuracy": 0.6666666666666666,
+    "failures": 13,
+    "failureRate": 0.3333333333333333,
+    "failureCategories": {
+      "false_escalation": 7,
+      "unsafe_answer_on_escalation_case": 6
+    },
+    "falseEscalations": 7,
+    "unsafeAnswers": 6,
+    "runtimeErrors": 0,
+    "latencyMs": {
+      "mean": 20.638461539760613,
+      "median": 21.399999998509884,
+      "p95": 28.100000001490116,
+      "max": 30.799999997019768
+    }
+  },
+  "safetyCounterexamples": [
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-022",
+      "score": 0.5087034335415386,
+      "margin": 0.22932010814805898,
+      "minMargin": 0.17,
+      "thresholdAccept": 0,
+      "outcome": "answered",
+      "gateReason": null,
+      "topCandidates": [
+        {
+          "score": 0.5087034335415386,
+          "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+          "passage": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "score": 0.2793833253934796,
+          "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+          "passage": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "score": 0.18537281020222401,
+          "sopId": "ef49d27c-a115-4916-8226-8f8c84750b15",
+          "passage": "LIVE Eligibility Requirements — Creator eligibility"
+        },
+        {
+          "score": 0.17877786107810173,
+          "sopId": "e4d6a15d-7b07-45d5-989b-d195ac78c7a9",
+          "passage": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "score": 0.1345358006033395,
+          "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+          "passage": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-023",
+      "score": 0.5722410309980136,
+      "margin": 0.2674288195134682,
+      "minMargin": 0.17,
+      "thresholdAccept": 0,
+      "outcome": "answered",
+      "gateReason": null,
+      "topCandidates": [
+        {
+          "score": 0.5722410309980136,
+          "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+          "passage": "LIVE Connection and Stream Stability — LIVE technical support"
+        },
+        {
+          "score": 0.3048122114845454,
+          "sopId": "ef49d27c-a115-4916-8226-8f8c84750b15",
+          "passage": "LIVE Eligibility Requirements — Creator eligibility"
+        },
+        {
+          "score": 0.28923323843854476,
+          "sopId": "e4d6a15d-7b07-45d5-989b-d195ac78c7a9",
+          "passage": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "score": 0.19303196189803595,
+          "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+          "passage": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "score": 0.12429405793864523,
+          "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+          "passage": "Las monedas se usan para enviar regalos en WaveCast y no se pueden transferir entre cuentas."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-025",
+      "score": 0.5512249623828286,
+      "margin": 0.28206609102478847,
+      "minMargin": 0.17,
+      "thresholdAccept": 0,
+      "outcome": "answered",
+      "gateReason": null,
+      "topCandidates": [
+        {
+          "score": 0.5512249623828286,
+          "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+          "passage": "LIVE Connection and Stream Stability — LIVE technical support"
+        },
+        {
+          "score": 0.2691588713580401,
+          "sopId": "e4d6a15d-7b07-45d5-989b-d195ac78c7a9",
+          "passage": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "score": 0.26638726055629786,
+          "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+          "passage": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "score": 0.2182659246437768,
+          "sopId": "ef49d27c-a115-4916-8226-8f8c84750b15",
+          "passage": "Si cumple todos los requisitos pero no aparece el botón LIVE, remite el caso a revisión de elegibilidad; no prometas el acceso."
+        },
+        {
+          "score": 0.13854137297449598,
+          "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+          "passage": "Las monedas se usan para enviar regalos en WaveCast y no se pueden transferir entre cuentas."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-026",
+      "score": 0.7055041584729508,
+      "margin": 0.41750324881088696,
+      "minMargin": 0.17,
+      "thresholdAccept": 0,
+      "outcome": "answered",
+      "gateReason": null,
+      "topCandidates": [
+        {
+          "score": 0.7055041584729508,
+          "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+          "passage": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "score": 0.2880009096620638,
+          "sopId": "e4d6a15d-7b07-45d5-989b-d195ac78c7a9",
+          "passage": "Content Action and LIVE Restriction Appeals — Content and restrictions"
+        },
+        {
+          "score": 0.2648513556363989,
+          "sopId": "ef49d27c-a115-4916-8226-8f8c84750b15",
+          "passage": "For this fictional simulation, LIVE access requires the account holder to be at least eighteen, have at least 750 followers, be in a supported region, and be in good standing."
+        },
+        {
+          "score": 0.20111486155646988,
+          "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+          "passage": "Si no llega el código después de cambiar de teléfono, es un problema de recuperación de acceso, salvo que alguien haya cambiado el contacto sin permiso."
+        },
+        {
+          "score": 0.10263872816035795,
+          "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+          "passage": "Creator Payout Timing and Missing Deposits — Creator payouts"
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-040",
+      "score": 0.37410720692403465,
+      "margin": 0.25981607048050903,
+      "minMargin": 0.17,
+      "thresholdAccept": 0,
+      "outcome": "answered",
+      "gateReason": null,
+      "topCandidates": [
+        {
+          "score": 0.37410720692403465,
+          "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+          "passage": "A LIVE stream that disconnects after a few seconds or loses audio despite a stable connection is a technical streaming issue, not an eligibility or access question."
+        },
+        {
+          "score": 0.11429113644352563,
+          "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+          "passage": "For a routine login problem, use Forgot password on the sign-in screen and request one fresh recovery code."
+        },
+        {
+          "score": 0.09434958237077944,
+          "sopId": "ef49d27c-a115-4916-8226-8f8c84750b15",
+          "passage": "Region availability can change."
+        },
+        {
+          "score": 0.08181062137559722,
+          "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+          "passage": "Ask the creator to confirm the payout date and masked destination details; never request full bank credentials."
+        },
+        {
+          "score": 0.08151813426732643,
+          "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+          "passage": "Las monedas se usan para enviar regalos en WaveCast y no se pueden transferir entre cuentas."
+        }
+      ]
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-060",
+      "score": 0.49809809981867803,
+      "margin": 0.18686697197771018,
+      "minMargin": 0.17,
+      "thresholdAccept": 0,
+      "outcome": "answered",
+      "gateReason": null,
+      "topCandidates": [
+        {
+          "score": 0.49809809981867803,
+          "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+          "passage": "Creator Payout Timing and Missing Deposits — Creator payouts"
+        },
+        {
+          "score": 0.31123112784096785,
+          "sopId": "ef49d27c-a115-4916-8226-8f8c84750b15",
+          "passage": "LIVE Eligibility Requirements — Creator eligibility"
+        },
+        {
+          "score": 0.2630726833274732,
+          "sopId": "e4d6a15d-7b07-45d5-989b-d195ac78c7a9",
+          "passage": "A creator who disputes a content action or LIVE restriction should open the notice in the app and submit the appeal from that notice."
+        },
+        {
+          "score": 0.2288075987837488,
+          "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+          "passage": "Coins are used to send Gifts inside WaveCast and cannot be transferred between accounts."
+        },
+        {
+          "score": 0.22364065854504575,
+          "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+          "passage": "Do not ask the creator to repeatedly restart a scheduled broadcast."
+        }
+      ]
+    }
+  ],
+  "candidateEvidence": [
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-022",
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_escalate",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 13.100000001490116,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.5087034335415386,
+      "payloadMargin": 0.22932010814805898,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+        "score": 0.5087034335415386
+      },
+      "top2": {
+        "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+        "score": 0.2793833253934796
+      },
+      "recomputedMargin": 0.22932010814805898
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-023",
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_escalate",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 9.600000001490116,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.5722410309980136,
+      "payloadMargin": 0.2674288195134682,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+        "score": 0.5722410309980136
+      },
+      "top2": {
+        "sopId": "ef49d27c-a115-4916-8226-8f8c84750b15",
+        "score": 0.3048122114845454
+      },
+      "recomputedMargin": 0.2674288195134682
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-025",
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_ambiguous",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 9.800000004470348,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.5512249623828286,
+      "payloadMargin": 0.28206609102478847,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+        "score": 0.5512249623828286
+      },
+      "top2": {
+        "sopId": "e4d6a15d-7b07-45d5-989b-d195ac78c7a9",
+        "score": 0.2691588713580401
+      },
+      "recomputedMargin": 0.28206609102478847
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-026",
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_ambiguous",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 6.899999998509884,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.7055041584729508,
+      "payloadMargin": 0.41750324881088696,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+        "score": 0.7055041584729508
+      },
+      "top2": {
+        "sopId": "e4d6a15d-7b07-45d5-989b-d195ac78c7a9",
+        "score": 0.2880009096620638
+      },
+      "recomputedMargin": 0.41750324881088696
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-040",
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_ambiguous",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 13.700000002980232,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.37410720692403465,
+      "payloadMargin": 0.25981607048050903,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+        "score": 0.37410720692403465
+      },
+      "top2": {
+        "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+        "score": 0.11429113644352563
+      },
+      "recomputedMargin": 0.25981607048050903
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "PARITY-RP-060",
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_escalate",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-payout"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 11.799999997019768,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.49809809981867803,
+      "payloadMargin": 0.18686697197771018,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.49809809981867803
+      },
+      "top2": {
+        "sopId": "ef49d27c-a115-4916-8226-8f8c84750b15",
+        "score": 0.31123112784096785
+      },
+      "recomputedMargin": 0.18686697197771018
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00002",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-gifts"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 17.30000000447035,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.596775793668828,
+      "payloadMargin": 0.19385091644649177,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.596775793668828
+      },
+      "top2": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.4029248772223363
+      },
+      "recomputedMargin": 0.19385091644649177
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00016",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-login"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 22.700000002980232,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.6932163587708611,
+      "payloadMargin": 0.23610988129429855,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+        "score": 0.6932163587708611
+      },
+      "top2": {
+        "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+        "score": 0.4571064774765625
+      },
+      "recomputedMargin": 0.23610988129429855
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00025",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-gifts"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 18.200000002980232,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.7138372002182097,
+      "payloadMargin": 0.3053797889115446,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.7138372002182097
+      },
+      "top2": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.40845741130666513
+      },
+      "recomputedMargin": 0.3053797889115446
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00059",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-gifts"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 17.30000000447035,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.596775793668828,
+      "payloadMargin": 0.19385091644649177,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.596775793668828
+      },
+      "top2": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.4029248772223363
+      },
+      "recomputedMargin": 0.19385091644649177
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00100",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-gifts"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 16.80000000447035,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.7138372002182097,
+      "payloadMargin": 0.3053797889115446,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.7138372002182097
+      },
+      "top2": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.40845741130666513
+      },
+      "recomputedMargin": 0.3053797889115446
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00102",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-gifts"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 15.800000004470348,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.7138372002182097,
+      "payloadMargin": 0.3053797889115446,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.7138372002182097
+      },
+      "top2": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.40845741130666513
+      },
+      "recomputedMargin": 0.3053797889115446
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00108",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 30.799999997019768,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.6135214151075471
+      },
+      "top2": {
+        "sopId": "e4d6a15d-7b07-45d5-989b-d195ac78c7a9",
+        "score": 0.5928940310610694
+      },
+      "recomputedMargin": 0.02062738404647768
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00111",
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 26.5,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.5288263571584448
+      },
+      "top2": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.4793756430571284
+      },
+      "recomputedMargin": 0.04945071410131646
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00123",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 22.200000002980232,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.5043735877250277
+      },
+      "top2": {
+        "sopId": "ef49d27c-a115-4916-8226-8f8c84750b15",
+        "score": 0.3585951542484697
+      },
+      "recomputedMargin": 0.145778433476558
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00132",
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 26.30000000447035,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.5288263571584448
+      },
+      "top2": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.4793756430571284
+      },
+      "recomputedMargin": 0.04945071410131646
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00148",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-login"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 22.100000001490116,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.6932163587708611,
+      "payloadMargin": 0.23610988129429855,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+        "score": 0.6932163587708611
+      },
+      "top2": {
+        "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+        "score": 0.4571064774765625
+      },
+      "recomputedMargin": 0.23610988129429855
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00161",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 27.399999998509884,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.5162860267908564
+      },
+      "top2": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.49790154216798005
+      },
+      "recomputedMargin": 0.018384484622876396
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00164",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 21,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.5761494916307999
+      },
+      "top2": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.4887244768106437
+      },
+      "recomputedMargin": 0.08742501482015619
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00196",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-payout"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 20.599999994039536,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.7197246261223147,
+      "payloadMargin": 0.2563572968795069,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.7197246261223147
+      },
+      "top2": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.46336732924280777
+      },
+      "recomputedMargin": 0.2563572968795069
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00205",
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 26.100000001490116,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.5288263571584448
+      },
+      "top2": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.4793756430571284
+      },
+      "recomputedMargin": 0.04945071410131646
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00208",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 21.5,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.5043735877250277
+      },
+      "top2": {
+        "sopId": "ef49d27c-a115-4916-8226-8f8c84750b15",
+        "score": 0.3585951542484697
+      },
+      "recomputedMargin": 0.145778433476558
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00239",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 27.100000001490116,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+        "score": 0.6554956404239408
+      },
+      "top2": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.5177275700109442
+      },
+      "recomputedMargin": 0.13776807041299666
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00251",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-login"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 18.5,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.6905713065321307,
+      "payloadMargin": 0.22455350010666258,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+        "score": 0.6905713065321307
+      },
+      "top2": {
+        "sopId": "dde14626-c6dc-43d2-8dff-9e61b05f528e",
+        "score": 0.46601780642546814
+      },
+      "recomputedMargin": 0.22455350010666258
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00264",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-gifts"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 19.600000001490116,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.6656688489100545,
+      "payloadMargin": 0.2247081446407625,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.6656688489100545
+      },
+      "top2": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.440960704269292
+      },
+      "recomputedMargin": 0.2247081446407625
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00266",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-login"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 16.899999998509884,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.7113363509461057,
+      "payloadMargin": 0.20881391571590946,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+        "score": 0.7113363509461057
+      },
+      "top2": {
+        "sopId": "dde14626-c6dc-43d2-8dff-9e61b05f528e",
+        "score": 0.5025224352301962
+      },
+      "recomputedMargin": 0.20881391571590946
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00274",
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 25.600000001490116,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.5288263571584448
+      },
+      "top2": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.4793756430571284
+      },
+      "recomputedMargin": 0.04945071410131646
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00275",
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 27.600000001490116,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.5288263571584448
+      },
+      "top2": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.4793756430571284
+      },
+      "recomputedMargin": 0.04945071410131646
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00283",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-login"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 24.30000000447035,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.7236771208045919,
+      "payloadMargin": 0.21446029530528687,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+        "score": 0.7236771208045919
+      },
+      "top2": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.509216825499305
+      },
+      "recomputedMargin": 0.21446029530528687
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00300",
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 28.100000001490116,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.5288263571584448
+      },
+      "top2": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.4793756430571284
+      },
+      "recomputedMargin": 0.04945071410131646
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00328",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-login"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 21.5,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.6932163587708611,
+      "payloadMargin": 0.23610988129429855,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+        "score": 0.6932163587708611
+      },
+      "top2": {
+        "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+        "score": 0.4571064774765625
+      },
+      "recomputedMargin": 0.23610988129429855
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00359",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-live"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 16.80000000447035,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.5179938813150773,
+      "payloadMargin": 0.3559957518700181,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+        "score": 0.5179938813150773
+      },
+      "top2": {
+        "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+        "score": 0.16199812944505917
+      },
+      "recomputedMargin": 0.3559957518700181
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00373",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-live"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 21.399999998509884,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.6983661968806235,
+      "payloadMargin": 0.3386045063777112,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+        "score": 0.6983661968806235
+      },
+      "top2": {
+        "sopId": "27ca5d5f-874c-4dc3-8d1d-15b3cda5537c",
+        "score": 0.3597616905029123
+      },
+      "recomputedMargin": 0.3386045063777112
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00381",
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 25.700000002980232,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.5288263571584448
+      },
+      "top2": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.4793756430571284
+      },
+      "recomputedMargin": 0.04945071410131646
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00392",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-eligibility"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 24.600000001490116,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "ef49d27c-a115-4916-8226-8f8c84750b15",
+        "score": 0.607408349107528
+      },
+      "top2": {
+        "sopId": "bd7c516a-558c-4670-8c49-b20d36392f24",
+        "score": 0.5354800583663822
+      },
+      "recomputedMargin": 0.0719282907411457
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00393",
+      "expected": {
+        "decision": "escalate",
+        "reason": "specialist_review_required",
+        "sopId": "wc-appeal"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 25.19999999552965,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e4d6a15d-7b07-45d5-989b-d195ac78c7a9",
+        "score": 0.5404477034784418
+      },
+      "top2": {
+        "sopId": "a07aeb19-b940-4c99-9004-9aa2f1a7efe1",
+        "score": 0.4806158268972138
+      },
+      "recomputedMargin": 0.059831876581228016
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00431",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-eligibility"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-eligibility"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 19.200000002980232,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.537891526362761,
+      "payloadMargin": 0.2419820163405374,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "ef49d27c-a115-4916-8226-8f8c84750b15",
+        "score": 0.537891526362761
+      },
+      "top2": {
+        "sopId": "e4d6a15d-7b07-45d5-989b-d195ac78c7a9",
+        "score": 0.29590951002222365
+      },
+      "recomputedMargin": 0.2419820163405374
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00443",
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-eligibility"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-eligibility"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 18.30000000447035,
+      "outcome": "answered",
+      "gateReason": null,
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": 0.537891526362761,
+      "payloadMargin": 0.2419820163405374,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "ef49d27c-a115-4916-8226-8f8c84750b15",
+        "score": 0.537891526362761
+      },
+      "top2": {
+        "sopId": "e4d6a15d-7b07-45d5-989b-d195ac78c7a9",
+        "score": 0.29590951002222365
+      },
+      "recomputedMargin": 0.2419820163405374
+    },
+    {
+      "data_mode": "simulated",
+      "ticketId": "SIM-TICKET-00477",
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 27,
+      "outcome": "escalated",
+      "gateReason": "insufficient_margin",
+      "appliedMinMargin": 0.17,
+      "thresholdAccept": 0,
+      "payloadScore": null,
+      "payloadMargin": null,
+      "candidateCount": 5,
+      "top1": {
+        "sopId": "e3d78771-ef7e-4c7c-a7b5-ac3a900034e6",
+        "score": 0.29033499639288646
+      },
+      "top2": {
+        "sopId": "dde14626-c6dc-43d2-8dff-9e61b05f528e",
+        "score": 0.27643338467715084
+      },
+      "recomputedMargin": 0.013901611715735618
+    }
+  ],
+  "bundleIdentity": [
+    {
+      "bundleId": "11466d35-18a7-4c7e-a3bf-f53f23b04f94",
+      "bundleVersion": 1,
+      "modelId": "Xenova/all-MiniLM-L6-v2",
+      "modelRevision": "751bff37182d3f1213fa05d7196b954e230abad9",
+      "quantization": "q8"
+    }
+  ],
+  "runtime": {
+    "path": "deployed public Vercel bundle, headless Chrome over CDP",
+    "executionProvider": "browser (onnxruntime-web), not the Node native runtime",
+    "note": "the local harness runs the same browser engine and the same pinned model; runtime is therefore not a differentiator between the two paths"
+  },
+  "comparison": {
+    "sameBatch": true,
+    "localBaselineApplies": false,
+    "sameInputBatchSha256AsBaseline": null,
+    "sameCorpusSha256AsBaseline": null,
+    "identicalPerTicketDecisionsToLocalBaseline": null,
+    "decisionMismatchesVsLocalBaseline": [],
+    "localBaseline": null
+  },
+  "browser": {
+    "consoleErrors": [],
+    "requestInstrumentationErrors": []
+  },
+  "perTicket": [
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "PARITY-RP-022",
+        "customerRef": "SIM-CREATOR-0000",
+        "createdAt": "2026-09-26T00:00:00.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P3",
+        "subject": "Livestream on youtube by phone and microphone not enabling t",
+        "message": "Livestream on youtube by phone and microphone not enabling this just started happening",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "owner_label_escalate",
+          "sopId": null
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "real-phrased-false-accept",
+        "paritySource": "real-phrased-queries.csv",
+        "parityOwnerLabel": "escalate"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_escalate",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 13.100000001490116
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "PARITY-RP-023",
+        "customerRef": "SIM-CREATOR-0000",
+        "createdAt": "2026-09-26T00:00:00.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P3",
+        "subject": "How can i Enable Live Streaming?",
+        "message": "How can i Enable Live Streaming?",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "owner_label_escalate",
+          "sopId": null
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "real-phrased-false-accept",
+        "paritySource": "real-phrased-queries.csv",
+        "parityOwnerLabel": "escalate"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_escalate",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 9.600000001490116
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "PARITY-RP-025",
+        "customerRef": "SIM-CREATOR-0000",
+        "createdAt": "2026-09-26T00:00:00.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P3",
+        "subject": "Live stream on mobile",
+        "message": "Live stream on mobile",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "owner_label_ambiguous",
+          "sopId": null
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "real-phrased-false-accept",
+        "paritySource": "real-phrased-queries.csv",
+        "parityOwnerLabel": "ambiguous"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_ambiguous",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 9.800000004470348
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "PARITY-RP-026",
+        "customerRef": "SIM-CREATOR-0000",
+        "createdAt": "2026-09-26T00:00:00.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P3",
+        "subject": "Live streaming issues",
+        "message": "Live streaming issues",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "owner_label_ambiguous",
+          "sopId": null
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "real-phrased-false-accept",
+        "paritySource": "real-phrased-queries.csv",
+        "parityOwnerLabel": "ambiguous"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_ambiguous",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 6.899999998509884
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "PARITY-RP-040",
+        "customerRef": "SIM-CREATOR-0000",
+        "createdAt": "2026-09-26T00:00:00.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P3",
+        "subject": "YouTube: We have detected multiple streams using the same st",
+        "message": "YouTube: We have detected multiple streams using the same stream key with auto-start enabled.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "owner_label_ambiguous",
+          "sopId": null
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "real-phrased-false-accept",
+        "paritySource": "real-phrased-queries.csv",
+        "parityOwnerLabel": "ambiguous"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_ambiguous",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 13.700000002980232
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "PARITY-RP-060",
+        "customerRef": "SIM-CREATOR-0000",
+        "createdAt": "2026-09-26T00:00:00.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P3",
+        "subject": "How can creators monetize on TikTok?",
+        "message": "How can creators monetize on TikTok?",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "owner_label_escalate",
+          "sopId": null
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "real-phrased-false-accept",
+        "paritySource": "real-phrased-queries.csv",
+        "parityOwnerLabel": "escalate"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_escalate",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-payout"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 11.799999997019768
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00002",
+        "customerRef": "SIM-CREATOR-8715",
+        "createdAt": "2026-09-21T23:28:02.000Z",
+        "channel": "in_app_chat",
+        "language": "en",
+        "category": "Gifts and purchases",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "Question about a Coin charge",
+        "message": "There are two charges for one Coin purchase on my statement. I can provide the receipt reference if needed.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "gifts_purchases"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-gifts"
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "clean",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-gifts"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 17.30000000447035
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00016",
+        "customerRef": "SIM-CREATOR-3565",
+        "createdAt": "2026-09-21T23:39:01.000Z",
+        "channel": "social_dm",
+        "language": "en",
+        "category": "Account access",
+        "queue": "account",
+        "priority": "P2",
+        "subject": "Password reset loop",
+        "message": "The app keeps sending me back to sign in after I reset the password. Can you point me to the right recovery step? Just following up on this — same issue.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "routine_account_access"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-login"
+        },
+        "chaosTags": [
+          "near_duplicate"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "near_duplicate",
+          "details": {
+            "duplicateOf": "SIM-TICKET-00253"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-gifts"
+          },
+          "category": "Gifts and purchases",
+          "queue": "payments",
+          "language": "es",
+          "channel": "social_dm",
+          "priority": "P2",
+          "status": "open",
+          "message": "Compré monedas para enviar un regalo, pero el saldo no se actualizó. El recibo aparece como completado."
+        },
+        "duplicateOf": "SIM-TICKET-00253",
+        "parityClass": "near-duplicate",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-login"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 22.700000002980232
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00025",
+        "customerRef": "SIM-CREATOR-1648",
+        "createdAt": "2026-09-21T11:41:49.000Z",
+        "channel": "in_app_chat",
+        "language": "en",
+        "category": "Gifts and purchases",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "Coin purchase completed but balance not updated",
+        "message": "I bought Coins last night to send a Gift. Receipt says completed, but my balance still looks the same.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "gifts_purchases"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-gifts"
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "clean",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-gifts"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 18.200000002980232
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00059",
+        "customerRef": "SIM-CREATOR-7462",
+        "createdAt": "2026-09-22T23:25:37.000Z",
+        "channel": "in_app_chat",
+        "language": "en",
+        "category": "Gifts and purchases",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "Question about a Coin charge",
+        "message": "There are two charges for one Coin purchase on my statement. I can provide the receipt reference if needed.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "gifts_purchases"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-gifts"
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "clean",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-gifts"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 17.30000000447035
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00100",
+        "customerRef": "SIM-CREATOR-8470",
+        "createdAt": "2026-09-23T20:12:56.000Z",
+        "channel": "in_app_chat",
+        "language": "en",
+        "category": "Gifts and purchases",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "Coin purchase completed but balance not updated",
+        "message": "I bought Coins last night to send a Gift. Receipt says completed, but my balance still looks the same.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "gifts_purchases"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-gifts"
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "clean",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-gifts"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 16.80000000447035
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00102",
+        "customerRef": "SIM-CREATOR-7913",
+        "createdAt": "2026-09-23T23:37:11.000Z",
+        "channel": "in_app_chat",
+        "language": "en",
+        "category": "Gifts and purchases",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "Coin purchase completed but balance not updated",
+        "message": "I bought Coins last night to send a Gift. Receipt says completed, but my balance still looks the same.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "gifts_purchases"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-gifts"
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "clean",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-gifts"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 15.800000004470348
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00108",
+        "customerRef": "SIM-CREATOR-6800",
+        "createdAt": "2026-09-23T08:29:47.000Z",
+        "channel": "in_app_chat",
+        "language": "es",
+        "category": "Gifts and purchases",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "Saldo de moedas não atualizou",
+        "message": "Super, encore une réponse automatique… anyway, I need help. Comprei moedas ontem para enviar um presente. O recibo está concluído, mas o saldo não mudou.",
+        "status": "resolved",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "gifts_purchases"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-gifts"
+        },
+        "chaosTags": [
+          "mixed_language_typos_sarcasm"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "mixed_language_typos_sarcasm",
+          "details": {
+            "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+            "typosInjected": true,
+            "languageFieldMayDisagree": true
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-gifts"
+          },
+          "category": "Gifts and purchases",
+          "queue": "payments",
+          "language": "pt-BR",
+          "channel": "in_app_chat",
+          "priority": "P2",
+          "status": "resolved",
+          "message": "Comprei moedas ontem para enviar um presente. O recibo está concluído, mas o saldo não mudou."
+        },
+        "parityClass": "messy",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 30.799999997019768
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00111",
+        "customerRef": "SIM-CREATOR-0551",
+        "createdAt": "2026-09-23T14:25:15.000Z",
+        "channel": "email_web_form",
+        "language": "fr",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P2",
+        "subject": "Can a closed account payout be redirected during an audit hold?",
+        "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+        "status": "resolved",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "no_supported_procedure",
+          "sopId": null
+        },
+        "chaosTags": [
+          "no_correct_answer"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "no_correct_answer",
+          "details": {
+            "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-gifts"
+          },
+          "category": "Gifts and purchases",
+          "queue": "payments",
+          "language": "fr",
+          "channel": "email_web_form",
+          "priority": "P2",
+          "status": "resolved",
+          "message": "J’ai acheté des pièces hier pour envoyer un cadeau. Le reçu indique que le paiement est terminé, mais le solde ne change pas."
+        },
+        "parityClass": "escalation",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 26.5
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00123",
+        "customerRef": "SIM-CREATOR-4956",
+        "createdAt": "2026-09-23T21:24:00.000Z",
+        "channel": "social_dm",
+        "language": "en",
+        "category": "Creator payouts",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "When should the payout arrive?",
+        "message": "I already tried twice, gracias — this is getting ridiculous. Could you check the normal payuot timing? The status changed to processed earlier this week.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "creator_payouts"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "chaosTags": [
+          "mixed_language_typos_sarcasm"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "mixed_language_typos_sarcasm",
+          "details": {
+            "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+            "typosInjected": true,
+            "languageFieldMayDisagree": true
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-payout"
+          },
+          "category": "Creator payouts",
+          "queue": "payments",
+          "language": "en",
+          "channel": "social_dm",
+          "priority": "P2",
+          "status": "pending_customer",
+          "message": "Could you check the normal payout timing? The status changed to processed earlier this week."
+        },
+        "parityClass": "messy",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 22.200000002980232
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00132",
+        "customerRef": "SIM-CREATOR-5449",
+        "createdAt": "2026-09-23T13:04:03.000Z",
+        "channel": "social_dm",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P2",
+        "subject": "Can a closed account payout be redirected during an audit hold?",
+        "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "no_supported_procedure",
+          "sopId": null
+        },
+        "chaosTags": [
+          "no_correct_answer"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "no_correct_answer",
+          "details": {
+            "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-payout"
+          },
+          "category": "Creator payouts",
+          "queue": "payments",
+          "language": "en",
+          "channel": "social_dm",
+          "priority": "P2",
+          "status": "pending_customer",
+          "message": "My payout says processed, but I do not see it in the bank account yet. It was marked processed three business days ago."
+        },
+        "parityClass": "escalation",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 26.30000000447035
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00148",
+        "customerRef": "SIM-CREATOR-8593",
+        "createdAt": "2026-09-23T19:20:13.000Z",
+        "channel": "social_dm",
+        "language": "en",
+        "category": "Account access",
+        "queue": "account",
+        "priority": "P2",
+        "subject": "Password reset loop",
+        "message": "The app keeps sending me back to sign in after I reset the password. Can you point me to the right recovery step? Just following up on this — same issue.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "routine_account_access"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-login"
+        },
+        "chaosTags": [
+          "near_duplicate"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "near_duplicate",
+          "details": {
+            "duplicateOf": "SIM-TICKET-00255"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-payout"
+          },
+          "category": "Creator payouts",
+          "queue": "payments",
+          "language": "pt-BR",
+          "channel": "social_dm",
+          "priority": "P2",
+          "status": "open",
+          "message": "O status do saque está como processado, mas o valor ainda não apareceu na conta. Faz três dias úteis."
+        },
+        "duplicateOf": "SIM-TICKET-00255",
+        "parityClass": "near-duplicate",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-login"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 22.100000001490116
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00161",
+        "customerRef": "SIM-CREATOR-8905",
+        "createdAt": "2026-09-24T20:47:35.000Z",
+        "channel": "in_app_chat",
+        "language": "es",
+        "category": "Creator payouts",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "No recibí el pago",
+        "message": "Sure, because waiting another week is just brilliant 🙃. El pago figura como procesado, pero todavía no aparece en mi cuenta. Han pasado tres días hábiles.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "creator_payouts"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "chaosTags": [
+          "mixed_language_typos_sarcasm"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "mixed_language_typos_sarcasm",
+          "details": {
+            "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+            "typosInjected": true,
+            "languageFieldMayDisagree": true
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-payout"
+          },
+          "category": "Creator payouts",
+          "queue": "payments",
+          "language": "es",
+          "channel": "in_app_chat",
+          "priority": "P2",
+          "status": "pending_customer",
+          "message": "El pago figura como procesado, pero todavía no aparece en mi cuenta. Han pasado tres días hábiles."
+        },
+        "parityClass": "messy",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 27.399999998509884
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00164",
+        "customerRef": "SIM-CREATOR-1355",
+        "createdAt": "2026-09-24T23:02:14.000Z",
+        "channel": "social_dm",
+        "language": "en",
+        "category": "Creator payouts",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "When should the payout arrive?",
+        "message": "Could you check the normal payout timing? The status changed to processed earlier this week.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "creator_payouts"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "clean",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 21
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00196",
+        "customerRef": "SIM-CREATOR-6587",
+        "createdAt": "2026-09-24T19:10:53.000Z",
+        "channel": "in_app_chat",
+        "language": "en",
+        "category": "Creator payouts",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "Processed payout not received",
+        "message": "My payout says processed, but I do not see it in the bank account yet. It was marked processed three business days ago.",
+        "status": "pending_internal",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "creator_payouts"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "clean",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-payout"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 20.599999994039536
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00205",
+        "customerRef": "SIM-CREATOR-0730",
+        "createdAt": "2026-09-25T08:39:02.000Z",
+        "channel": "in_app_chat",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P2",
+        "subject": "Can a closed account payout be redirected during an audit hold?",
+        "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "no_supported_procedure",
+          "sopId": null
+        },
+        "chaosTags": [
+          "no_correct_answer"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "no_correct_answer",
+          "details": {
+            "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-payout"
+          },
+          "category": "Creator payouts",
+          "queue": "payments",
+          "language": "en",
+          "channel": "in_app_chat",
+          "priority": "P2",
+          "status": "open",
+          "message": "My payout says processed, but I do not see it in the bank account yet. It was marked processed three business days ago."
+        },
+        "parityClass": "escalation",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 26.100000001490116
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00208",
+        "customerRef": "SIM-CREATOR-8657",
+        "createdAt": "2026-09-25T20:03:23.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Creator payouts",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "When should the payout arrive?",
+        "message": "I already tried twice, gracias — this is getting ridiculous. Could you check the normal payuot timing? The status changed to processed earlier this week.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "creator_payouts"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "chaosTags": [
+          "mixed_language_typos_sarcasm"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "mixed_language_typos_sarcasm",
+          "details": {
+            "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+            "typosInjected": true,
+            "languageFieldMayDisagree": true
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-payout"
+          },
+          "category": "Creator payouts",
+          "queue": "payments",
+          "language": "en",
+          "channel": "email_web_form",
+          "priority": "P2",
+          "status": "open",
+          "message": "Could you check the normal payout timing? The status changed to processed earlier this week."
+        },
+        "parityClass": "messy",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 21.5
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00239",
+        "customerRef": "SIM-CREATOR-1470",
+        "createdAt": "2026-09-25T19:29:22.000Z",
+        "channel": "email_web_form",
+        "language": "fr",
+        "category": "Account access",
+        "queue": "account",
+        "priority": "P2",
+        "subject": "No llega el código de recuperación",
+        "message": "I already tried twice, gracias — this is getting ridiculous. Cambié de teléfono y no recibo el código para recuperar la cuenta. Ya revisé el correo.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "routine_account_access"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-login"
+        },
+        "chaosTags": [
+          "mixed_language_typos_sarcasm"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "mixed_language_typos_sarcasm",
+          "details": {
+            "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+            "typosInjected": true,
+            "languageFieldMayDisagree": true
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-login"
+          },
+          "category": "Account access",
+          "queue": "account",
+          "language": "es",
+          "channel": "email_web_form",
+          "priority": "P2",
+          "status": "pending_customer",
+          "message": "Cambié de teléfono y no recibo el código para recuperar la cuenta. Ya revisé el correo."
+        },
+        "parityClass": "messy",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 27.100000001490116
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00251",
+        "customerRef": "SIM-CREATOR-8648",
+        "createdAt": "2026-09-26T21:37:38.000Z",
+        "channel": "social_dm",
+        "language": "en",
+        "category": "Account access",
+        "queue": "account",
+        "priority": "P2",
+        "subject": "Password reset loop",
+        "message": "The app keeps sending me back to sign in after I reset the password. Can you point me to the right recovery step?",
+        "status": "resolved",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "routine_account_access"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-login"
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "clean",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-login"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 18.5
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00264",
+        "customerRef": "SIM-CREATOR-2955",
+        "createdAt": "2026-09-26T22:57:26.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Gifts and purchases",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "Question about a Coin charge",
+        "message": "There are two charges for one Coin purchase on my statement. I can provide the receipt reference if needed. Just following up on this — same issue.",
+        "status": "resolved",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "gifts_purchases"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-gifts"
+        },
+        "chaosTags": [
+          "near_duplicate"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "near_duplicate",
+          "details": {
+            "duplicateOf": "SIM-TICKET-00107"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-login"
+          },
+          "category": "Account access",
+          "queue": "account",
+          "language": "es",
+          "channel": "email_web_form",
+          "priority": "P2",
+          "status": "resolved",
+          "message": "Cambié de teléfono y no recibo el código para recuperar la cuenta. Ya revisé el correo."
+        },
+        "duplicateOf": "SIM-TICKET-00107",
+        "parityClass": "near-duplicate",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-gifts"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 19.600000001490116
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00266",
+        "customerRef": "SIM-CREATOR-4263",
+        "createdAt": "2026-09-26T22:42:14.000Z",
+        "channel": "in_app_chat",
+        "language": "en",
+        "category": "Account access",
+        "queue": "account",
+        "priority": "P2",
+        "subject": "Recovery code not arriving",
+        "message": "Changed phones and now the recovery code is not arriving. I tried the reset once and checked the inbox.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "routine_account_access"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-login"
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "clean",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-login"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 16.899999998509884
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00274",
+        "customerRef": "SIM-CREATOR-8530",
+        "createdAt": "2026-09-26T19:09:55.000Z",
+        "channel": "in_app_chat",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P1",
+        "subject": "Can a closed account payout be redirected during an audit hold?",
+        "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "no_supported_procedure",
+          "sopId": null
+        },
+        "chaosTags": [
+          "no_correct_answer"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "no_correct_answer",
+          "details": {
+            "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "escalate",
+            "reason": "specialist_review_required",
+            "sopId": "wc-security"
+          },
+          "category": "Account security",
+          "queue": "account-security",
+          "language": "en",
+          "channel": "in_app_chat",
+          "priority": "P1",
+          "status": "pending_customer",
+          "message": "I did not make the recent sign-in and the recovery email changed. Please help secure the account."
+        },
+        "parityClass": "escalation",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 25.600000001490116
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00275",
+        "customerRef": "SIM-CREATOR-1490",
+        "createdAt": "2026-09-26T17:32:21.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P1",
+        "subject": "Can a closed account payout be redirected during an audit hold?",
+        "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "no_supported_procedure",
+          "sopId": null
+        },
+        "chaosTags": [
+          "no_correct_answer"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "no_correct_answer",
+          "details": {
+            "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "escalate",
+            "reason": "specialist_review_required",
+            "sopId": "wc-security"
+          },
+          "category": "Account security",
+          "queue": "account-security",
+          "language": "en",
+          "channel": "email_web_form",
+          "priority": "P1",
+          "status": "open",
+          "message": "I did not make the recent sign-in and the recovery email changed. Please help secure the account."
+        },
+        "parityClass": "escalation",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 27.600000001490116
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00283",
+        "customerRef": "SIM-CREATOR-0118",
+        "createdAt": "2026-09-26T17:06:46.000Z",
+        "channel": "in_app_chat",
+        "language": "es",
+        "category": "Account access",
+        "queue": "account",
+        "priority": "P2",
+        "subject": "No llega el código de recuperación",
+        "message": "Cambié de teléfono y no recibo el código para recuperar la cuenta. Ya revisé el correo. Just following up on this — same issue.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "routine_account_access"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-login"
+        },
+        "chaosTags": [
+          "near_duplicate"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "near_duplicate",
+          "details": {
+            "duplicateOf": "SIM-TICKET-00234"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "escalate",
+            "reason": "specialist_review_required",
+            "sopId": "wc-security"
+          },
+          "category": "Account security",
+          "queue": "account-security",
+          "language": "es",
+          "channel": "in_app_chat",
+          "priority": "P1",
+          "status": "open",
+          "message": "No reconozco el inicio de sesión reciente y cambió el correo de recuperación. Necesito ayuda para proteger la cuenta."
+        },
+        "duplicateOf": "SIM-TICKET-00234",
+        "parityClass": "near-duplicate",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-login"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 24.30000000447035
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00300",
+        "customerRef": "SIM-CREATOR-8351",
+        "createdAt": "2026-09-27T20:23:06.000Z",
+        "channel": "in_app_chat",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P2",
+        "subject": "Can a closed account payout be redirected during an audit hold?",
+        "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+        "status": "pending_internal",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "no_supported_procedure",
+          "sopId": null
+        },
+        "chaosTags": [
+          "no_correct_answer"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "no_correct_answer",
+          "details": {
+            "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-live"
+          },
+          "category": "LIVE technical support",
+          "queue": "live-support",
+          "language": "en",
+          "channel": "in_app_chat",
+          "priority": "P2",
+          "status": "pending_internal",
+          "message": "My scheduled LIVE drops after about thirty seconds. The connection seems steady and the app is up to date."
+        },
+        "parityClass": "escalation",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 28.100000001490116
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00328",
+        "customerRef": "SIM-CREATOR-7226",
+        "createdAt": "2026-09-27T12:45:52.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Account access",
+        "queue": "account",
+        "priority": "P2",
+        "subject": "Password reset loop",
+        "message": "The app keeps sending me back to sign in after I reset the password. Can you point me to the right recovery step? Just following up on this — same issue.",
+        "status": "pending_internal",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "routine_account_access"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-login"
+        },
+        "chaosTags": [
+          "near_duplicate"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "near_duplicate",
+          "details": {
+            "duplicateOf": "SIM-TICKET-00232"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-live"
+          },
+          "category": "LIVE technical support",
+          "queue": "live-support",
+          "language": "en",
+          "channel": "email_web_form",
+          "priority": "P2",
+          "status": "pending_internal",
+          "message": "My scheduled LIVE drops after about thirty seconds. The connection seems steady and the app is up to date."
+        },
+        "duplicateOf": "SIM-TICKET-00232",
+        "parityClass": "near-duplicate",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-login"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 21.5
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00359",
+        "customerRef": "SIM-CREATOR-3546",
+        "createdAt": "2026-09-28T08:09:19.000Z",
+        "channel": "social_dm",
+        "language": "en",
+        "category": "LIVE technical support",
+        "queue": "live-support",
+        "priority": "P2",
+        "subject": "Audio drops during broadcast",
+        "message": "The stream starts, then viewers say the audio cuts out. It happened twice during tonight’s broadcast.",
+        "status": "resolved",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "live_technical"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-live"
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "clean",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-live"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 16.80000000447035
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00373",
+        "customerRef": "SIM-CREATOR-8354",
+        "createdAt": "2026-09-28T20:00:51.000Z",
+        "channel": "in_app_chat",
+        "language": "en",
+        "category": "LIVE technical support",
+        "queue": "live-support",
+        "priority": "P2",
+        "subject": "LIVE stream disconnects",
+        "message": "My scheduled LIVE drops after about thirty seconds. The connection seems steady and the app is up to date. Just following up on this — same issue.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "live_technical"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-live"
+        },
+        "chaosTags": [
+          "near_duplicate"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "near_duplicate",
+          "details": {
+            "duplicateOf": "SIM-TICKET-00350"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "escalate",
+            "reason": "specialist_review_required",
+            "sopId": "wc-appeal"
+          },
+          "category": "Content and restrictions",
+          "queue": "trust-safety",
+          "language": "fr",
+          "channel": "in_app_chat",
+          "priority": "P2",
+          "status": "pending_customer",
+          "message": "Ma diffusion a été retirée et mon accès au LIVE est limité. Je souhaite faire appel de la décision."
+        },
+        "duplicateOf": "SIM-TICKET-00350",
+        "parityClass": "near-duplicate",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-live"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 21.399999998509884
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00381",
+        "customerRef": "SIM-CREATOR-8777",
+        "createdAt": "2026-09-28T09:27:48.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P2",
+        "subject": "Can a closed account payout be redirected during an audit hold?",
+        "message": "My account is closed and the payout is held for an audit. Can support redirect the balance to a different creator account, or tell me the result of the review? The help pages do not cover this.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "no_supported_procedure",
+          "sopId": null
+        },
+        "chaosTags": [
+          "no_correct_answer"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "no_correct_answer",
+          "details": {
+            "expectedHandling": "escalate; no supplied procedure supports a safe answer"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "escalate",
+            "reason": "specialist_review_required",
+            "sopId": "wc-appeal"
+          },
+          "category": "Content and restrictions",
+          "queue": "trust-safety",
+          "language": "en",
+          "channel": "email_web_form",
+          "priority": "P2",
+          "status": "open",
+          "message": "My broadcast was removed and LIVE is now restricted. The in-app notice says it is a guideline action; I would like to appeal."
+        },
+        "parityClass": "escalation",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 25.700000002980232
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00392",
+        "customerRef": "SIM-CREATOR-4437",
+        "createdAt": "2026-09-28T10:36:58.000Z",
+        "channel": "in_app_chat",
+        "language": "fr",
+        "category": "Creator eligibility",
+        "queue": "creator-support",
+        "priority": "P3",
+        "subject": "Accès au LIVE non disponible",
+        "message": "Je remplis les critères d’âge et d’abonnés indiqués, mais le bouton LIVE n’apparaît pas. Just following up on this — same issue.",
+        "status": "resolved",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "creator_eligibility"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-eligibility"
+        },
+        "chaosTags": [
+          "near_duplicate"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "near_duplicate",
+          "details": {
+            "duplicateOf": "SIM-TICKET-00423"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "escalate",
+            "reason": "specialist_review_required",
+            "sopId": "wc-appeal"
+          },
+          "category": "Content and restrictions",
+          "queue": "trust-safety",
+          "language": "en",
+          "channel": "in_app_chat",
+          "priority": "P2",
+          "status": "resolved",
+          "message": "My broadcast was removed and LIVE is now restricted. The in-app notice says it is a guideline action; I would like to appeal."
+        },
+        "duplicateOf": "SIM-TICKET-00423",
+        "parityClass": "near-duplicate",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-eligibility"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 24.600000001490116
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00393",
+        "customerRef": "SIM-CREATOR-8966",
+        "createdAt": "2026-09-28T16:22:21.000Z",
+        "channel": "email_web_form",
+        "language": "pt-BR",
+        "category": "Content and restrictions",
+        "queue": "trust-safety",
+        "priority": "P2",
+        "subject": "Appeal a LIVE restriction",
+        "message": "Sure, because waiting another week is just brilliant 🙃. My broadcast was removed and LIVE is now restricted. The in-app notice says it is a guideline action; I would like to appeal.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "content_restrictions"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "specialist_review_required",
+          "sopId": "wc-appeal"
+        },
+        "chaosTags": [
+          "mixed_language_typos_sarcasm"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "mixed_language_typos_sarcasm",
+          "details": {
+            "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+            "typosInjected": true,
+            "languageFieldMayDisagree": true
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "escalate",
+            "reason": "specialist_review_required",
+            "sopId": "wc-appeal"
+          },
+          "category": "Content and restrictions",
+          "queue": "trust-safety",
+          "language": "en",
+          "channel": "email_web_form",
+          "priority": "P2",
+          "status": "open",
+          "message": "My broadcast was removed and LIVE is now restricted. The in-app notice says it is a guideline action; I would like to appeal."
+        },
+        "parityClass": "messy",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "specialist_review_required",
+        "sopId": "wc-appeal"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 25.19999999552965
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00431",
+        "customerRef": "SIM-CREATOR-6069",
+        "createdAt": "2026-09-29T22:24:33.000Z",
+        "channel": "in_app_chat",
+        "language": "en",
+        "category": "Creator eligibility",
+        "queue": "creator-support",
+        "priority": "P3",
+        "subject": "LIVE access not appearing",
+        "message": "I meet the age and follower requirements shown in the help page, but the LIVE control is still missing.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "creator_eligibility"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-eligibility"
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "clean",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-eligibility"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-eligibility"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 19.200000002980232
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00443",
+        "customerRef": "SIM-CREATOR-2568",
+        "createdAt": "2026-09-29T22:08:18.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Creator eligibility",
+        "queue": "creator-support",
+        "priority": "P3",
+        "subject": "LIVE access not appearing",
+        "message": "I meet the age and follower requirements shown in the help page, but the LIVE control is still missing.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "creator_eligibility"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-eligibility"
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "clean",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-eligibility"
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-eligibility"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 18.30000000447035
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00477",
+        "customerRef": "SIM-CREATOR-6583",
+        "createdAt": "2026-09-30T19:08:08.000Z",
+        "channel": "callback_request",
+        "language": "es",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P3",
+        "subject": "Transfer balance between accounts?",
+        "message": "Super, encore une réponse automatique… anyway, I need help. Can I move a creator balance between two acounts after I closed one of them? I cannot find this in the help pages.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "no_supported_procedure",
+          "sopId": null
+        },
+        "chaosTags": [
+          "mixed_language_typos_sarcasm"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "mixed_language_typos_sarcasm",
+          "details": {
+            "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+            "typosInjected": true,
+            "languageFieldMayDisagree": true
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "escalate",
+            "reason": "no_supported_procedure",
+            "sopId": null
+          },
+          "category": "Other / ambiguous",
+          "queue": "triage",
+          "language": "en",
+          "channel": "callback_request",
+          "priority": "P3",
+          "status": "pending_customer",
+          "message": "Can I move a creator balance between two accounts after I closed one of them? I cannot find this in the help pages."
+        },
+        "parityClass": "messy",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "no_supported_procedure",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": true,
+      "failureCategory": null,
+      "latencyMs": 27
+    }
+  ],
+  "topFailures": [
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "PARITY-RP-040",
+        "customerRef": "SIM-CREATOR-0000",
+        "createdAt": "2026-09-26T00:00:00.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P3",
+        "subject": "YouTube: We have detected multiple streams using the same st",
+        "message": "YouTube: We have detected multiple streams using the same stream key with auto-start enabled.",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "owner_label_ambiguous",
+          "sopId": null
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "real-phrased-false-accept",
+        "paritySource": "real-phrased-queries.csv",
+        "parityOwnerLabel": "ambiguous"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_ambiguous",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 13.700000002980232
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "PARITY-RP-022",
+        "customerRef": "SIM-CREATOR-0000",
+        "createdAt": "2026-09-26T00:00:00.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P3",
+        "subject": "Livestream on youtube by phone and microphone not enabling t",
+        "message": "Livestream on youtube by phone and microphone not enabling this just started happening",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "owner_label_escalate",
+          "sopId": null
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "real-phrased-false-accept",
+        "paritySource": "real-phrased-queries.csv",
+        "parityOwnerLabel": "escalate"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_escalate",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 13.100000001490116
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "PARITY-RP-060",
+        "customerRef": "SIM-CREATOR-0000",
+        "createdAt": "2026-09-26T00:00:00.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P3",
+        "subject": "How can creators monetize on TikTok?",
+        "message": "How can creators monetize on TikTok?",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "owner_label_escalate",
+          "sopId": null
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "real-phrased-false-accept",
+        "paritySource": "real-phrased-queries.csv",
+        "parityOwnerLabel": "escalate"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_escalate",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-payout"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 11.799999997019768
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "PARITY-RP-025",
+        "customerRef": "SIM-CREATOR-0000",
+        "createdAt": "2026-09-26T00:00:00.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P3",
+        "subject": "Live stream on mobile",
+        "message": "Live stream on mobile",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "owner_label_ambiguous",
+          "sopId": null
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "real-phrased-false-accept",
+        "paritySource": "real-phrased-queries.csv",
+        "parityOwnerLabel": "ambiguous"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_ambiguous",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 9.800000004470348
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "PARITY-RP-023",
+        "customerRef": "SIM-CREATOR-0000",
+        "createdAt": "2026-09-26T00:00:00.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P3",
+        "subject": "How can i Enable Live Streaming?",
+        "message": "How can i Enable Live Streaming?",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "owner_label_escalate",
+          "sopId": null
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "real-phrased-false-accept",
+        "paritySource": "real-phrased-queries.csv",
+        "parityOwnerLabel": "escalate"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_escalate",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 9.600000001490116
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "PARITY-RP-026",
+        "customerRef": "SIM-CREATOR-0000",
+        "createdAt": "2026-09-26T00:00:00.000Z",
+        "channel": "email_web_form",
+        "language": "en",
+        "category": "Other / ambiguous",
+        "queue": "triage",
+        "priority": "P3",
+        "subject": "Live streaming issues",
+        "message": "Live streaming issues",
+        "status": "open",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "other"
+        ],
+        "expected": {
+          "decision": "escalate",
+          "reason": "owner_label_ambiguous",
+          "sopId": null
+        },
+        "chaosTags": [],
+        "isChaos": false,
+        "parityClass": "real-phrased-false-accept",
+        "paritySource": "real-phrased-queries.csv",
+        "parityOwnerLabel": "ambiguous"
+      },
+      "expected": {
+        "decision": "escalate",
+        "reason": "owner_label_ambiguous",
+        "sopId": null
+      },
+      "actual": {
+        "decision": "answer",
+        "sopId": "wc-live"
+      },
+      "correct": false,
+      "failureCategory": "unsafe_answer_on_escalation_case",
+      "latencyMs": 6.899999998509884
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00108",
+        "customerRef": "SIM-CREATOR-6800",
+        "createdAt": "2026-09-23T08:29:47.000Z",
+        "channel": "in_app_chat",
+        "language": "es",
+        "category": "Gifts and purchases",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "Saldo de moedas não atualizou",
+        "message": "Super, encore une réponse automatique… anyway, I need help. Comprei moedas ontem para enviar um presente. O recibo está concluído, mas o saldo não mudou.",
+        "status": "resolved",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "gifts_purchases"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-gifts"
+        },
+        "chaosTags": [
+          "mixed_language_typos_sarcasm"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "mixed_language_typos_sarcasm",
+          "details": {
+            "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+            "typosInjected": true,
+            "languageFieldMayDisagree": true
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-gifts"
+          },
+          "category": "Gifts and purchases",
+          "queue": "payments",
+          "language": "pt-BR",
+          "channel": "in_app_chat",
+          "priority": "P2",
+          "status": "resolved",
+          "message": "Comprei moedas ontem para enviar um presente. O recibo está concluído, mas o saldo não mudou."
+        },
+        "parityClass": "messy",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-gifts"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 30.799999997019768
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00161",
+        "customerRef": "SIM-CREATOR-8905",
+        "createdAt": "2026-09-24T20:47:35.000Z",
+        "channel": "in_app_chat",
+        "language": "es",
+        "category": "Creator payouts",
+        "queue": "payments",
+        "priority": "P2",
+        "subject": "No recibí el pago",
+        "message": "Sure, because waiting another week is just brilliant 🙃. El pago figura como procesado, pero todavía no aparece en mi cuenta. Han pasado tres días hábiles.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "creator_payouts"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-payout"
+        },
+        "chaosTags": [
+          "mixed_language_typos_sarcasm"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "mixed_language_typos_sarcasm",
+          "details": {
+            "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+            "typosInjected": true,
+            "languageFieldMayDisagree": true
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-payout"
+          },
+          "category": "Creator payouts",
+          "queue": "payments",
+          "language": "es",
+          "channel": "in_app_chat",
+          "priority": "P2",
+          "status": "pending_customer",
+          "message": "El pago figura como procesado, pero todavía no aparece en mi cuenta. Han pasado tres días hábiles."
+        },
+        "parityClass": "messy",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-payout"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 27.399999998509884
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00239",
+        "customerRef": "SIM-CREATOR-1470",
+        "createdAt": "2026-09-25T19:29:22.000Z",
+        "channel": "email_web_form",
+        "language": "fr",
+        "category": "Account access",
+        "queue": "account",
+        "priority": "P2",
+        "subject": "No llega el código de recuperación",
+        "message": "I already tried twice, gracias — this is getting ridiculous. Cambié de teléfono y no recibo el código para recuperar la cuenta. Ya revisé el correo.",
+        "status": "pending_customer",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "routine_account_access"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-login"
+        },
+        "chaosTags": [
+          "mixed_language_typos_sarcasm"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "mixed_language_typos_sarcasm",
+          "details": {
+            "addedTone": "sarcastic or frustrated; sentiment is synthetic",
+            "typosInjected": true,
+            "languageFieldMayDisagree": true
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "answer",
+            "reason": null,
+            "sopId": "wc-login"
+          },
+          "category": "Account access",
+          "queue": "account",
+          "language": "es",
+          "channel": "email_web_form",
+          "priority": "P2",
+          "status": "pending_customer",
+          "message": "Cambié de teléfono y no recibo el código para recuperar la cuenta. Ya revisé el correo."
+        },
+        "parityClass": "messy",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-login"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 27.100000001490116
+    },
+    {
+      "data_mode": "simulated",
+      "simulation_run_id": "60cdbbea8a4f478f",
+      "tenant_label": "baseline",
+      "ticket": {
+        "data_mode": "simulated",
+        "ticketId": "SIM-TICKET-00392",
+        "customerRef": "SIM-CREATOR-4437",
+        "createdAt": "2026-09-28T10:36:58.000Z",
+        "channel": "in_app_chat",
+        "language": "fr",
+        "category": "Creator eligibility",
+        "queue": "creator-support",
+        "priority": "P3",
+        "subject": "Accès au LIVE non disponible",
+        "message": "Je remplis les critères d’âge et d’abonnés indiqués, mais le bouton LIVE n’apparaît pas. Just following up on this — same issue.",
+        "status": "resolved",
+        "reopenCount": 0,
+        "handoffCount": 0,
+        "tags": [
+          "creator_eligibility"
+        ],
+        "expected": {
+          "decision": "answer",
+          "reason": null,
+          "sopId": "wc-eligibility"
+        },
+        "chaosTags": [
+          "near_duplicate"
+        ],
+        "isChaos": true,
+        "chaosMutation": {
+          "type": "near_duplicate",
+          "details": {
+            "duplicateOf": "SIM-TICKET-00423"
+          }
+        },
+        "groundTruth": {
+          "expected": {
+            "decision": "escalate",
+            "reason": "specialist_review_required",
+            "sopId": "wc-appeal"
+          },
+          "category": "Content and restrictions",
+          "queue": "trust-safety",
+          "language": "en",
+          "channel": "in_app_chat",
+          "priority": "P2",
+          "status": "resolved",
+          "message": "My broadcast was removed and LIVE is now restricted. The in-app notice says it is a guideline action; I would like to appeal."
+        },
+        "duplicateOf": "SIM-TICKET-00423",
+        "parityClass": "near-duplicate",
+        "paritySource": "chaos-500.json"
+      },
+      "expected": {
+        "decision": "answer",
+        "reason": null,
+        "sopId": "wc-eligibility"
+      },
+      "actual": {
+        "decision": "escalate",
+        "reason": "insufficient_margin"
+      },
+      "correct": false,
+      "failureCategory": "false_escalation",
+      "latencyMs": 24.600000001490116
+    }
+  ],
+  "failureRateIsLowOrStable": false,
+  "limitations": [
+    "This is a deployed-path validation using the public static Vercel app and the development Supabase project, not a real production customer deployment.",
+    "Both isolated tenants, users, synthetic SOPs, query telemetry, and escalation evidence remain in the development database and are visibly tagged data_mode: simulated.",
+    "The batch uses the approved template-based synthetic messages; the holdout is another seed from the same generator, not independently authored customer language.",
+    "The 0.17 margin is a test-only browser control. The shipped default remains 0.18; at 0.16 the approved batch produced two unsafe answers.",
+    "The low-failure stopping criterion remains unmet. All outcome labels derive from synthetic batch expectations, not human-annotated outcomes."
+  ]
+}
