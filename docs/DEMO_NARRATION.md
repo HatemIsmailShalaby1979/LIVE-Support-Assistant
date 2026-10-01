@@ -1,18 +1,20 @@
 # Demo narration (TTS script)
 
-A three-minute voice-over script for the five-minute local demo. Read the spoken text
+A 199-second voice-over script for the five-minute local demo. Read the spoken text
 verbatim; the on-screen action tells you what to show. Every spoken number also appears
 in the `docs/EVIDENCE.md` claims table, so the voice and the written evidence agree.
 
-- Total runtime: **3 minutes 2 seconds** of speech, measured from the rendered audio
-  (`tooling/video/audio/`, 13 segments, 182.06 s).
-- Constraint: each spoken block is 40 words or fewer (longest block: 37 words). No spoken
-  jargon (no "margin", "bi-encoder", "reranker", "embedding"). Write "answered" / "sent to
-  a person" instead.
+- Total runtime: **199.11 s** rendered (`tooling/video/demo-video.mp4`), driven by
+  **199.01 s** of audio (`tooling/video/audio/`, 13 segments).
+- Constraint: each spoken block is 60 words or fewer (longest block: 60 words, segment 9 —
+  the parity-run sentence). Spoken jargon is avoided wherever possible; segment 9 uses
+  "margins" once because the on-screen card carries the precise 0.1869–0.4175 figures.
+  Elsewhere write "answered" / "sent to a person". The full no-jargon list is "margin",
+  "bi-encoder", "reranker", "embedding".
 - The positioning line is quoted exactly as it appears in `README.md`.
-- Rendered into `tooling/video/demo-video.mp4` (182.155 s) by `tooling/video/capture-demo.mjs`
-  and `tooling/video/assemble-video.py`. Regeneration steps and the Windows-only constraint
-  are in `tooling/eval/simulated-tenant/screen-recording-instructions.md`.
+- Rendered by `tooling/video/capture-demo.mjs` and `tooling/video/assemble-video.py`.
+  Regeneration steps and the Windows-only constraint are in
+  `tooling/eval/simulated-tenant/screen-recording-instructions.md`.
 
 ---
 
@@ -71,7 +73,7 @@ reach a user.
 
 ## Segment 9 — The one unsafe case
 **On-screen:** 1 unsafe in the 500-ticket run; 6 unsafe in the later 39-ticket parity run (margins 0.1869-0.4175, all at or above the 0.18 default) - docs/EVIDENCE.md
-**Spoken (37 words):**
+**Spoken (60 words):**
 On the full deployed test of five hundred tickets, three hundred and sixty-one matched the
 expected outcome: seventy-two point two percent. There was one unsafe answer and zero runtime
 errors. That case led to the publish block. A later thirty-nine-ticket deployed parity run
@@ -80,10 +82,10 @@ this is in docs/EVIDENCE.md.
 
 ## Segment 10 — The non-English gap
 **On-screen:** docs/EVIDENCE.md claims table, Tier 2 "Non-English gap" and "In-scope recall at 48 procedures".
-**Spoken (35 words):**
-The gap is real. On a larger corpus, in-scope answers in other languages fell to twenty-seven
-point eight percent, eighty-four of three hundred and two. English stayed near sixty-two
-percent. This is measured, not hidden.
+**Spoken (43 words):**
+The gap is real. On a larger corpus, overall in-scope recall fell to twenty-seven point eight
+percent, eighty-four of three hundred and two. English held near sixty-two point one percent;
+Spanish and Portuguese fell to about thirty percent. This is measured, not hidden.
 
 ## Segment 11 — Repeatability
 **On-screen:** docs/EVIDENCE.md claims table, "identical decisions on all 500 tickets".
