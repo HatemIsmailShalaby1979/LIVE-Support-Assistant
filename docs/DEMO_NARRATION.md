@@ -70,7 +70,7 @@ locally. On the published path, a bundle with that clash is now refused before i
 reach a user.
 
 ## Segment 9 — The one unsafe case
-**On-screen:** docs/EVIDENCE.md claims table row: "1 unsafe" on the deployed path.
+**On-screen:** 1 unsafe in the 500-ticket run; 6 unsafe in the later 39-ticket parity run (margins 0.1869-0.4175, all at or above the 0.18 default) - docs/EVIDENCE.md
 **Spoken (37 words):**
 On the full deployed test of five hundred tickets, three hundred and sixty-one matched the
 expected outcome: seventy-two point two percent. There was one unsafe answer and zero runtime
