@@ -27,7 +27,7 @@ This release collects the simulated-tenant validation work into a single, audita
   and the publish-refusal (HTTP 422) consistently; all experiment-branch references now cite tag +
   SHA.
 - **New documents:** `docs/KNOWN_ISSUES.md` (7 open issues, each with a source path),
-  `docs/DEMO_NARRATION.md` (2–3 min TTS script), `docs/PORTFOLIO_SUMMARY.md` (60-second pitch +
+  `docs/DEMO_NARRATION.md` (199 s TTS script), `docs/PORTFOLIO_SUMMARY.md` (60-second pitch +
   resume bullets).
 
 ## Validation gates (all green before tagging)

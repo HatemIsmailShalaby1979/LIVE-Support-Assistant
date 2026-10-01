@@ -217,7 +217,7 @@ Full runbook, including the four scenarios and their expected outcomes:
 [`docs/DEMO.md`](docs/DEMO.md). A pre-run copy of the output is checked in as
 `tooling/eval/simulated-tenant/demo-four-tickets.md`.
 
-**Narrated walkthrough.** `tooling/video/demo-video.mp4` (3 minutes 2 seconds) shows the same
+**Narrated walkthrough.** `tooling/video/demo-video.mp4` (199.11 s) shows the same
 four-ticket run with the real gate decisions on screen, narrated from
 [`docs/DEMO_NARRATION.md`](docs/DEMO_NARRATION.md). It is a capture of the **local browser**
 evaluation, not of the hosted app. Regenerate it with `node tooling/video/capture-demo.mjs`
@@ -226,7 +226,7 @@ sources and `tooling/video/demo-video-manifest.json` are.
 
 <!-- TODO(Hatem): paste GitHub user-attachments video URL on its own line here -->
 
-Narrated walkthrough video (hosted copy pending). A three-minute screen recording of the local
+Narrated walkthrough video (hosted copy pending). A 199.11-second screen recording of the local
 four-ticket browser run: the shipped decision path answers one clear question, refuses three
 weaker ones, and shows the real confidence-gate decisions on screen. It is a capture of the
 **local browser** evaluation, not of the hosted app. The MP4 is deliberately not committed to
