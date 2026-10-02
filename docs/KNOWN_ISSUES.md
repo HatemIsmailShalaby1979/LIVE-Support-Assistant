@@ -101,3 +101,14 @@ round trip is exercised. This is a demo limitation, not a backend failure.
 `assemble-video.py` (ffmpeg via `shutil.which`) and `gen-audio.py` (edge-tts) are portable.
 Consequence: the walkthrough can be re-rendered on Windows only, as written. This affects
 build tooling, not the shipped decision path or any measured claim.
+
+## 9. Accepted dependency advisory — GHSA-86w9-cpqp-85rv (node-forge, High)
+
+Accepted as a known risk on 2026-10-02: the advisory (CVE-2026-85393, affected
+`<=1.4.0`) has no patched release — `1.4.0` is the latest on npm — and it reaches the
+build only through the unbuilt `@sop/mobile` app via Expo tooling
+(`@expo/code-signing-certificates`, `selfsigned`); it is absent from the web app, the
+desktop shell, and every `apps/*/src` / `packages/*/src` import, so it is off the
+ticket-processing and credential path. Review by 2026-10-30; re-check with
+`pnpm why node-forge` and `pnpm audit --prod`, and the accepted id stays in
+`tooling/audit-baseline.json` so the gate stays green without hiding new advisories.

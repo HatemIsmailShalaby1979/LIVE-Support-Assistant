@@ -92,3 +92,10 @@ address, and the address itself is an auto-generated deployment name. Nothing he
 is production-customer evidence: there is no real traffic, no tenant calibration, and
 the largest corpus measured is 48 procedures. A shadow-mode pilot checklist is in
 `README.md`.
+
+**Accepted dependency advisory (2026-10-02).** `GHSA-86w9-cpqp-85rv` (node-forge, High)
+is accepted as a known risk: no patched release exists (`1.4.0` is the latest on npm),
+and it is reachable only through the unbuilt `@sop/mobile` app via Expo tooling — not
+the web app, the desktop shell, or any shipped source. Reason: no fix is available
+upstream and it is not on the ticket-processing or credential path. Review date:
+2026-10-30. Full re-check steps in `docs/KNOWN_ISSUES.md` entry 9.
